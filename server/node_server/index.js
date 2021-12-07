@@ -1,5 +1,6 @@
 // importing all the environment variables
-require("dotenv").config();
+import dotenv from "dotenv";
+dotenv.config();
 
 // Libraries
 import express from "express";
@@ -19,12 +20,12 @@ const Pride = express();
 Pride.use(helmet());
 Pride.use(express.urlencoded({ extended: false }));
 Pride.use(express.json());
-Pride.use(cors());
+// Pride.use(cors());
 
 // Server status route
-Pride.get("/server-status"), (req, res) => {
+Pride.get("/server-status", (req, res) => {
     res.json({ message: "Server Running" });
-}
+});
 
 // 404 route
 Pride.get("*", (req, res) => {

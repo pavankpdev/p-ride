@@ -7,8 +7,8 @@ import express from "express";
 import cors from "cors";
 import helmet from "helmet";
 
-// DB connection instance
-
+// Database connection
+import ConnectDB from "./database/connection.js";
 
 // Establishing DB connection
 
@@ -20,7 +20,7 @@ const Pride = express();
 Pride.use(helmet());
 Pride.use(express.urlencoded({ extended: false }));
 Pride.use(express.json());
-// Pride.use(cors());
+Pride.use(cors());
 
 // Server status route
 Pride.get("/server-status", (req, res) => {
@@ -34,6 +34,14 @@ Pride.get("*", (req, res) => {
 
 // Specifying the port to run the server
 const port = process.env.PORT || 4000;
-Pride.listen(port, () => {
-    console.log(`Listening on port ${port}...`);
-});
+
+Pride.listen(port, () => ConnectDB()
+    .then(() => {
+        console.log(`Listening on port ${port}...`);
+        console.log("connected to Database");
+    })
+    .catch((error) => {
+        console.log("Server is running, but database connection failed... ");
+        console.log(error);
+    })
+);

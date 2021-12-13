@@ -1,5 +1,6 @@
 import mongoose, {Model} from "mongoose";
 import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
 
 const Schema = new mongoose.Schema({
     email: {
@@ -15,27 +16,16 @@ const Schema = new mongoose.Schema({
 }
 );
 
-
 Schema.methods.generateJwtToken = function () {
     return jwt.sign({ user: this._id.toString() }, process.env.JWT_PRIVATE_KEY);
 };
 
 
-Schema.statics.findByEmail = async ({ email, phoneNumber }) => {
-
-    const checkUserByEmail = await Model.findOne({ email });
-    if (checkUserByEmail) {
-        return true;
-    }
-
-    return false;
-};
-
 Schema.statics.comparePassword = async ({ password }) => {
 
     const doesPasswordMatch = await bcrypt.compare(password, user.password);
 
-    if (!doesPasswordMatch) throw new Error("invalid Password!!!");
+    if (!doesPasswordMatch) return false;
 
     return true;
 

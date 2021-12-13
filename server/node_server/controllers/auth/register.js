@@ -2,7 +2,16 @@
 // MODELS
 import User from "../../database/user.js";
 
+// VALIDATION
+import {registerValidation} from "../../validation/auth.js";
+
 export const register = async (req, res) => {
+
+    const {error} = registerValidation.validate(req.body.payload);
+    if(error) {
+        return res.status(500).json({error: error.details[0].message});
+    }
+
     try{
         const userData = req.body.payload;
 

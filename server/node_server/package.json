@@ -10,6 +10,7 @@
     "dotenv": "^10.0.0",
     "express": "^4.17.1",
     "helmet": "^4.6.0",
+    "joi": "^17.5.0",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^6.0.15",
     "redis": "^4.0.0"
@@ -19,12 +20,12 @@
     "@babel/cli": "^7.14.8",
     "@babel/core": "^7.15.0",
     "@babel/node": "^7.14.9",
+    "@babel/plugin-transform-runtime": "^7.15.0",
     "@babel/polyfill": "^7.12.1",
     "@babel/preset-env": "^7.15.0",
     "babel-loader": "^8.2.2",
     "babel-plugin-module-resolver": "^4.1.0",
     "babel-plugin-transform-runtime": "^6.23.0",
-    "@babel/plugin-transform-runtime": "^7.15.0",
     "nodemon": "^2.0.15"
   },
   "scripts": {

@@ -2,7 +2,16 @@
 // MODELS
 import User from "../../database/user.js";
 
+// VALIDATION
+import {loginValidation} from "../../validation/auth.js";
+
 export const login = async (req, res) => {
+
+    const {error} = loginValidation.validate(req.body.payload);
+    if(error) {
+        return res.status(500).json({error: error.details[0].message});
+    }
+
     try{
         const userData = req.body.payload;
 

@@ -2,7 +2,16 @@
 // MODELS
 import User from "../../database/user.js";
 
+// VALIDATION
+import {forgotPassoword} from "../../validation/auth.js";
+
 export const forgotPassword = async (req, res) => {
+
+    const {error} = forgotPassoword.validate(req.body.payload);
+    if(error) {
+        return res.status(500).json({error: error.details[0].message});
+    }
+
     try{
         const userData = req.body.payload;
 

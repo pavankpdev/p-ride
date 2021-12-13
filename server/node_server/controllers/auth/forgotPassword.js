@@ -27,7 +27,7 @@ export const forgotPassword = async (req, res) => {
         const token = user.generateJwtToken();
 
         // send mail
-        const text = `Hello ${user.fullname}, Please click on this link to reset your password. ${token}`;
+        const text = `Hello ${user.fullname}, Please click on this link to reset your password. ${process.env.CLIENT_HOST}/${token}`;
         await sendMail({to: userData.email, text, subject: "Password reset link for P-ride" });
 
         return res.status(200).json({message: `A password reset email has been sent to ${user.email}, please check your inbox.`});

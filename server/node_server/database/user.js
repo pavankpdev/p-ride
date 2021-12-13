@@ -1,4 +1,4 @@
-import mongoose, {Model} from "mongoose";
+import mongoose from "mongoose";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 
@@ -10,6 +10,10 @@ const Schema = new mongoose.Schema({
     },
     password: {
         type: String,
+    },
+    fullname: {
+        type: String,
+        required: true
     }
 }, {
     timestamps: true
@@ -21,8 +25,9 @@ Schema.methods.generateJwtToken = function () {
 };
 
 
-Schema.statics.comparePassword = async ({ password }) => {
+Schema.statics.comparePassword = async ({ password, email }) => {
 
+    const user = await User.findOne({email});
     const doesPasswordMatch = await bcrypt.compare(password, user.password);
 
     if (!doesPasswordMatch) return false;
@@ -54,7 +59,7 @@ Schema.pre("save", function (next) {
     });
 });
 
-const User = mongoose.model(Schema, "user");
+const User = mongoose.model("user", Schema);
 
 
 

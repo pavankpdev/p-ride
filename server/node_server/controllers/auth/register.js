@@ -1,10 +1,10 @@
 
 // MODELS
-import User from "../../database/user";
+import User from "../../database/user.js";
 
 export const register = async (req, res) => {
     try{
-        const userData = req.payload;
+        const userData = req.body.payload;
 
         const doesUserExist = await User.findOne({email: userData.email});
 

@@ -1,7 +1,7 @@
 import bcrypt from "bcryptjs";
 
 // MODELS
-import User from "../../database/user";
+import User from "../../database/user.js";
 
 export const resetPassword = async (req, res, next) => {
     try{

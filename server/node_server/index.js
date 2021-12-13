@@ -10,7 +10,8 @@ import helmet from "helmet";
 // Database connection
 import ConnectDB from "./database/connection.js";
 
-// Establishing DB connection
+// Routes
+import Auth from "./api/auth/index.js";
 
 
 // Initializing express application
@@ -21,6 +22,11 @@ Pride.use(helmet());
 Pride.use(express.urlencoded({ extended: false }));
 Pride.use(express.json());
 Pride.use(cors());
+
+
+// API Routes
+Pride.use("/auth", Auth);
+
 
 // Server status route
 Pride.get("/server-status", (req, res) => {

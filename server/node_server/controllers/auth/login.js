@@ -1,10 +1,10 @@
 
 // MODELS
-import User from "../../database/user";
+import User from "../../database/user.js";
 
 export const login = async (req, res) => {
     try{
-        const userData = req.payload;
+        const userData = req.body.payload;
 
         const user = await User.findOne({email: userData.email});
 

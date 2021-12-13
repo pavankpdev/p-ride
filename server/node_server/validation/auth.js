@@ -16,4 +16,6 @@ export const forgotPassoword = Joi.object({
 });
 
 
-
+export const emailValidationSchema = Joi.object({
+    email: Joi.string().email().required(),
+});

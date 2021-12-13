@@ -9,7 +9,7 @@ export const login = async (req, res) => {
         const user = await User.findOne({email: userData.email});
 
         if(!user){
-            return res.status(404).json({error: "User does not exist"});
+            return res.status(404).json({error: `User with ${userData.email} does not exist`});
         }
 
         const doesPasswordsMatch = await User.comparePassword(userData);

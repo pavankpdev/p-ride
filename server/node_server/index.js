@@ -10,8 +10,12 @@ import helmet from "helmet";
 // Database connection
 import ConnectDB from "./database/connection.js";
 
+// Cache
+import cache from "./cache/con.js";
+
 // Routes
 import Auth from "./api/auth/index.js";
+
 
 
 // Initializing express application
@@ -40,6 +44,19 @@ Pride.get("*", (req, res) => {
 
 // Specifying the port to run the server
 const port = process.env.PORT || 4000;
+
+cache.connect().then(() => {
+    console.log("connected to cache");
+});
+
+cache.on("ready", () => {
+    console.log("Cache is ready!");
+});
+
+cache.on("error", (error) => {
+    console.log("Cache is not connected!");
+    console.log(error);
+});
 
 Pride.listen(port, () => ConnectDB()
     .then(() => {

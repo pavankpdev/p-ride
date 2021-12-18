@@ -14,12 +14,12 @@ async function main() {
   // await hre.run('compile');
 
   // We get the contract to deploy
-  const PRIToken = await hre.ethers.getContractFactory("PRIToken");
-  const token = await PRIToken.deploy();
+  const DriverContract = await hre.ethers.getContractFactory("Driver");
+  const drivers = await DriverContract.deploy();
 
-  await token.deployed();
+  await drivers.deployed();
 
-  console.log("PRI token deployed to:", token.address);
+  console.log("Customer contract deployed to:", drivers.address);
 }
 
 // We recommend this pattern to be able to use async/await everywhere

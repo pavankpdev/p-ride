@@ -14,12 +14,12 @@ async function main() {
   // await hre.run('compile');
 
   // We get the contract to deploy
-  const PRIToken = await hre.ethers.getContractFactory("PRIToken");
-  const token = await PRIToken.deploy();
+  const CustomerContract = await hre.ethers.getContractFactory("Customer");
+  const customer = await CustomerContract.deploy();
 
-  await token.deployed();
+  await customer.deployed();
 
-  console.log("PRI token deployed to:", token.address);
+  console.log("Customer contract deployed to:", customer.address);
 }
 
 // We recommend this pattern to be able to use async/await everywhere

@@ -1,15 +1,25 @@
-# Basic Sample Hardhat Project
+# Pride Smart contracts
 
-This project demonstrates a basic Hardhat use case. It comes with a sample contract, a test for that contract, a sample script that deploys that contract, and an example of a task implementation, which simply lists the available accounts.
+This directory contains the smart contract of this project, The Smart contracts here are compiled and deployed via [hardhat](https://hardhat.org/getting-started/). 
 
-Try running some of the following tasks:
+## Install hardhat
+```shell
+npm i --save-dev hardhat
+```
+or
+```shell
+yarn add -D hardhat
+```
+
+## Compile a contract
 
 ```shell
-npx hardhat accounts
 npx hardhat compile
-npx hardhat clean
-npx hardhat test
-npx hardhat node
-node scripts/sample-script.js
-npx hardhat help
+```
+
+## deploy a contract
+To deploy a contract make sure the script is ready. 
+
+```shell
+ npx hardhat run scripts/[filename].js --network ropsten
 ```

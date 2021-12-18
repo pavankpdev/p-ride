@@ -387,3 +387,12 @@ package-lock.json
 
 
 # End of https://www.toptal.com/developers/gitignore/api/node,python,django,expressionengine,nextjs,react
+node_modules
+.env
+coverage
+coverage.json
+typechain
+
+#Hardhat files
+cache
+artifacts

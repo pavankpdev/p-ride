@@ -3,12 +3,22 @@ import bcrypt from "bcryptjs";
 // MODELS
 import User from "../../database/user.js";
 
+// CACHE
+import {addDataToCache, getDataFromCache} from "../../cache/con.js";
+
 export const resetPassword = async (req, res, next) => {
     try{
         const userId = req.session.user._id;
         const newPassword = req.body.payload;
+        const token = req.header.authorization.slice(7);
 
         const user = await User.findById(userId);
+
+        const isTokenBlackListed = await getDataFromCache(user._id);
+
+        if(isTokenBlackListed){
+            return res.status(401).json({error: `Token expired`});
+        };
 
         if(!user){
             return res.status(404).json({error: `Invalid request, please try again`});
@@ -23,6 +33,9 @@ export const resetPassword = async (req, res, next) => {
         await User.findByIdAndUpdate(userId, {
             password: hash
         });
+
+        // blacklist token
+        await addDataToCache(user._id, token);
 
         return res.status(200).json({message: `Password reset was successful`});
 

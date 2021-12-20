@@ -12,15 +12,20 @@ import {
   
   const ResetPassword = () => {
       const [resetInput, setResetInput] = useState({ 
-            email: "",
-            password: "",
+            newPassword: "",
+            confirmPassword: "",
       });
 
       const handleChange = (event) => {
-        setResetInput({ ...resetInput, [event.target.name]: event.target.value });
+        setResetInput({ ...resetInput, [event.target.name]: event.target.value})
       };
 
       const handleSubmit = () => {
+          console.log(resetInput);
+          if(resetInput.newPassword !== resetInput.confirmPassword){
+            console.log("Password not equal");
+            return;
+          }
           console.log(resetInput);
       }
 
@@ -43,22 +48,22 @@ import {
           <Heading lineHeight={1.1} fontSize={{ base: '2xl', md: '3xl' }}>
             Enter new password
           </Heading>
-          <FormControl id="email" isRequired>
-            <FormLabel>Email address</FormLabel>
+          <FormControl id="passsword" isRequired>
+            <FormLabel>New Password</FormLabel>
             <Input
-              placeholder="your-email@example.com"
-              _placeholder={{ color: 'gray.500' }}
-              type="email"
-              value={resetInput.email}
+              type="password"
+              value={resetInput.newPassword}
               onChange={handleChange}
+              name="newPassword"
             />
           </FormControl>
           <FormControl id="password" isRequired>
-            <FormLabel>Password</FormLabel>
+            <FormLabel>Confirm Pssword</FormLabel>
             <Input 
                 type="password" 
-                value={resetInput.password}
+                value={resetInput.confirmPassword}
                 onChange={handleChange}
+                name="confirmPassword"
             />
           </FormControl>
           <Stack spacing={6}>

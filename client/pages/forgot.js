@@ -10,20 +10,15 @@ import {
 } from "@chakra-ui/react";
 import { useState } from "react";
 
-const ResetPassword = () => {
-  const [resetPasswordInput] = useState({
-    email: "",
-  });
+const ForgotPassword = () => {
+  const [forgotPasswordInput, setForgotPasswordInput] = useState({ email: "" });
 
   const handleChange = (event) => {
-    resetPasswordInput({
-      ...resetPasswordInput,
-      [event.target.name]: event.target.name,
-    });
+    setForgotPasswordInput({ email: event.target.value })
   };
 
   const handleSubmit = () => {
-    console.log(resetPasswordInput);
+    console.log(forgotPasswordInput);
   };
 
   return (
@@ -57,7 +52,7 @@ const ResetPassword = () => {
             placeholder="your-email@example.com"
             _placeholder={{ color: "gray.500" }}
             type="email"
-            value={resetPasswordInput.email}
+            value={forgotPasswordInput.email}
             onChange={handleChange}
           />
         </FormControl>
@@ -78,4 +73,4 @@ const ResetPassword = () => {
   );
 };
 
-export default ResetPassword;
+export default ForgotPassword;

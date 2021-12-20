@@ -12,31 +12,45 @@ import {
   Box,
 } from "@chakra-ui/react";
 import { useState } from "react";
+import { useRouter } from 'next/router'
 
 const Login = () => {
-  const [loginInput, setLoginInput] = useState({
+  const [registerInput, setRegisterInput] = useState({
     email: "",
     password: "",
+    fullname: ""
   });
 
+  const router = useRouter();
+
   const handleChange = (event) => {
-    setLoginInput({ ...loginInput, [event.target.name]: event.target.value });
+    setRegisterInput({ ...registerInput, [event.target.name]: event.target.value });
   };
 
   const handleSubmit = () => {
-    console.log(loginInput);
+    console.log(registerInput);
   };
 
   return (
     <Stack minH={"100vh"} direction={{ base: "column", lg: "row-reverse" }}>
       <Flex p={8} flex={1} align={"center"} justify={"center"}>
         <Stack spacing={4} w={"full"} maxW={"md"}>
-          <Heading fontSize={"2xl"}>Sign in to your account</Heading>
+          <Heading fontSize={"2xl"}>Create New Account</Heading>
+          <FormControl id="fullname">
+            <FormLabel>Full Name</FormLabel>
+            <Input
+              type="text"
+              value={registerInput.fullname}
+              name="fullname"
+              placeholder="Bharath"
+              onChange={handleChange}
+            />
+          </FormControl>
           <FormControl id="email">
             <FormLabel>Email address</FormLabel>
             <Input
               type="email"
-              value={loginInput.email}
+              value={registerInput.email}
               name="email"
               placeholder="email@email.com"
               onChange={handleChange}
@@ -46,7 +60,7 @@ const Login = () => {
             <FormLabel>Password</FormLabel>
             <Input
               type="password"
-              value={loginInput.password}
+              value={registerInput.password}
               name="password"
               placeholder="**********"
               onChange={handleChange}
@@ -58,10 +72,10 @@ const Login = () => {
               variant={"solid"}
               onClick={handleSubmit}
             >
-              Sign in
+              Create Account
             </Button>
-            <Link color={"blue.500"} textAlign={"center"}>
-              Forgot password?
+            <Link color={"blue.500"} textAlign={"center"} onClick={() => router.push("/login")}>
+              Already Have an account? Login
             </Link>
           </Stack>
         </Stack>

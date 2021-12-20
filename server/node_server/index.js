@@ -6,6 +6,7 @@ dotenv.config();
 import express from "express";
 import cors from "cors";
 import helmet from "helmet";
+import fileUpload from "express-fileupload;"
 
 // Database connection
 import ConnectDB from "./database/connection.js";
@@ -25,6 +26,9 @@ Pride.use(helmet());
 Pride.use(express.urlencoded({ extended: false }));
 Pride.use(express.json());
 Pride.use(cors());
+Pride.use(fileUpload({
+    limits: { fileSize: 10 * 1024 * 1024 }, // 10mb limit
+}));
 
 
 // API Routes

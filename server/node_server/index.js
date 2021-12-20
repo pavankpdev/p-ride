@@ -11,11 +11,10 @@ import helmet from "helmet";
 import ConnectDB from "./database/connection.js";
 
 // Cache
-import cache from "./cache/con.js";
+import cache from "./database/cache.js";
 
 // Routes
 import Auth from "./api/auth/index.js";
-
 
 
 // Initializing express application

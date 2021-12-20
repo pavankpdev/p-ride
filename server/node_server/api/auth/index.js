@@ -3,6 +3,9 @@ import {Router} from "express";
 // CONTROLLERS
 import {login, register, forgotPassword, resetPassword} from "../../controllers/auth/index.js";
 
+// MIDDLEWARE
+import authenticateMiddleware from "../../middleware/authentication.js";
+
 const router = Router();
 
 /*
@@ -41,6 +44,6 @@ router.post("/forgot-password", forgotPassword);
 @access: Private
 
  */
-router.post("/reset-password", forgotPassword);
+router.post("/reset-password", authenticateMiddleware, resetPassword);
 
 export default router;

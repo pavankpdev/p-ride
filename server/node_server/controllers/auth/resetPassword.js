@@ -4,24 +4,25 @@ import bcrypt from "bcryptjs";
 import User from "../../database/user.js";
 
 // CACHE
-import {addDataToCache, getDataFromCache} from "../../cache/con.js";
+import {addDataToCache, getDataFromCache} from "../../database/cache.js";
 
 export const resetPassword = async (req, res, next) => {
     try{
-        const userId = req.session.user._id;
-        const newPassword = req.body.payload;
-        const token = req.header.authorization.slice(7);
+        const userId = req.body.userId;
+        const {newPassword} = req.body.payload;
+        const token = req.headers.authorization.slice(7);
 
-        const user = await User.findById(userId);
+        const user = await User.findById(`${userId}`);
 
-        const isTokenBlackListed = await getDataFromCache(user._id);
-
-        if(isTokenBlackListed){
-            return res.status(401).json({error: `Token expired`});
-        };
 
         if(!user){
             return res.status(404).json({error: `Invalid request, please try again`});
+        };
+
+        const isTokenBlackListed = await getDataFromCache(`${user._id}`);
+
+        if(isTokenBlackListed){
+            return res.status(401).json({error: `Token expired`});
         };
 
         // hash the password
@@ -35,7 +36,7 @@ export const resetPassword = async (req, res, next) => {
         });
 
         // blacklist token
-        await addDataToCache(user._id, token);
+        await addDataToCache(`${user._id}`, `${token}`);
 
         return res.status(200).json({message: `Password reset was successful`});
 

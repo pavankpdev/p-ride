@@ -1,29 +1,42 @@
-import { Web3Storage } from 'web3.storage';
+import { Web3Storage, File } from 'web3.storage';
 import axios from "axios";
 
 const IPFS = new Web3Storage({token: process.env.WEB3_STORAGE_API_KEY});
+const gateway = "ipfs.dweb.link";
 
-export const uploadToIPFS = async (file) => {
+
+/*
+@params
+file: File object
+filename: string
+*/
+
+export const uploadSingleFileToIPFS = async (file, filename) => {
     try{
-        // IPFS accepts array of File object. So it is possible to upload multiple files with one request.
-        const cid = await IPFS.put(file);
-        console.log('stored files with cid:', cid)
-        return cid;
+        const encodedFile = [new File([file.data], filename)];
+
+        const cid = await IPFS.put(encodedFile);
+
+        // return IPFS url to retrieve file
+        const fileUrl = `https://${cid}.${gateway}/${filename}`
+
+        return fileUrl;
     }catch (error){
         throw new Error(error);
     }
-}
+};
 
-export const getFilesFromIPFS = async (cid="bafybeidd2gyhagleh47qeg77xqndy2qy3yzn4vkxmk775bg2t5lpuy7pcu", filename="dr-is-tired.jpg") => {
-   try{
-       const gateway = "ipfs.dweb.link";
-       const {data} = await axios({
-           method: "GET",
-           url: `${cid}.${gateway}/${filename}`
-       });
+export const uploadMultipleFilesToIPFS = async (files) => {
+    try{
+        const encodeFiles = files.map(file => new File([file.data], file.name));
 
-       console.log({data});
-   }catch (error){
-       throw new Error(error);
-   }
+        const cid = await IPFS.put(encodeFiles);
+
+        // return IPFS url to retrieve file
+        const fileUrls = files.map(file => ({type: file.type, url: `https://${cid}.${gateway}/${file.name}`}));
+
+        return fileUrls;
+    }catch (error){
+        throw new Error(error);
+    }
 };

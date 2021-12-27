@@ -6,7 +6,7 @@ dotenv.config();
 import express from "express";
 import cors from "cors";
 import helmet from "helmet";
-import fileUpload from "express-fileupload;"
+import fileUpload from "express-fileupload";
 
 // Database connection
 import ConnectDB from "./database/connection.js";

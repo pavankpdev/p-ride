@@ -22,12 +22,13 @@ const ResetPassword = () => {
 
   const handleSubmit = () => {
     console.log(resetInput);
-    if (resetInput.newPassword !== resetInput.confirmPassword) {
-      alert("Password not equal");
-      return;
-    }
     if (!resetInput.newPassword) {
       alert("Password cannot be empty.");
+    } else if (!resetInput.confirmPassword) {
+      alert("Password cannot be empty.");
+    } else if (resetInput.newPassword !== resetInput.confirmPassword) {
+      alert("Password not equal");
+      return;
     }
   };
 

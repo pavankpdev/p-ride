@@ -12,23 +12,32 @@ import {
   Box,
 } from "@chakra-ui/react";
 import { useState } from "react";
-import { useRouter } from 'next/router'
+import { useRouter } from "next/router";
 
 const Login = () => {
   const [registerInput, setRegisterInput] = useState({
     email: "",
     password: "",
-    fullname: ""
+    fullname: "",
   });
 
   const router = useRouter();
 
   const handleChange = (event) => {
-    setRegisterInput({ ...registerInput, [event.target.name]: event.target.value });
+    setRegisterInput({
+      ...registerInput,
+      [event.target.name]: event.target.value,
+    });
   };
 
   const handleSubmit = () => {
-    console.log(registerInput);
+    if (!registerInput.fullname) {
+      alert("Full name cannot be empty.");
+    } else if (!registerInput.email) {
+      alert("Email cannot be empty.");
+    } else if (!registerInput.password) {
+      alert("Password cannnot be empty.");
+    }
   };
 
   return (
@@ -39,6 +48,7 @@ const Login = () => {
           <FormControl id="fullname">
             <FormLabel>Full Name</FormLabel>
             <Input
+              required
               type="text"
               value={registerInput.fullname}
               name="fullname"
@@ -74,7 +84,11 @@ const Login = () => {
             >
               Create Account
             </Button>
-            <Link color={"blue.500"} textAlign={"center"} onClick={() => router.push("/login")}>
+            <Link
+              color={"blue.500"}
+              textAlign={"center"}
+              onClick={() => router.push("/login")}
+            >
               Already Have an account? Login
             </Link>
           </Stack>

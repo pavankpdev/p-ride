@@ -14,11 +14,13 @@ const ForgotPassword = () => {
   const [forgotPasswordInput, setForgotPasswordInput] = useState({ email: "" });
 
   const handleChange = (event) => {
-    setForgotPasswordInput({ email: event.target.value })
+    setForgotPasswordInput({ email: event.target.value });
   };
 
   const handleSubmit = () => {
-    console.log(forgotPasswordInput);
+    if (!forgotPasswordInput.email) {
+      alert("Email cannot be empty.");
+    }
   };
 
   return (

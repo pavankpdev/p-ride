@@ -24,7 +24,11 @@ const Login = () => {
   };
 
   const handleSubmit = () => {
-    console.log(loginInput);
+    if (!loginInput.email) {
+      alert("Email cannot be empty.");
+    } else if (!loginInput.password) {
+      alert("Password cannnot be empty.");
+    }
   };
 
   return (

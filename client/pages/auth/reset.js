@@ -7,6 +7,7 @@ import {
   Input,
   Stack,
   useColorModeValue,
+  useToast,
 } from "@chakra-ui/react";
 import { useState } from "react";
 
@@ -20,14 +21,39 @@ const ResetPassword = () => {
     setResetInput({ ...resetInput, [event.target.name]: event.target.value });
   };
 
+  const toast = useToast();
+
   const handleSubmit = () => {
     console.log(resetInput);
     if (!resetInput.newPassword) {
-      alert("Password cannot be empty.");
+      toast({
+        title: "Password cannot be empty.",
+        description: "Please make sure you enter your NewPassword!",
+        duration: 3000,
+        status: "error",
+        isClosable: true,
+        position: "top",
+      });
+      return;
     } else if (!resetInput.confirmPassword) {
-      alert("Password cannot be empty.");
+      toast({
+        title: "Password cannot be empty.",
+        description: "Please make sure you enter your ConfirmPassword!",
+        duration: 3000,
+        status: "error",
+        isClosable: true,
+        position: "top",
+      });
+      return;
     } else if (resetInput.newPassword !== resetInput.confirmPassword) {
-      alert("Password not equal");
+      toast({
+        title: "Password is not equal.",
+        description: "Please make sure you enter Correct Password!",
+        duration: 3000,
+        status: "error",
+        isClosable: true,
+        position: "top",
+      });
       return;
     }
   };

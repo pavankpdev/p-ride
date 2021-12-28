@@ -10,6 +10,7 @@ import {
   Stack,
   Image,
   Box,
+  useToast,
 } from "@chakra-ui/react";
 import { useState } from "react";
 
@@ -19,15 +20,33 @@ const Login = () => {
     password: "",
   });
 
+  const toast = useToast();
+
   const handleChange = (event) => {
     setLoginInput({ ...loginInput, [event.target.name]: event.target.value });
   };
 
   const handleSubmit = () => {
     if (!loginInput.email) {
-      alert("Email cannot be empty.");
+      toast({
+        title: "Email cannot be empty.",
+        description: "Please make sure you enter your email!",
+        duration: 3000,
+        status: "error",
+        isClosable: true,
+        position: "top-right",
+      });
+      return;
     } else if (!loginInput.password) {
-      alert("Password cannnot be empty.");
+      toast({
+        title: "Password cannot be empty.",
+        description: "Please make sure you enter your Password!",
+        duration: 3000,
+        status: "error",
+        isClosable: true,
+        position: "top-right",
+      });
+      return;
     }
   };
 

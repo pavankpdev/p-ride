@@ -7,6 +7,7 @@ import {
   Stack,
   Text,
   useColorModeValue,
+  useToast,
 } from "@chakra-ui/react";
 import { useState } from "react";
 
@@ -17,9 +18,19 @@ const ForgotPassword = () => {
     setForgotPasswordInput({ email: event.target.value });
   };
 
+  const toast = useToast();
+
   const handleSubmit = () => {
     if (!forgotPasswordInput.email) {
-      alert("Email cannot be empty.");
+      toast({
+        title: "Email cannot be empty.",
+        description: "Please make sure you enter your email!",
+        duration: 3000,
+        status: "error",
+        isClosable: true,
+        position: "top",
+      });
+      return;
     }
   };
 

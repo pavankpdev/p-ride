@@ -10,6 +10,7 @@ import {
   Stack,
   Image,
   Box,
+  useToast,
 } from "@chakra-ui/react";
 import { useState } from "react";
 import { useRouter } from "next/router";
@@ -22,6 +23,7 @@ const Login = () => {
   });
 
   const router = useRouter();
+  const toast = useToast();
 
   const handleChange = (event) => {
     setRegisterInput({
@@ -32,11 +34,35 @@ const Login = () => {
 
   const handleSubmit = () => {
     if (!registerInput.fullname) {
-      alert("Full name cannot be empty.");
+      toast({
+        title: "Fullname cannot be empty.",
+        description: "Please make sure you enter your Fullname!",
+        duration: 3000,
+        status: "error",
+        isClosable: true,
+        position: "top-right",
+      });
+      return;
     } else if (!registerInput.email) {
-      alert("Email cannot be empty.");
+      toast({
+        title: "Email cannot be empty.",
+        description: "Please make sure you enter your email!",
+        duration: 3000,
+        status: "error",
+        isClosable: true,
+        position: "top-right",
+      });
+      return;
     } else if (!registerInput.password) {
-      alert("Password cannnot be empty.");
+      toast({
+        title: "Password cannot be empty.",
+        description: "Please make sure you enter your Password!",
+        duration: 3000,
+        status: "error",
+        isClosable: true,
+        position: "top-right",
+      });
+      return;
     }
   };
 

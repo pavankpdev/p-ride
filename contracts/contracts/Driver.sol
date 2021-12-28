@@ -1,29 +1,22 @@
-pragma solidity ^0.8.0;
+// SPDX-License-Identifier: MIT
 
-contract Driver {
+pragma solidity 0.8.0;
 
-    uint public driversCount = 0;
+import "@openzeppelin/contracts/access/Ownable.sol";
 
-    struct User{
-        string fullname;
-        string email;
-        address walletAddr;
-        uint phno;
-    }
+contract Driver is Ownable {
 
-    mapping (uint => User) public drivers;
+    uint private driversCount = 0;
+    address private driverWalletAddr;
 
-    function createDriver( address _walletAddr , string memory _fullname, string memory _email, uint _phno ) public {
+    mapping (uint => address) private drivers;
+
+    function createDriver( address _walletAddr ) public onlyOwner {
         driversCount++;
-        drivers[driversCount] = User({
-        fullname: _fullname,
-        email: _email,
-        walletAddr: _walletAddr,
-        phno: _phno
-        });
+        drivers[driversCount] = _walletAddr;
     }
 
-    function getDriver (uint driversId) view public returns (User memory) {
+    function getDriver (uint driversId) view public onlyOwner returns (address) {
         return drivers[driversId];
     }
 

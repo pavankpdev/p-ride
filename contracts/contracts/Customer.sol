@@ -1,29 +1,21 @@
-pragma solidity ^0.8.0;
+// SPDX-License-Identifier: MIT
+pragma solidity 0.8.0;
 
-contract Customer {
+import "@openzeppelin/contracts/access/Ownable.sol";
 
-    uint public userCount = 0;
+contract Customer is Ownable {
 
-    struct User{
-        string fullname;
-        string email;
-        address walletAddr;
-        uint phno;
-    }
+    uint private userCount = 0;
+    address private userWalletAddr;
 
-    mapping (uint => User) public customers;
+    mapping (uint => address) private customers;
 
-    function createCustomer( address _walletAddr , string memory _fullname, string memory _email, uint _phno ) public {
+    function createCustomer( address _walletAddr ) public onlyOwner {
         userCount++;
-        customers[userCount] = User({
-        fullname: _fullname,
-        email: _email,
-        walletAddr: _walletAddr,
-        phno: _phno
-        });
+        customers[userCount] = _walletAddr;
     }
 
-    function getCustomer (uint userId) view public returns (User memory) {
+    function getCustomer (uint userId) view public onlyOwner returns (address) {
         return customers[userId];
     }
 

@@ -1,16 +1,17 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.0;
+pragma experimental ABIEncoderV2;
 
 import "@openzeppelin/contracts/access/Ownable.sol";
-import "./Customer.sol";
-import "./Driver.sol";
+import "./Vehicle.sol";
 
-contract Ride is Ownable {
+contract Ride is Ownable, Vehicle {
     uint256 rideCount;
 
     enum appUser {
         Driver,
-        Customer
+        Customer,
+        NONE
     }
 
     // Ride data type
@@ -20,7 +21,7 @@ contract Ride is Ownable {
         string pickup;
         string destination;
         uint256 distance;
-        string vehicle;
+        VEHICLE_INFO vehicle;
         uint256 price;
         uint256 noOfPassengers;
         bool isCancelled;
@@ -38,14 +39,32 @@ contract Ride is Ownable {
 
     mapping(uint256 => RIDE) private _rides;
 
+
     function confirmRide(RIDE_INFO memory _rideDetails)
         public
         returns (uint256)
     {
         rideCount++;
-        _rides[rideCount] = RIDE(rideCount, _rideDetails);
+        RIDE_INFO memory _rideInfo;
+        _rideInfo.driver = _rideDetails.driver;
+        _rideInfo.customer = _rideDetails.customer;
+        _rideInfo.pickup = _rideDetails.pickup;
+        _rideInfo.destination = _rideDetails.destination;
+        _rideInfo.distance = _rideDetails.distance;
+        _rideInfo.vehicle = getVehicle(_rideDetails.driver);
+        _rideInfo.price = _rideDetails.price;
+        _rideInfo.noOfPassengers = _rideDetails.noOfPassengers;
+        _rideInfo.isComplete = false;
+        _rideInfo.isCancelled = false;
+        _rideInfo.wasCancelledBy = appUser.NONE;
+        _rideInfo.bookingTime = "july 7";
+        _rideInfo.completeTime = "";
+        _rideInfo.cancelledTime = "";
 
-        return rideCount;
+
+       _rides[rideCount] = RIDE(rideCount, _rideInfo);
+
+    return rideCount;
     }
 
     function getAllRides(uint256[] memory rideIds)

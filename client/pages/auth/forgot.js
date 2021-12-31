@@ -23,7 +23,7 @@ const ForgotPassword = () => {
   const handleSubmit = () => {
     if (!forgotPasswordInput.email) {
       toast({
-        title: "Email cannot be empty.",
+        title: "Email cannot be empty!",
         description: "Please make sure you enter your email!",
         duration: 3000,
         status: "error",

@@ -1,6 +1,8 @@
 import {HardhatUserConfig} from 'hardhat/types';
 import 'hardhat-deploy';
 import 'hardhat-deploy-ethers';
+import '@typechain/hardhat';
+
 
 const config: HardhatUserConfig = {
     solidity: {
@@ -18,6 +20,11 @@ const config: HardhatUserConfig = {
     paths: {
         sources: 'src',
     },
+    typechain: {
+        outDir: 'src/types',
+        target: 'ethers-v5'
+    },
+
 };
 export default config;
 

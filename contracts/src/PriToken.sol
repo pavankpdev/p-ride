@@ -6,7 +6,7 @@ import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 contract PriToken is ERC20 {
     address public owner;
 
-    constructor() public ERC20("Pride", "PRI") {
+    constructor() public ERC20("Pride Token", "PRI") {
         owner = msg.sender;
         uint256 supply = 1000000000 ether; // 1 billion supply
         _mint(msg.sender, supply);

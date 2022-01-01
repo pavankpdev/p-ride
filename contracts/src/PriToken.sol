@@ -3,12 +3,13 @@ pragma solidity 0.8.0;
 
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 
-contract PRIToken is ERC20 {
+contract PriToken is ERC20 {
     address public owner;
 
     constructor() public ERC20("Pride", "PRI") {
-        _mint(msg.sender, 10000 * 10**18);
         owner = msg.sender;
+        uint256 supply = 1000000000 ether; // 1 billion supply
+        _mint(msg.sender, supply);
     }
 
     function mint(address to, uint256 amount) external {

@@ -10,9 +10,9 @@ contract Customer is Ownable {
     mapping(uint256 => address) private customers;
 
     function createCustomer(address _walletAddr)
-        public
-        onlyOwner
-        returns (uint256)
+    public
+    onlyOwner
+    returns (uint256)
     {
         userCount++;
         customers[userCount] = _walletAddr;
@@ -21,10 +21,10 @@ contract Customer is Ownable {
     }
 
     function getCustomer(uint256 userId)
-        public
-        view
-        onlyOwner
-        returns (address)
+    public
+    view
+    onlyOwner
+    returns (address)
     {
         return customers[userId];
     }

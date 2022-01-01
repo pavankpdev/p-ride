@@ -11,9 +11,9 @@ contract Driver is Ownable {
     mapping(uint256 => address) private drivers;
 
     function createDriver(address _walletAddr)
-        public
-        onlyOwner
-        returns (uint256)
+    public
+    onlyOwner
+    returns (uint256)
     {
         driversCount++;
         drivers[driversCount] = _walletAddr;
@@ -22,10 +22,10 @@ contract Driver is Ownable {
     }
 
     function getDriver(uint256 driversId)
-        public
-        view
-        onlyOwner
-        returns (address)
+    public
+    view
+    onlyOwner
+    returns (address)
     {
         return drivers[driversId];
     }

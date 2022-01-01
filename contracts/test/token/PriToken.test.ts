@@ -4,27 +4,32 @@ import { BigNumber } from "ethers";
 import { setupToken } from './fixtures';
 
 describe("PriToken.sol", async () => {
+
     it("should have correct name", async () => {
         const { users } = await setupToken();
         const name = await users[0].token.name();
         expect(name).to.be.equal("Pride Token");
     });
+
     it("should have correct symbol", async () => {
         const { users } = await setupToken();
         const symbol = await users[0].token.symbol();
         expect(symbol).to.be.equal("PRI");
     });
+
     it("should have correct supply", async () => {
         const { users } = await setupToken();
         const totalSupply = await users[0].token.totalSupply();
         expect(totalSupply).to.be.equal(ethers.utils.parseEther("1000000000"));
     });
+
     it("beneficiary should have entire supply", async () => {
         const { deployer, token } = await setupToken();
         const totalSupply = await token.totalSupply();
         const beneficiaryBalance = await token.balanceOf(deployer.address);
         expect(beneficiaryBalance).to.be.equal(totalSupply);
     });
+
     it("holder should be able to transfer", async () => {
         const { users, token, deployer } = await setupToken();
         const from = deployer;
@@ -38,6 +43,7 @@ describe("PriToken.sol", async () => {
         expect(fromBalance_new).to.be.equal(fromBalance.sub(amount));
         expect(toBalance_new).to.be.equal(toBalance.add(amount));
     });
+
     it("holder should be able to approve", async () => {
         const { users, token, deployer } = await setupToken();
         const approver = deployer;
@@ -47,6 +53,7 @@ describe("PriToken.sol", async () => {
         const allowance = await approver.token.allowance(approver.address, spender.address);
         expect(allowance).to.be.equal(amount);
     });
+
     it("approved should be able to transfer", async () => {
         const { users, token, deployer } = await setupToken();
         const approver = deployer;

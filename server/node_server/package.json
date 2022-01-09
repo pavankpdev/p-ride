@@ -21,12 +21,13 @@
   },
   "type": "module",
   "devDependencies": {
-    "@babel/cli": "^7.14.8",
-    "@babel/core": "^7.15.0",
-    "@babel/node": "^7.14.9",
-    "@babel/plugin-transform-runtime": "^7.15.0",
+    "@babel/cli": "^7.16.7",
+    "@babel/core": "^7.16.7",
+    "@babel/node": "^7.16.7",
+    "@babel/plugin-transform-runtime": "^7.16.7",
     "@babel/polyfill": "^7.12.1",
-    "@babel/preset-env": "^7.15.0",
+    "@babel/preset-env": "^7.16.7",
+    "@babel/runtime": "^7.16.7",
     "babel-loader": "^8.2.2",
     "babel-plugin-module-resolver": "^4.1.0",
     "babel-plugin-transform-runtime": "^6.23.0",
@@ -34,7 +35,6 @@
   },
   "scripts": {
     "dev": "nodemon --exec babel-node index.js",
-    "build": "babel . -d build",
-    "start": "node build/index.js"
+    "start": "babel-node index.js"
   }
 }

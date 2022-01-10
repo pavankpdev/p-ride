@@ -4,7 +4,6 @@
 import {
   BaseContract,
   BigNumber,
-  BigNumberish,
   BytesLike,
   CallOverrides,
   ContractTransaction,
@@ -17,10 +16,38 @@ import { FunctionFragment, Result, EventFragment } from "@ethersproject/abi";
 import { Listener, Provider } from "@ethersproject/providers";
 import { TypedEventFilter, TypedEvent, TypedListener, OnEvent } from "./common";
 
+export type DRIVERStruct = {
+  fullname: string;
+  email: string;
+  dob: string;
+  driverAddress: string;
+  govtID: string;
+  picture: string;
+  wallet: string;
+};
+
+export type DRIVERStructOutput = [
+  string,
+  string,
+  string,
+  string,
+  string,
+  string,
+  string
+] & {
+  fullname: string;
+  email: string;
+  dob: string;
+  driverAddress: string;
+  govtID: string;
+  picture: string;
+  wallet: string;
+};
+
 export interface DriverInterface extends utils.Interface {
   functions: {
-    "createDriver(address)": FunctionFragment;
-    "getDriver(uint256)": FunctionFragment;
+    "createDriver(address,(string,string,string,string,string,string,address))": FunctionFragment;
+    "getDriver(address)": FunctionFragment;
     "owner()": FunctionFragment;
     "renounceOwnership()": FunctionFragment;
     "transferOwnership(address)": FunctionFragment;
@@ -28,12 +55,9 @@ export interface DriverInterface extends utils.Interface {
 
   encodeFunctionData(
     functionFragment: "createDriver",
-    values: [string]
+    values: [string, DRIVERStruct]
   ): string;
-  encodeFunctionData(
-    functionFragment: "getDriver",
-    values: [BigNumberish]
-  ): string;
+  encodeFunctionData(functionFragment: "getDriver", values: [string]): string;
   encodeFunctionData(functionFragment: "owner", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "renounceOwnership",
@@ -103,13 +127,14 @@ export interface Driver extends BaseContract {
   functions: {
     createDriver(
       _walletAddr: string,
+      _driver: DRIVERStruct,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
     getDriver(
-      driversId: BigNumberish,
+      _walletAddr: string,
       overrides?: CallOverrides
-    ): Promise<[string]>;
+    ): Promise<[DRIVERStructOutput]>;
 
     owner(overrides?: CallOverrides): Promise<[string]>;
 
@@ -125,13 +150,14 @@ export interface Driver extends BaseContract {
 
   createDriver(
     _walletAddr: string,
+    _driver: DRIVERStruct,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
   getDriver(
-    driversId: BigNumberish,
+    _walletAddr: string,
     overrides?: CallOverrides
-  ): Promise<string>;
+  ): Promise<DRIVERStructOutput>;
 
   owner(overrides?: CallOverrides): Promise<string>;
 
@@ -147,13 +173,14 @@ export interface Driver extends BaseContract {
   callStatic: {
     createDriver(
       _walletAddr: string,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    getDriver(
-      driversId: BigNumberish,
+      _driver: DRIVERStruct,
       overrides?: CallOverrides
     ): Promise<string>;
+
+    getDriver(
+      _walletAddr: string,
+      overrides?: CallOverrides
+    ): Promise<DRIVERStructOutput>;
 
     owner(overrides?: CallOverrides): Promise<string>;
 
@@ -179,11 +206,12 @@ export interface Driver extends BaseContract {
   estimateGas: {
     createDriver(
       _walletAddr: string,
+      _driver: DRIVERStruct,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
     getDriver(
-      driversId: BigNumberish,
+      _walletAddr: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -202,11 +230,12 @@ export interface Driver extends BaseContract {
   populateTransaction: {
     createDriver(
       _walletAddr: string,
+      _driver: DRIVERStruct,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
     getDriver(
-      driversId: BigNumberish,
+      _walletAddr: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 

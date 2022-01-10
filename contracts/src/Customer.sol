@@ -4,28 +4,32 @@ pragma solidity 0.8.0;
 import "@openzeppelin/contracts/access/Ownable.sol";
 
 contract Customer is Ownable {
-    uint256 private userCount = 0;
-    address internal userWalletAddr;
-
-    mapping(uint256 => address) private customers;
-
-    function createCustomer(address _walletAddr)
-    public
-    onlyOwner
-    returns (uint256)
-    {
-        userCount++;
-        customers[userCount] = _walletAddr;
-
-        return userCount;
+    struct USERS {
+        string fullname;
+        string email;
+        string dob;
+        string govtID;
+        string picture;
+        address wallet;
     }
 
-    function getCustomer(uint256 userId)
+    mapping(address => USERS) private customers;
+
+    function createCustomer(address _walletAddr, USERS memory _customer)
     public
-    view
     onlyOwner
     returns (address)
     {
-        return customers[userId];
+        USERS memory customer;
+
+        customer = _customer;
+        customers[_walletAddr] = customer;
+
+        return _walletAddr;
+    }
+
+    function getCustomer (address _walletAddr) public view onlyOwner returns(USERS memory){
+        USERS memory customer = customers[_walletAddr];
+        return customer;
     }
 }

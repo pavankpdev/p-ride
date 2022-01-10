@@ -7,11 +7,11 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
 
     const {admin} = await getNamedAccounts();
 
-    await deploy('Driver', {
+    await deploy('Customer', {
         from: admin,
         log: true,
     });
 };
 export default func;
-func.tags = ['Driver'];
+func.tags = ['Customer'];
 

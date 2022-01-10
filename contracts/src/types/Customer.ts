@@ -4,7 +4,6 @@
 import {
   BaseContract,
   BigNumber,
-  BigNumberish,
   BytesLike,
   CallOverrides,
   ContractTransaction,
@@ -17,10 +16,35 @@ import { FunctionFragment, Result, EventFragment } from "@ethersproject/abi";
 import { Listener, Provider } from "@ethersproject/providers";
 import { TypedEventFilter, TypedEvent, TypedListener, OnEvent } from "./common";
 
+export type USERSStruct = {
+  fullname: string;
+  email: string;
+  dob: string;
+  govtID: string;
+  picture: string;
+  wallet: string;
+};
+
+export type USERSStructOutput = [
+  string,
+  string,
+  string,
+  string,
+  string,
+  string
+] & {
+  fullname: string;
+  email: string;
+  dob: string;
+  govtID: string;
+  picture: string;
+  wallet: string;
+};
+
 export interface CustomerInterface extends utils.Interface {
   functions: {
-    "createCustomer(address)": FunctionFragment;
-    "getCustomer(uint256)": FunctionFragment;
+    "createCustomer(address,(string,string,string,string,string,address))": FunctionFragment;
+    "getCustomer(address)": FunctionFragment;
     "owner()": FunctionFragment;
     "renounceOwnership()": FunctionFragment;
     "transferOwnership(address)": FunctionFragment;
@@ -28,12 +52,9 @@ export interface CustomerInterface extends utils.Interface {
 
   encodeFunctionData(
     functionFragment: "createCustomer",
-    values: [string]
+    values: [string, USERSStruct]
   ): string;
-  encodeFunctionData(
-    functionFragment: "getCustomer",
-    values: [BigNumberish]
-  ): string;
+  encodeFunctionData(functionFragment: "getCustomer", values: [string]): string;
   encodeFunctionData(functionFragment: "owner", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "renounceOwnership",
@@ -106,13 +127,14 @@ export interface Customer extends BaseContract {
   functions: {
     createCustomer(
       _walletAddr: string,
+      _customer: USERSStruct,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
     getCustomer(
-      userId: BigNumberish,
+      _walletAddr: string,
       overrides?: CallOverrides
-    ): Promise<[string]>;
+    ): Promise<[USERSStructOutput]>;
 
     owner(overrides?: CallOverrides): Promise<[string]>;
 
@@ -128,10 +150,14 @@ export interface Customer extends BaseContract {
 
   createCustomer(
     _walletAddr: string,
+    _customer: USERSStruct,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  getCustomer(userId: BigNumberish, overrides?: CallOverrides): Promise<string>;
+  getCustomer(
+    _walletAddr: string,
+    overrides?: CallOverrides
+  ): Promise<USERSStructOutput>;
 
   owner(overrides?: CallOverrides): Promise<string>;
 
@@ -147,13 +173,14 @@ export interface Customer extends BaseContract {
   callStatic: {
     createCustomer(
       _walletAddr: string,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    getCustomer(
-      userId: BigNumberish,
+      _customer: USERSStruct,
       overrides?: CallOverrides
     ): Promise<string>;
+
+    getCustomer(
+      _walletAddr: string,
+      overrides?: CallOverrides
+    ): Promise<USERSStructOutput>;
 
     owner(overrides?: CallOverrides): Promise<string>;
 
@@ -179,11 +206,12 @@ export interface Customer extends BaseContract {
   estimateGas: {
     createCustomer(
       _walletAddr: string,
+      _customer: USERSStruct,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
     getCustomer(
-      userId: BigNumberish,
+      _walletAddr: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -202,11 +230,12 @@ export interface Customer extends BaseContract {
   populateTransaction: {
     createCustomer(
       _walletAddr: string,
+      _customer: USERSStruct,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
     getCustomer(
-      userId: BigNumberish,
+      _walletAddr: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 

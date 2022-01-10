@@ -5,28 +5,33 @@ pragma solidity 0.8.0;
 import "@openzeppelin/contracts/access/Ownable.sol";
 
 contract Driver is Ownable {
-    uint256 private driversCount = 0;
-    address internal driverWalletAddr;
-
-    mapping(uint256 => address) private drivers;
-
-    function createDriver(address _walletAddr)
-    public
-    onlyOwner
-    returns (uint256)
-    {
-        driversCount++;
-        drivers[driversCount] = _walletAddr;
-
-        return driversCount;
+    struct DRIVER {
+        string fullname;
+        string email;
+        string dob;
+        string driverAddress;
+        string govtID;
+        string picture;
+        address wallet;
     }
 
-    function getDriver(uint256 driversId)
+    mapping(address => DRIVER) private drivers;
+
+    function createDriver(address _walletAddr, DRIVER memory _driver)
     public
-    view
     onlyOwner
     returns (address)
     {
-        return drivers[driversId];
+        DRIVER memory driver;
+
+        driver = _driver;
+        drivers[_walletAddr] = driver;
+
+        return _walletAddr;
+    }
+
+    function getDriver (address _walletAddr) public view onlyOwner returns(DRIVER memory){
+        DRIVER memory driver = drivers[_walletAddr];
+        return driver;
     }
 }

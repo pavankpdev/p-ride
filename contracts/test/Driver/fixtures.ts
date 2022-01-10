@@ -5,18 +5,16 @@ import {
     getUnnamedAccounts,
 } from 'hardhat';
 import { setupUsers, setupUser } from '../utils';
-import { PriToken } from '../../src/types';
-import { AbiCoder } from '@ethersproject/abi';
-const abiCoder = new AbiCoder();
+import { Driver } from '../../src/types';
 
-export const setupToken = deployments.createFixture(async () => {
+export const setupDriver = deployments.createFixture(async () => {
     // Deployment Setup
-    await deployments.fixture('PriToken');
-    const token = await ethers.getContract('PriToken') as PriToken;
+    await deployments.fixture('Driver');
+    const driver = await ethers.getContract('Driver') as Driver;
     // Account Setup
     const accounts = await getNamedAccounts();
     const unnamedAccounts = await getUnnamedAccounts();
-    const users = await setupUsers(unnamedAccounts, { token });
-    const deployer = await setupUser(accounts.admin, { token });
-    return { users, deployer, token };
+    const users = await setupUsers(unnamedAccounts, { driver });
+    const deployer = await setupUser(accounts.admin, { driver });
+    return { users, deployer, ...driver };
 });

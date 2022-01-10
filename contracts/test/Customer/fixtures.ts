@@ -5,16 +5,16 @@ import {
     getUnnamedAccounts,
 } from 'hardhat';
 import { setupUsers, setupUser } from '../utils';
-import { Driver } from '../../src/types';
+import { Customer } from '../../src/types';
 
-export const setupDriver = deployments.createFixture(async () => {
+export const setupCustomer = deployments.createFixture(async () => {
     // Deployment Setup
-    await deployments.fixture('Driver');
-    const driver = await ethers.getContract('Driver') as Driver;
+    await deployments.fixture('Customer');
+    const customer = await ethers.getContract('Customer') as Customer;
     // Account Setup
     const accounts = await getNamedAccounts();
     const unnamedAccounts = await getUnnamedAccounts();
-    const users = await setupUsers(unnamedAccounts, { driver });
-    const deployer = await setupUser(accounts.admin, { driver });
-    return { users, deployer, ...driver };
+    const users = await setupUsers(unnamedAccounts, { customer });
+    const deployer = await setupUser(accounts.admin, { customer });
+    return { users, deployer, ...customer };
 });

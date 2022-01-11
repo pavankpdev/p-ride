@@ -39,7 +39,6 @@ contract Ride is Ownable, Vehicle {
 
     mapping(uint256 => RIDE) private _rides;
 
-
     function confirmRide(RIDE_INFO memory _rideDetails)
         public
         returns (uint256)
@@ -61,10 +60,9 @@ contract Ride is Ownable, Vehicle {
         _rideInfo.completeTime = "";
         _rideInfo.cancelledTime = "";
 
+        _rides[rideCount] = RIDE(rideCount, _rideInfo);
 
-       _rides[rideCount] = RIDE(rideCount, _rideInfo);
-
-    return rideCount;
+        return rideCount;
     }
 
     function getAllRides(uint256[] memory rideIds)

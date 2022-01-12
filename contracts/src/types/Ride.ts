@@ -18,17 +18,25 @@ import { Listener, Provider } from "@ethersproject/providers";
 import { TypedEventFilter, TypedEvent, TypedListener, OnEvent } from "./common";
 
 export type VEHICLEINFOStruct = {
-  vehicleType: BigNumberish;
-  vehicleDocumentsUrl: string;
   vehicle_no: string;
-  owner: string;
+  RC: string;
+  vehicleImages: string;
+  vehicleType: BigNumberish;
+  driver: string;
 };
 
-export type VEHICLEINFOStructOutput = [number, string, string, string] & {
-  vehicleType: number;
-  vehicleDocumentsUrl: string;
+export type VEHICLEINFOStructOutput = [
+  string,
+  string,
+  string,
+  number,
+  string
+] & {
   vehicle_no: string;
-  owner: string;
+  RC: string;
+  vehicleImages: string;
+  vehicleType: number;
+  driver: string;
 };
 
 export type RIDEINFOStruct = {
@@ -89,19 +97,20 @@ export type RIDEStructOutput = [BigNumber, RIDEINFOStructOutput] & {
 
 export interface RideInterface extends utils.Interface {
   functions: {
-    "addVehicle(address,string,string,uint8)": FunctionFragment;
-    "confirmRide((address,address,string,string,uint256,(uint8,string,string,address),uint256,uint256,bool,bool,uint8,string,string,string))": FunctionFragment;
+    "addVehicle(address,(string,string,string,uint8,address))": FunctionFragment;
+    "confirmRide((address,address,string,string,uint256,(string,string,string,uint8,address),uint256,uint256,bool,bool,uint8,string,string,string))": FunctionFragment;
     "getAllRides(uint256[])": FunctionFragment;
     "getRide(uint256)": FunctionFragment;
     "getVehicle(address)": FunctionFragment;
     "owner()": FunctionFragment;
     "renounceOwnership()": FunctionFragment;
     "transferOwnership(address)": FunctionFragment;
+    "updateVehicle(address,(string,string,string,uint8,address))": FunctionFragment;
   };
 
   encodeFunctionData(
     functionFragment: "addVehicle",
-    values: [string, string, string, BigNumberish]
+    values: [string, VEHICLEINFOStruct]
   ): string;
   encodeFunctionData(
     functionFragment: "confirmRide",
@@ -125,6 +134,10 @@ export interface RideInterface extends utils.Interface {
     functionFragment: "transferOwnership",
     values: [string]
   ): string;
+  encodeFunctionData(
+    functionFragment: "updateVehicle",
+    values: [string, VEHICLEINFOStruct]
+  ): string;
 
   decodeFunctionResult(functionFragment: "addVehicle", data: BytesLike): Result;
   decodeFunctionResult(
@@ -144,6 +157,10 @@ export interface RideInterface extends utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "transferOwnership",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "updateVehicle",
     data: BytesLike
   ): Result;
 
@@ -190,10 +207,8 @@ export interface Ride extends BaseContract {
 
   functions: {
     addVehicle(
-      owner: string,
-      vehicleDocumentsUrl: string,
-      vehicle_no: string,
-      vehicleType: BigNumberish,
+      driver: string,
+      _vehicle: VEHICLEINFOStruct,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -213,7 +228,7 @@ export interface Ride extends BaseContract {
     ): Promise<[RIDEStructOutput]>;
 
     getVehicle(
-      owner: string,
+      driver: string,
       overrides?: CallOverrides
     ): Promise<[VEHICLEINFOStructOutput]>;
 
@@ -227,13 +242,17 @@ export interface Ride extends BaseContract {
       newOwner: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
+
+    updateVehicle(
+      driver: string,
+      _vehicle: VEHICLEINFOStruct,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
   };
 
   addVehicle(
-    owner: string,
-    vehicleDocumentsUrl: string,
-    vehicle_no: string,
-    vehicleType: BigNumberish,
+    driver: string,
+    _vehicle: VEHICLEINFOStruct,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -253,7 +272,7 @@ export interface Ride extends BaseContract {
   ): Promise<RIDEStructOutput>;
 
   getVehicle(
-    owner: string,
+    driver: string,
     overrides?: CallOverrides
   ): Promise<VEHICLEINFOStructOutput>;
 
@@ -268,12 +287,16 @@ export interface Ride extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
+  updateVehicle(
+    driver: string,
+    _vehicle: VEHICLEINFOStruct,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
   callStatic: {
     addVehicle(
-      owner: string,
-      vehicleDocumentsUrl: string,
-      vehicle_no: string,
-      vehicleType: BigNumberish,
+      driver: string,
+      _vehicle: VEHICLEINFOStruct,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -293,7 +316,7 @@ export interface Ride extends BaseContract {
     ): Promise<RIDEStructOutput>;
 
     getVehicle(
-      owner: string,
+      driver: string,
       overrides?: CallOverrides
     ): Promise<VEHICLEINFOStructOutput>;
 
@@ -303,6 +326,12 @@ export interface Ride extends BaseContract {
 
     transferOwnership(
       newOwner: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    updateVehicle(
+      driver: string,
+      _vehicle: VEHICLEINFOStruct,
       overrides?: CallOverrides
     ): Promise<void>;
   };
@@ -320,10 +349,8 @@ export interface Ride extends BaseContract {
 
   estimateGas: {
     addVehicle(
-      owner: string,
-      vehicleDocumentsUrl: string,
-      vehicle_no: string,
-      vehicleType: BigNumberish,
+      driver: string,
+      _vehicle: VEHICLEINFOStruct,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -342,7 +369,7 @@ export interface Ride extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    getVehicle(owner: string, overrides?: CallOverrides): Promise<BigNumber>;
+    getVehicle(driver: string, overrides?: CallOverrides): Promise<BigNumber>;
 
     owner(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -354,14 +381,18 @@ export interface Ride extends BaseContract {
       newOwner: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
+
+    updateVehicle(
+      driver: string,
+      _vehicle: VEHICLEINFOStruct,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
   };
 
   populateTransaction: {
     addVehicle(
-      owner: string,
-      vehicleDocumentsUrl: string,
-      vehicle_no: string,
-      vehicleType: BigNumberish,
+      driver: string,
+      _vehicle: VEHICLEINFOStruct,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
@@ -381,7 +412,7 @@ export interface Ride extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     getVehicle(
-      owner: string,
+      driver: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -393,6 +424,12 @@ export interface Ride extends BaseContract {
 
     transferOwnership(
       newOwner: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    updateVehicle(
+      driver: string,
+      _vehicle: VEHICLEINFOStruct,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
   };

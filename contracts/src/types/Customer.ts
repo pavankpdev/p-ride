@@ -48,6 +48,7 @@ export interface CustomerInterface extends utils.Interface {
     "owner()": FunctionFragment;
     "renounceOwnership()": FunctionFragment;
     "transferOwnership(address)": FunctionFragment;
+    "updateCustomer(address,(string,string,string,string,string,address))": FunctionFragment;
   };
 
   encodeFunctionData(
@@ -63,6 +64,10 @@ export interface CustomerInterface extends utils.Interface {
   encodeFunctionData(
     functionFragment: "transferOwnership",
     values: [string]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "updateCustomer",
+    values: [string, USERSStruct]
   ): string;
 
   decodeFunctionResult(
@@ -80,6 +85,10 @@ export interface CustomerInterface extends utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "transferOwnership",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "updateCustomer",
     data: BytesLike
   ): Result;
 
@@ -146,6 +155,12 @@ export interface Customer extends BaseContract {
       newOwner: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
+
+    updateCustomer(
+      _walletAddr: string,
+      _customer: USERSStruct,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
   };
 
   createCustomer(
@@ -170,6 +185,12 @@ export interface Customer extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
+  updateCustomer(
+    _walletAddr: string,
+    _customer: USERSStruct,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
   callStatic: {
     createCustomer(
       _walletAddr: string,
@@ -190,6 +211,12 @@ export interface Customer extends BaseContract {
       newOwner: string,
       overrides?: CallOverrides
     ): Promise<void>;
+
+    updateCustomer(
+      _walletAddr: string,
+      _customer: USERSStruct,
+      overrides?: CallOverrides
+    ): Promise<string>;
   };
 
   filters: {
@@ -225,6 +252,12 @@ export interface Customer extends BaseContract {
       newOwner: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
+
+    updateCustomer(
+      _walletAddr: string,
+      _customer: USERSStruct,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
   };
 
   populateTransaction: {
@@ -247,6 +280,12 @@ export interface Customer extends BaseContract {
 
     transferOwnership(
       newOwner: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    updateCustomer(
+      _walletAddr: string,
+      _customer: USERSStruct,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
   };

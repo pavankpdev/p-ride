@@ -39,7 +39,8 @@ export type VEHICLEINFOStructOutput = [
   driver: string;
 };
 
-export type RIDEINFOStruct = {
+export type RIDEStruct = {
+  id: BigNumberish;
   driver: string;
   customer: string;
   pickup: string;
@@ -47,16 +48,16 @@ export type RIDEINFOStruct = {
   distance: BigNumberish;
   vehicle: VEHICLEINFOStruct;
   price: BigNumberish;
+  timestamp: string;
   noOfPassengers: BigNumberish;
   isCancelled: boolean;
   isComplete: boolean;
+  isConfirmed: boolean;
   wasCancelledBy: BigNumberish;
-  bookingTime: string;
-  completeTime: string;
-  cancelledTime: string;
 };
 
-export type RIDEINFOStructOutput = [
+export type RIDEStructOutput = [
+  BigNumber,
   string,
   string,
   string,
@@ -64,14 +65,14 @@ export type RIDEINFOStructOutput = [
   BigNumber,
   VEHICLEINFOStructOutput,
   BigNumber,
+  string,
   BigNumber,
   boolean,
   boolean,
-  number,
-  string,
-  string,
-  string
+  boolean,
+  number
 ] & {
+  id: BigNumber;
   driver: string;
   customer: string;
   pickup: string;
@@ -79,26 +80,18 @@ export type RIDEINFOStructOutput = [
   distance: BigNumber;
   vehicle: VEHICLEINFOStructOutput;
   price: BigNumber;
+  timestamp: string;
   noOfPassengers: BigNumber;
   isCancelled: boolean;
   isComplete: boolean;
+  isConfirmed: boolean;
   wasCancelledBy: number;
-  bookingTime: string;
-  completeTime: string;
-  cancelledTime: string;
-};
-
-export type RIDEStruct = { rideId: BigNumberish; rideDetails: RIDEINFOStruct };
-
-export type RIDEStructOutput = [BigNumber, RIDEINFOStructOutput] & {
-  rideId: BigNumber;
-  rideDetails: RIDEINFOStructOutput;
 };
 
 export interface RideInterface extends utils.Interface {
   functions: {
     "addVehicle(address,(string,string,string,uint8,address))": FunctionFragment;
-    "confirmRide((address,address,string,string,uint256,(string,string,string,uint8,address),uint256,uint256,bool,bool,uint8,string,string,string))": FunctionFragment;
+    "confirmRide((uint256,address,address,string,string,uint256,(string,string,string,uint8,address),uint256,string,uint256,bool,bool,bool,uint8))": FunctionFragment;
     "getAllRides(uint256[])": FunctionFragment;
     "getRide(uint256)": FunctionFragment;
     "getVehicle(address)": FunctionFragment;
@@ -114,7 +107,7 @@ export interface RideInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "confirmRide",
-    values: [RIDEINFOStruct]
+    values: [RIDEStruct]
   ): string;
   encodeFunctionData(
     functionFragment: "getAllRides",
@@ -213,7 +206,7 @@ export interface Ride extends BaseContract {
     ): Promise<ContractTransaction>;
 
     confirmRide(
-      _rideDetails: RIDEINFOStruct,
+      _rideDetails: RIDEStruct,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -257,7 +250,7 @@ export interface Ride extends BaseContract {
   ): Promise<ContractTransaction>;
 
   confirmRide(
-    _rideDetails: RIDEINFOStruct,
+    _rideDetails: RIDEStruct,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -301,7 +294,7 @@ export interface Ride extends BaseContract {
     ): Promise<void>;
 
     confirmRide(
-      _rideDetails: RIDEINFOStruct,
+      _rideDetails: RIDEStruct,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -355,7 +348,7 @@ export interface Ride extends BaseContract {
     ): Promise<BigNumber>;
 
     confirmRide(
-      _rideDetails: RIDEINFOStruct,
+      _rideDetails: RIDEStruct,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -397,7 +390,7 @@ export interface Ride extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     confirmRide(
-      _rideDetails: RIDEINFOStruct,
+      _rideDetails: RIDEStruct,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 

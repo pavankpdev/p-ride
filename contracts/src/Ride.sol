@@ -15,7 +15,8 @@ contract Ride is Ownable, Vehicle {
     }
 
     // Ride data type
-    struct RIDE_INFO {
+    struct RIDE {
+        uint id;
         address driver;
         address customer;
         string pickup;
@@ -23,44 +24,24 @@ contract Ride is Ownable, Vehicle {
         uint256 distance;
         VEHICLE_INFO vehicle;
         uint256 price;
+        string timestamp;
         uint256 noOfPassengers;
         bool isCancelled;
         bool isComplete;
+        bool isConfirmed;
         appUser wasCancelledBy;
-        string bookingTime;
-        string completeTime;
-        string cancelledTime;
-    }
-
-    struct RIDE {
-        uint256 rideId;
-        RIDE_INFO rideDetails;
     }
 
     mapping(uint256 => RIDE) private _rides;
 
-    function confirmRide(RIDE_INFO memory _rideDetails)
+    function confirmRide(RIDE memory _rideDetails)
         public
         returns (uint256)
     {
         rideCount++;
-        RIDE_INFO memory _rideInfo;
-        _rideInfo.driver = _rideDetails.driver;
-        _rideInfo.customer = _rideDetails.customer;
-        _rideInfo.pickup = _rideDetails.pickup;
-        _rideInfo.destination = _rideDetails.destination;
-        _rideInfo.distance = _rideDetails.distance;
-        _rideInfo.vehicle = getVehicle(_rideDetails.driver);
-        _rideInfo.price = _rideDetails.price;
-        _rideInfo.noOfPassengers = _rideDetails.noOfPassengers;
-        _rideInfo.isComplete = false;
-        _rideInfo.isCancelled = false;
-        _rideInfo.wasCancelledBy = appUser.NONE;
-        _rideInfo.bookingTime = "july 7";
-        _rideInfo.completeTime = "";
-        _rideInfo.cancelledTime = "";
-
-        _rides[rideCount] = RIDE(rideCount, _rideInfo);
+        RIDE memory ride = _rideDetails;
+        ride.id = rideCount;
+        _rides[rideCount] = ride;
 
         return rideCount;
     }

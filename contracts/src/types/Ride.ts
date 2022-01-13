@@ -39,61 +39,83 @@ export type VEHICLEINFOStructOutput = [
   driver: string;
 };
 
-export type RIDEStruct = {
-  id: BigNumberish;
-  driver: string;
+export type USERSStruct = { customer: string; driver: string };
+
+export type USERSStructOutput = [string, string] & {
   customer: string;
-  pickup: string;
-  destination: string;
-  distance: BigNumberish;
-  vehicle: VEHICLEINFOStruct;
-  price: BigNumberish;
-  timestamp: string;
-  noOfPassengers: BigNumberish;
+  driver: string;
+};
+
+export type STATUSStruct = {
   isCancelled: boolean;
   isComplete: boolean;
   isConfirmed: boolean;
   wasCancelledBy: BigNumberish;
 };
 
-export type RIDEStructOutput = [
-  BigNumber,
-  string,
-  string,
-  string,
-  string,
-  BigNumber,
-  VEHICLEINFOStructOutput,
-  BigNumber,
-  string,
-  BigNumber,
-  boolean,
-  boolean,
-  boolean,
-  number
-] & {
-  id: BigNumber;
-  driver: string;
-  customer: string;
-  pickup: string;
-  destination: string;
-  distance: BigNumber;
-  vehicle: VEHICLEINFOStructOutput;
-  price: BigNumber;
-  timestamp: string;
-  noOfPassengers: BigNumber;
+export type STATUSStructOutput = [boolean, boolean, boolean, number] & {
   isCancelled: boolean;
   isComplete: boolean;
   isConfirmed: boolean;
   wasCancelledBy: number;
 };
 
+export type RIDEDETAILSStruct = {
+  pickup: string;
+  destination: string;
+  distance: BigNumberish;
+  price: BigNumberish;
+  noOfPassengers: BigNumberish;
+};
+
+export type RIDEDETAILSStructOutput = [
+  string,
+  string,
+  BigNumber,
+  BigNumber,
+  BigNumber
+] & {
+  pickup: string;
+  destination: string;
+  distance: BigNumber;
+  price: BigNumber;
+  noOfPassengers: BigNumber;
+};
+
+export type RIDEStruct = {
+  id: BigNumberish;
+  users: USERSStruct;
+  status: STATUSStruct;
+  ride: RIDEDETAILSStruct;
+  vehicle: VEHICLEINFOStruct;
+  timestamp: string;
+};
+
+export type RIDEStructOutput = [
+  BigNumber,
+  USERSStructOutput,
+  STATUSStructOutput,
+  RIDEDETAILSStructOutput,
+  VEHICLEINFOStructOutput,
+  string
+] & {
+  id: BigNumber;
+  users: USERSStructOutput;
+  status: STATUSStructOutput;
+  ride: RIDEDETAILSStructOutput;
+  vehicle: VEHICLEINFOStructOutput;
+  timestamp: string;
+};
+
 export interface RideInterface extends utils.Interface {
   functions: {
     "addVehicle(address,(string,string,string,uint8,address))": FunctionFragment;
-    "confirmRide((uint256,address,address,string,string,uint256,(string,string,string,uint8,address),uint256,string,uint256,bool,bool,bool,uint8))": FunctionFragment;
+    "cancelRide(uint256,uint8,string)": FunctionFragment;
+    "completeRide(uint256,string)": FunctionFragment;
+    "confirmRide((address,address),(bool,bool,bool,uint8),(string,string,uint256,uint256,uint256),string)": FunctionFragment;
     "getAllRides(uint256[])": FunctionFragment;
     "getRide(uint256)": FunctionFragment;
+    "getRideCount()": FunctionFragment;
     "getVehicle(address)": FunctionFragment;
     "owner()": FunctionFragment;
     "renounceOwnership()": FunctionFragment;
@@ -106,8 +128,16 @@ export interface RideInterface extends utils.Interface {
     values: [string, VEHICLEINFOStruct]
   ): string;
   encodeFunctionData(
+    functionFragment: "cancelRide",
+    values: [BigNumberish, BigNumberish, string]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "completeRide",
+    values: [BigNumberish, string]
+  ): string;
+  encodeFunctionData(
     functionFragment: "confirmRide",
-    values: [RIDEStruct]
+    values: [USERSStruct, STATUSStruct, RIDEDETAILSStruct, string]
   ): string;
   encodeFunctionData(
     functionFragment: "getAllRides",
@@ -116,6 +146,10 @@ export interface RideInterface extends utils.Interface {
   encodeFunctionData(
     functionFragment: "getRide",
     values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getRideCount",
+    values?: undefined
   ): string;
   encodeFunctionData(functionFragment: "getVehicle", values: [string]): string;
   encodeFunctionData(functionFragment: "owner", values?: undefined): string;
@@ -133,6 +167,11 @@ export interface RideInterface extends utils.Interface {
   ): string;
 
   decodeFunctionResult(functionFragment: "addVehicle", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "cancelRide", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "completeRide",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(
     functionFragment: "confirmRide",
     data: BytesLike
@@ -142,6 +181,10 @@ export interface RideInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "getRide", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "getRideCount",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "getVehicle", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
   decodeFunctionResult(
@@ -205,8 +248,24 @@ export interface Ride extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
+    cancelRide(
+      _rideId: BigNumberish,
+      _wasCancelledBy: BigNumberish,
+      _timestamp: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    completeRide(
+      _rideId: BigNumberish,
+      _timestamp: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
     confirmRide(
-      _rideDetails: RIDEStruct,
+      _user: USERSStruct,
+      _status: STATUSStruct,
+      _details: RIDEDETAILSStruct,
+      _timestamp: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -219,6 +278,8 @@ export interface Ride extends BaseContract {
       _rideId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<[RIDEStructOutput]>;
+
+    getRideCount(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     getVehicle(
       driver: string,
@@ -249,8 +310,24 @@ export interface Ride extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
+  cancelRide(
+    _rideId: BigNumberish,
+    _wasCancelledBy: BigNumberish,
+    _timestamp: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  completeRide(
+    _rideId: BigNumberish,
+    _timestamp: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
   confirmRide(
-    _rideDetails: RIDEStruct,
+    _user: USERSStruct,
+    _status: STATUSStruct,
+    _details: RIDEDETAILSStruct,
+    _timestamp: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -263,6 +340,8 @@ export interface Ride extends BaseContract {
     _rideId: BigNumberish,
     overrides?: CallOverrides
   ): Promise<RIDEStructOutput>;
+
+  getRideCount(overrides?: CallOverrides): Promise<BigNumber>;
 
   getVehicle(
     driver: string,
@@ -293,8 +372,24 @@ export interface Ride extends BaseContract {
       overrides?: CallOverrides
     ): Promise<void>;
 
+    cancelRide(
+      _rideId: BigNumberish,
+      _wasCancelledBy: BigNumberish,
+      _timestamp: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    completeRide(
+      _rideId: BigNumberish,
+      _timestamp: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
     confirmRide(
-      _rideDetails: RIDEStruct,
+      _user: USERSStruct,
+      _status: STATUSStruct,
+      _details: RIDEDETAILSStruct,
+      _timestamp: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -307,6 +402,8 @@ export interface Ride extends BaseContract {
       _rideId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<RIDEStructOutput>;
+
+    getRideCount(overrides?: CallOverrides): Promise<BigNumber>;
 
     getVehicle(
       driver: string,
@@ -347,8 +444,24 @@ export interface Ride extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
+    cancelRide(
+      _rideId: BigNumberish,
+      _wasCancelledBy: BigNumberish,
+      _timestamp: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    completeRide(
+      _rideId: BigNumberish,
+      _timestamp: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
     confirmRide(
-      _rideDetails: RIDEStruct,
+      _user: USERSStruct,
+      _status: STATUSStruct,
+      _details: RIDEDETAILSStruct,
+      _timestamp: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -361,6 +474,8 @@ export interface Ride extends BaseContract {
       _rideId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
+
+    getRideCount(overrides?: CallOverrides): Promise<BigNumber>;
 
     getVehicle(driver: string, overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -389,8 +504,24 @@ export interface Ride extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
+    cancelRide(
+      _rideId: BigNumberish,
+      _wasCancelledBy: BigNumberish,
+      _timestamp: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    completeRide(
+      _rideId: BigNumberish,
+      _timestamp: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
     confirmRide(
-      _rideDetails: RIDEStruct,
+      _user: USERSStruct,
+      _status: STATUSStruct,
+      _details: RIDEDETAILSStruct,
+      _timestamp: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
@@ -403,6 +534,8 @@ export interface Ride extends BaseContract {
       _rideId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
+
+    getRideCount(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     getVehicle(
       driver: string,

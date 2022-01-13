@@ -15,32 +15,53 @@ contract Ride is Ownable, Vehicle {
     }
 
     // Ride data type
-    struct RIDE {
-        uint id;
-        address driver;
+    struct USERS {
         address customer;
-        string pickup;
-        string destination;
-        uint256 distance;
-        VEHICLE_INFO vehicle;
-        uint256 price;
-        string timestamp;
-        uint256 noOfPassengers;
+        address driver;
+    }
+
+    struct STATUS {
         bool isCancelled;
         bool isComplete;
         bool isConfirmed;
         appUser wasCancelledBy;
     }
 
+    struct RIDE_DETAILS {
+        string pickup;
+        string destination;
+        uint256 distance;
+        uint256 price;
+        uint256 noOfPassengers;
+    }
+
+    struct RIDE {
+        uint id;
+        USERS users;
+        STATUS status;
+        RIDE_DETAILS ride;
+        VEHICLE_INFO vehicle;
+        string timestamp;
+    }
+
     mapping(uint256 => RIDE) private _rides;
 
-    function confirmRide(RIDE memory _rideDetails)
+    function confirmRide(USERS memory _user, STATUS memory _status, RIDE_DETAILS memory _details, string memory _timestamp)
         public
         returns (uint256)
     {
         rideCount++;
-        RIDE memory ride = _rideDetails;
+        USERS memory user = _user;
+        STATUS memory status = _status;
+        RIDE_DETAILS memory details = _details;
+        RIDE memory ride;
         ride.id = rideCount;
+        ride.users = user;
+        ride.status = status;
+        ride.ride = details;
+        ride.vehicle = _vehicles[_user.driver];
+        ride.timestamp = _timestamp;
+
         _rides[rideCount] = ride;
 
         return rideCount;
@@ -65,5 +86,24 @@ contract Ride is Ownable, Vehicle {
 
     function getRide(uint256 _rideId) public view returns (RIDE memory) {
         return _rides[_rideId];
+    }
+
+    function cancelRide(uint256 _rideId, appUser _wasCancelledBy, string memory _timestamp) public {
+        RIDE memory ride = _rides[_rideId];
+        ride.status.isCancelled = true;
+        ride.status.wasCancelledBy = _wasCancelledBy;
+        ride.timestamp = _timestamp;
+        _rides[_rideId] = ride;
+    }
+
+    function completeRide(uint256 _rideId, string memory _timestamp) public {
+        RIDE memory ride = _rides[_rideId];
+        ride.status.isComplete = true;
+        ride.timestamp = _timestamp;
+        _rides[_rideId] = ride;
+    }
+
+    function getRideCount() public view returns(uint256) {
+        return rideCount;
     }
 }

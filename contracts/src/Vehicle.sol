@@ -19,7 +19,7 @@ contract Vehicle is Ownable {
         address driver;
     }
 
-    mapping(address => VEHICLE_INFO) private _vehicles;
+    mapping(address => VEHICLE_INFO) internal _vehicles;
 
     function addVehicle(address driver, VEHICLE_INFO memory _vehicle)
         public

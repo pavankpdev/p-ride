@@ -12,15 +12,16 @@ contract Driver is Ownable {
         string driverAddress;
         string govtID;
         string picture;
+        string DL;
         address wallet;
     }
 
     mapping(address => DRIVER) private drivers;
 
     function createDriver(address _walletAddr, DRIVER memory _driver)
-    public
-    onlyOwner
-    returns (address)
+        public
+        onlyOwner
+        returns (address)
     {
         DRIVER memory driver;
 
@@ -30,7 +31,25 @@ contract Driver is Ownable {
         return _walletAddr;
     }
 
-    function getDriver (address _walletAddr) public view onlyOwner returns(DRIVER memory){
+    function updateDriver(address _walletAddr, DRIVER memory _driver)
+        public
+        onlyOwner
+        returns (address)
+    {
+        DRIVER memory driver;
+
+        driver = _driver;
+        drivers[_walletAddr] = driver;
+
+        return _walletAddr;
+    }
+
+    function getDriver(address _walletAddr)
+        public
+        view
+        onlyOwner
+        returns (DRIVER memory)
+    {
         DRIVER memory driver = drivers[_walletAddr];
         return driver;
     }

@@ -23,10 +23,12 @@ export type DRIVERStruct = {
   driverAddress: string;
   govtID: string;
   picture: string;
+  DL: string;
   wallet: string;
 };
 
 export type DRIVERStructOutput = [
+  string,
   string,
   string,
   string,
@@ -41,16 +43,18 @@ export type DRIVERStructOutput = [
   driverAddress: string;
   govtID: string;
   picture: string;
+  DL: string;
   wallet: string;
 };
 
 export interface DriverInterface extends utils.Interface {
   functions: {
-    "createDriver(address,(string,string,string,string,string,string,address))": FunctionFragment;
+    "createDriver(address,(string,string,string,string,string,string,string,address))": FunctionFragment;
     "getDriver(address)": FunctionFragment;
     "owner()": FunctionFragment;
     "renounceOwnership()": FunctionFragment;
     "transferOwnership(address)": FunctionFragment;
+    "updateDriver(address,(string,string,string,string,string,string,string,address))": FunctionFragment;
   };
 
   encodeFunctionData(
@@ -67,6 +71,10 @@ export interface DriverInterface extends utils.Interface {
     functionFragment: "transferOwnership",
     values: [string]
   ): string;
+  encodeFunctionData(
+    functionFragment: "updateDriver",
+    values: [string, DRIVERStruct]
+  ): string;
 
   decodeFunctionResult(
     functionFragment: "createDriver",
@@ -80,6 +88,10 @@ export interface DriverInterface extends utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "transferOwnership",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "updateDriver",
     data: BytesLike
   ): Result;
 
@@ -146,6 +158,12 @@ export interface Driver extends BaseContract {
       newOwner: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
+
+    updateDriver(
+      _walletAddr: string,
+      _driver: DRIVERStruct,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
   };
 
   createDriver(
@@ -170,6 +188,12 @@ export interface Driver extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
+  updateDriver(
+    _walletAddr: string,
+    _driver: DRIVERStruct,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
   callStatic: {
     createDriver(
       _walletAddr: string,
@@ -190,6 +214,12 @@ export interface Driver extends BaseContract {
       newOwner: string,
       overrides?: CallOverrides
     ): Promise<void>;
+
+    updateDriver(
+      _walletAddr: string,
+      _driver: DRIVERStruct,
+      overrides?: CallOverrides
+    ): Promise<string>;
   };
 
   filters: {
@@ -225,6 +255,12 @@ export interface Driver extends BaseContract {
       newOwner: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
+
+    updateDriver(
+      _walletAddr: string,
+      _driver: DRIVERStruct,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
   };
 
   populateTransaction: {
@@ -247,6 +283,12 @@ export interface Driver extends BaseContract {
 
     transferOwnership(
       newOwner: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    updateDriver(
+      _walletAddr: string,
+      _driver: DRIVERStruct,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
   };

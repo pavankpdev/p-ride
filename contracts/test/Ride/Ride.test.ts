@@ -1,35 +1,52 @@
 import { expect } from "../chai-setup";
-import { setupDriver } from "./fixtures";
-import { driverDefault, updateDriverDefaults } from "./defaults";
+import { setupRide } from "./fixtures";
+import { getDefaultRideData } from "./defaults";
+import {BigNumber} from "ethers";
+import {USERSStruct, STATUSStruct, RIDEDETAILSStruct, RIDEStructOutput} from "../../src/types/Ride";
+import {processRideObj} from "./utils";
 
-describe("Driver.sol", async () => {
-  it("Should be able to create and retrieve new driver with given wallet address", async () => {
-    const { createDriver, users, getDriver } = await setupDriver();
-    await createDriver(users[0].address, driverDefault);
-    const driver = await getDriver(users[0].address);
+type DefaultRide = {
+  user: USERSStruct;
+  status: STATUSStruct;
+  rideDetails: RIDEDETAILSStruct;
+  timestamp: string
+}
 
-    expect(driver.fullname).to.be.equal(driverDefault.fullname);
-    expect(driver.email).to.be.equal(driverDefault.email);
-    expect(driver.dob).to.be.equal(driverDefault.dob);
-    expect(driver.picture).to.be.equal(driverDefault.picture);
-    expect(driver.govtID).to.be.equal(driverDefault.govtID);
-    expect(driver.wallet).to.be.equal(driverDefault.wallet);
-    expect(driver.driverAddress).to.be.equal(driverDefault.driverAddress);
-    expect(driver.DL).to.be.equal(driverDefault.DL);
+describe("Ride.sol", async () => {
+
+  it("Should be able to confirm new ride", async () => {
+    const { confirmRide, getRide, getRideCount } = await setupRide();
+    const {user, status, rideDetails, timestamp}: DefaultRide = await getDefaultRideData();
+    await confirmRide(user, status, rideDetails, timestamp);
+    const rideCount = BigNumber.from(await getRideCount()).toNumber();
+    const currentRide: RIDEStructOutput = await getRide(rideCount);
+    const rideObj = processRideObj(currentRide);
+
+    expect(rideObj.user).to.deep.include(user);
+    expect(rideObj.status).to.deep.include(status);
+    expect(rideObj.ride).to.deep.include(rideDetails);
+    expect(rideObj.timestamp).to.deep.include(timestamp);
   });
 
-  it("Should be able to update and retrieve the driver with given wallet address", async () => {
-    const { updateDriver, users, getDriver } = await setupDriver();
-    await updateDriver(users[0].address, updateDriverDefaults);
-    const driver = await getDriver(users[0].address);
 
-    expect(driver.fullname).to.be.equal(updateDriverDefaults.fullname);
-    expect(driver.email).to.be.equal(updateDriverDefaults.email);
-    expect(driver.dob).to.be.equal(updateDriverDefaults.dob);
-    expect(driver.picture).to.be.equal(updateDriverDefaults.picture);
-    expect(driver.govtID).to.be.equal(updateDriverDefaults.govtID);
-    expect(driver.wallet).to.be.equal(updateDriverDefaults.wallet);
-    expect(driver.driverAddress).to.be.equal(updateDriverDefaults.driverAddress);
-    expect(driver.DL).to.be.equal(updateDriverDefaults.DL);
+  it("Should be able to cancel a ride", async () => {
+    const { getRide, cancelRide } = await setupRide();
+    await cancelRide(0, 0, new Date().toISOString());
+    const currentRide: RIDEStructOutput = await getRide(0);
+    const rideObj = processRideObj(currentRide);
+
+    expect(rideObj.status.isCancelled).to.be.equal(true);
+    expect(rideObj.status.isComplete).to.be.equal(false);
   });
+
+  it("Should be able to complete a ride", async () => {
+    const { getRide, cancelRide , completeRide} = await setupRide();
+    await completeRide(0, new Date().toISOString());
+    const currentRide: RIDEStructOutput = await getRide(0);
+    const rideObj = processRideObj(currentRide);
+
+    expect(rideObj.status.isCancelled).to.be.equal(false);
+    expect(rideObj.status.isComplete).to.be.equal(true);
+  });
+
 });

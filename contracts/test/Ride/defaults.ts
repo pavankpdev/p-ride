@@ -1,25 +1,29 @@
-import { DRIVERStruct } from "../../src/types/Driver";
+import { USERSStruct, STATUSStruct, RIDEDETAILSStruct } from "../../src/types/Ride";
+import {setupRide} from "./fixtures";
 
-export const driverDefault: DRIVERStruct = {
-  fullname: "pavan",
-  email: "pavan@gmail.com",
-  dob: "07-07-2000",
-  picture: "https://i.ibb.co/RN41qNN/cool-background.webp",
-  govtID: "https://i.ibb.co/RN41qNN/cool-background.webp",
-  wallet: "0x94f3178AcB40d0E9c6967108e3711CF047D3240A",
-  driverAddress:
-    "211/214, Shankar Complex, Baneshwara Temple Street, Sultanpet",
-  DL: "https://i.ibb.co/RN41qNN/cool-background.webp"
-};
+export const getDefaultRideData = async () => {
+    const {users} = await setupRide();
+    const user: USERSStruct = {
+        customer: users[0].address,
+        driver: users[1].address,
+    };
 
-export const updateDriverDefaults: DRIVERStruct = {
-  fullname: "pavan 2",
-  email: "pavan2@gmail.com",
-  dob: "08-07-2000",
-  picture: "https://i.ibb.co/RN41qNN/cool-background.webp",
-  govtID: "https://i.ibb.co/RN41qNN/cool-background.webp",
-  wallet: "0x94f3178AcB40d0E9c6967108e3711CF047D3240A",
-  driverAddress:
-    "211/214, Shankar Complex, Baneshwara Temple Street, Sultanpet",
-  DL: "https://i.ibb.co/RN41qNN/cool-background.webp"
-};
+    const status: STATUSStruct = {
+        isCancelled: false,
+        isComplete: false,
+        isConfirmed: true,
+        wasCancelledBy: 2
+    };
+
+    const rideDetails: RIDEDETAILSStruct = {
+        pickup: "Bangalore",
+        destination: "Bangalore",
+        distance: 38,
+        price: 300,
+        noOfPassengers: 3,
+    }
+
+    const timestamp: string = new Date().toISOString();
+
+    return {user, status, rideDetails, timestamp};
+}

@@ -21,7 +21,7 @@ export default function Simple() {
       <Box bg={"white"} px={4}>
         <Flex h={16} alignItems={"center"} justifyContent={"space-between"}>
           <HStack spacing={8} alignItems={"center"}>
-            <Box w={{ base: "30%", md: "100px", lg: "150px" }}>
+            <Box w={{ base: "30%", md: "100px", lg: "120px" }}>
               <Image
                 src={"https://i.ibb.co/9VXrDtG/logo.png"}
                 alt={"pride logo"}
@@ -47,7 +47,7 @@ export default function Simple() {
                   }
                 />
               </MenuButton>
-              <MenuList>
+              <MenuList zIndex={999}>
                 <MenuItem icon={<BiHistory />}>Ride History</MenuItem>
                 <MenuItem icon={<FaWallet />}>Wallet</MenuItem>
                 <MenuItem icon={<RiSettingsFill />}>Settings</MenuItem>

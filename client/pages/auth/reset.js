@@ -59,11 +59,6 @@ const ResetPassword = () => {
       return;
     }
 
-    const resetHandler = await nodeAxiosService({
-      method: "POST",
-      url: "/auth/reset",
-      data: {payload : resetHandler}
-    });
   };
 
   return (

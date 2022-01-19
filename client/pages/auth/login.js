@@ -54,7 +54,6 @@ const Login = () => {
         return;
       }
 
-      // api call
       const loginHandler = await axios({
         method: "POST",
         url: "/auth/login",
@@ -62,13 +61,12 @@ const Login = () => {
       });
       console.log(loginHandler);
 
-      // Save to localstorage
       localStorage.setItem(
         "pride",
         JSON.stringify({ token: loginHandler.data.token })
       );
     } catch (error) {
-      console.log({error});
+      console.log({ error });
       toast({
         title: error?.response?.data?.error || "Internal Server Error",
         description: "Please make sure you enter your Password!",

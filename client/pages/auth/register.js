@@ -75,7 +75,6 @@ const Login = () => {
       });
       console.log(registerHandler);
 
-      //save to Localstorage
       localStorage.setItem(
         "pride",
         JSON.stringify({ token: registerHandler.data.token })

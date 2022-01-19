@@ -36,7 +36,6 @@ const ForgotPassword = () => {
         return;
       }
 
-      //api call
       const forgotHandler = await axios({
         method: "post",
         url: "/auth/forgot",
@@ -44,10 +43,9 @@ const ForgotPassword = () => {
       });
       console.log(forgotHandler);
 
-      //save to Localstorage
       localStorage.setItem(
         "pride",
-        JSON.stringify({ token: loginHandler.data.token })
+        JSON.stringify({ token: forgotPasswordaInput.data.token })
       );
     } catch (error) {
       console.log({ error });

@@ -11,6 +11,8 @@ import {
 } from "@chakra-ui/react";
 import { useState } from "react";
 
+import axios from "../../config/axios";
+
 const ForgotPassword = () => {
   const [forgotPasswordInput, setForgotPasswordInput] = useState({ email: "" });
 
@@ -20,17 +22,43 @@ const ForgotPassword = () => {
 
   const toast = useToast();
 
-  const handleSubmit = () => {
-    if (!forgotPasswordInput.email) {
+  const handleSubmit = async () => {
+    try {
+      if (!forgotPasswordInput.email) {
+        toast({
+          title: "Email cannot be empty.",
+          description: "Please make sure you enter your email!",
+          duration: 3000,
+          status: "error",
+          isClosable: true,
+          position: "top",
+        });
+        return;
+      }
+
+      //api call
+      const forgotHandler = await axios({
+        method: "post",
+        url: "/auth/forgot",
+        data: { payload: forgotHandler },
+      });
+      console.log(forgotHandler);
+
+      //save to Localstorage
+      localStorage.setItem(
+        "pride",
+        JSON.stringify({ token: loginHandler.data.token })
+      );
+    } catch (error) {
+      console.log({ error });
       toast({
-        title: "Email cannot be empty.",
+        title: error?.response?.data?.error || "Internal Server Error",
         description: "Please make sure you enter your email!",
         duration: 3000,
         status: "error",
         isClosable: true,
-        position: "top",
+        position: "top-right",
       });
-      return;
     }
   };
 

@@ -11,6 +11,8 @@ import {
 } from "@chakra-ui/react";
 import { useState } from "react";
 
+import { nodeAxiosService } from "../../config/axios";
+
 const ResetPassword = () => {
   const [resetInput, setResetInput] = useState({
     newPassword: "",
@@ -56,6 +58,12 @@ const ResetPassword = () => {
       });
       return;
     }
+
+    const resetHandler = await nodeAxiosService({
+      method: "POST",
+      url: "/auth/reset",
+      data: {payload : resetHandler}
+    });
   };
 
   return (

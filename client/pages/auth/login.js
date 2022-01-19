@@ -12,7 +12,11 @@ import {
   Box,
   useToast,
 } from "@chakra-ui/react";
+
 import { useState } from "react";
+
+// CONFIGS
+import axios from "../../config/axios";
 
 const Login = () => {
   const [loginInput, setLoginInput] = useState({
@@ -26,27 +30,53 @@ const Login = () => {
     setLoginInput({ ...loginInput, [event.target.name]: event.target.value });
   };
 
-  const handleSubmit = () => {
-    if (!loginInput.email) {
-      toast({
-        title: "Email cannot be empty.",
-        description: "Please make sure you enter your email!",
-        duration: 3000,
-        status: "error",
-        isClosable: true,
-        position: "top-right",
+  const handleSubmit = async () => {
+    try {
+      if (!loginInput.email) {
+        toast({
+          title: "Email cannot be empty.",
+          description: "Please make sure you enter your email!",
+          duration: 3000,
+          status: "error",
+          isClosable: true,
+          position: "top-right",
+        });
+        return;
+      } else if (!loginInput.password) {
+        toast({
+          title: "Password cannot be empty.",
+          description: "Please make sure you enter your Password!",
+          duration: 3000,
+          status: "error",
+          isClosable: true,
+          position: "top-right",
+        });
+        return;
+      }
+
+      // api call
+      const loginHandler = await axios({
+        method: "POST",
+        url: "/auth/login",
+        data: { payload: loginInput },
       });
-      return;
-    } else if (!loginInput.password) {
+      console.log(loginHandler);
+
+      // Save to localstorage
+      localStorage.setItem(
+        "pride",
+        JSON.stringify({ token: loginHandler.data.token })
+      );
+    } catch (error) {
+      console.log({error});
       toast({
-        title: "Password cannot be empty.",
+        title: error?.response?.data?.error || "Internal Server Error",
         description: "Please make sure you enter your Password!",
         duration: 3000,
         status: "error",
         isClosable: true,
         position: "top-right",
       });
-      return;
     }
   };
 

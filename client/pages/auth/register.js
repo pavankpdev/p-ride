@@ -15,6 +15,8 @@ import {
 import { useState } from "react";
 import { useRouter } from "next/router";
 
+import axios from "../../config/axios";
+
 const Login = () => {
   const [registerInput, setRegisterInput] = useState({
     email: "",
@@ -32,37 +34,62 @@ const Login = () => {
     });
   };
 
-  const handleSubmit = () => {
-    if (!registerInput.fullname) {
-      toast({
-        title: "Fullname cannot be empty.",
-        description: "Please make sure you enter your Fullname!",
-        duration: 3000,
-        status: "error",
-        isClosable: true,
-        position: "top-right",
+  const handleSubmit = async () => {
+    try {
+      if (!registerInput.fullname) {
+        toast({
+          title: "Fullname cannot be empty.",
+          description: "Please make sure you enter your Fullname!",
+          duration: 3000,
+          status: "error",
+          isClosable: true,
+          position: "top-right",
+        });
+        return;
+      } else if (!registerInput.email) {
+        toast({
+          title: "Email cannot be empty.",
+          description: "Please make sure you enter your email!",
+          duration: 3000,
+          status: "error",
+          isClosable: true,
+          position: "top-right",
+        });
+        return;
+      } else if (!registerInput.password) {
+        toast({
+          title: "Password cannot be empty.",
+          description: "Please make sure you enter your Password!",
+          duration: 3000,
+          status: "error",
+          isClosable: true,
+          position: "top-right",
+        });
+        return;
+      }
+
+      const registerHandler = await axios({
+        method: "POST",
+        url: "/auth/register",
+        data: { payload: registerInput },
       });
-      return;
-    } else if (!registerInput.email) {
+      console.log(registerHandler);
+
+      //save to Localstorage
+      localStorage.setItem(
+        "pride",
+        JSON.stringify({ token: registerHandler.data.token })
+      );
+    } catch (error) {
+      console.log({ error });
       toast({
-        title: "Email cannot be empty.",
-        description: "Please make sure you enter your email!",
-        duration: 3000,
-        status: "error",
-        isClosable: true,
-        position: "top-right",
-      });
-      return;
-    } else if (!registerInput.password) {
-      toast({
-        title: "Password cannot be empty.",
+        title: error?.response?.data?.error || "Internal Server Error",
         description: "Please make sure you enter your Password!",
         duration: 3000,
         status: "error",
         isClosable: true,
         position: "top-right",
       });
-      return;
     }
   };
 

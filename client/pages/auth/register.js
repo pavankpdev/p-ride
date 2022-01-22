@@ -6,7 +6,6 @@ import {
   FormLabel,
   Heading,
   Input,
-  Link,
   Stack,
   Image,
   Box,
@@ -14,10 +13,11 @@ import {
 } from "@chakra-ui/react";
 import { useState } from "react";
 import { useRouter } from "next/router";
+import Link from "next/link"
 
 import axios from "../../config/axios";
 
-const Login = () => {
+const register = () => {
   const [registerInput, setRegisterInput] = useState({
     email: "",
     password: "",
@@ -73,14 +73,16 @@ const Login = () => {
         url: "/auth/register",
         data: { payload: registerInput },
       });
-      console.log(registerHandler);
+      
 
       localStorage.setItem(
         "pride",
         JSON.stringify({ token: registerHandler.data.token })
       );
+
+      router.push("/dashboard")
     } catch (error) {
-      console.log({ error });
+      
       toast({
         title: error?.response?.data?.error || "Internal Server Error",
         description: "Please make sure you enter your Password!",
@@ -139,7 +141,8 @@ const Login = () => {
             <Link
               color={"blue.500"}
               textAlign={"center"}
-              onClick={() => router.push("/login")}
+              href={"/login"}
+              
             >
               Already Have an account? Login
             </Link>
@@ -164,4 +167,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default register;

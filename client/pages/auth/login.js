@@ -6,17 +6,15 @@ import {
   FormLabel,
   Heading,
   Input,
-  Link,
   Stack,
   Image,
   Box,
   useToast,
 } from "@chakra-ui/react";
-
+import { useRouter } from "next/router";
 import { useState } from "react";
-
-// CONFIGS
 import axios from "../../config/axios";
+import Link from "next/link"
 
 const Login = () => {
   const [loginInput, setLoginInput] = useState({
@@ -24,6 +22,7 @@ const Login = () => {
     password: "",
   });
 
+  const router = useRouter();
   const toast = useToast();
 
   const handleChange = (event) => {
@@ -59,14 +58,14 @@ const Login = () => {
         url: "/auth/login",
         data: { payload: loginInput },
       });
-      console.log(loginHandler);
 
       localStorage.setItem(
         "pride",
         JSON.stringify({ token: loginHandler.data.token })
       );
+
+      router.push("/dashboard")
     } catch (error) {
-      console.log({ error });
       toast({
         title: error?.response?.data?.error || "Internal Server Error",
         description: "Please make sure you enter your Password!",
@@ -111,7 +110,10 @@ const Login = () => {
             >
               Sign in
             </Button>
-            <Link color={"blue.500"} textAlign={"center"}>
+            <Link 
+              color={"blue.500"} 
+              textAlign={"center"}
+              href={"/forgot"}>
               Forgot password?
             </Link>
           </Stack>

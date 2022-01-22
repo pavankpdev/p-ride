@@ -11,7 +11,9 @@ import {
 } from "@chakra-ui/react";
 import { useState } from "react";
 
-import { nodeAxiosService } from "../../config/axios";
+import { useRouter } from "next/router";
+
+import axios from "axios";
 
 const ResetPassword = () => {
   const [resetInput, setResetInput] = useState({
@@ -25,42 +27,65 @@ const ResetPassword = () => {
 
   const toast = useToast();
 
-  const handleSubmit = () => {
-    console.log(resetInput);
+  const router = useRouter();
+
+  const handleSubmit = async () => {
+   try {
     if (!resetInput.newPassword) {
-      toast({
-        title: "Password cannot be empty.",
-        description: "Please make sure you enter your NewPassword!",
-        duration: 3000,
-        status: "error",
-        isClosable: true,
-        position: "top",
+        toast({
+          title: "Password cannot be empty.",
+          description: "Please make sure you enter your NewPassword!",
+          duration: 3000,
+          status: "error",
+          isClosable: true,
+          position: "top",
+        });
+        return;
+      } else if (!resetInput.confirmPassword) {
+        toast({
+          title: "Password cannot be empty.",
+          description: "Please make sure you enter your ConfirmPassword!",
+          duration: 3000,
+          status: "error",
+          isClosable: true,
+          position: "top",
+        });
+        return;
+      } else if (resetInput.newPassword !== resetInput.confirmPassword) {
+        toast({
+          title: "Password is not equal.",
+          description: "Please make sure you enter Correct Password!",
+          duration: 3000,
+          status: "error",
+          isClosable: true,
+          position: "top",
+        });
+        return;
+      }
+  
+      const { token } = router.query;
+      const resetHandler = await axios({
+        method: "POST",
+        url: "auth/reset",
+        headers: { authorization: `Bearer ${token}` },
+        data: { payload: { newPassword: resetInput.newPassword } },
       });
-      return;
-    } else if (!resetInput.confirmPassword) {
-      toast({
-        title: "Password cannot be empty.",
-        description: "Please make sure you enter your ConfirmPassword!",
-        duration: 3000,
-        status: "error",
-        isClosable: true,
-        position: "top",
-      });
-      return;
-    } else if (resetInput.newPassword !== resetInput.confirmPassword) {
-      toast({
-        title: "Password is not equal.",
-        description: "Please make sure you enter Correct Password!",
-        duration: 3000,
-        status: "error",
-        isClosable: true,
-        position: "top",
-      });
-      return;
-    }
+      
+    
 
-  };
-
+   }catch (error){
+    console.log({error});
+      toast({
+        title: error?.response?.data?.error || "Internal Server Error",
+        description: "Please make sure you enter your Password!",
+        duration: 3000,
+        status: "error",
+        isClosable: true,
+        position: "top-right",
+      });
+       
+   }
+}
   return (
     <Flex
       minH={"100vh"}

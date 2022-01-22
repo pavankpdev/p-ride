@@ -41,14 +41,7 @@ const ForgotPassword = () => {
         url: "/auth/forgot",
         data: { payload: forgotHandler },
       });
-      console.log(forgotHandler);
-
-      localStorage.setItem(
-        "pride",
-        JSON.stringify({ token: forgotPasswordaInput.data.token })
-      );
     } catch (error) {
-      console.log({ error });
       toast({
         title: error?.response?.data?.error || "Internal Server Error",
         description: "Please make sure you enter your email!",

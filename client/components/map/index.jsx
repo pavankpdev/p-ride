@@ -1,26 +1,23 @@
-import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
-import "leaflet/dist/leaflet.css";
-import "leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility.css";
-import "leaflet-defaulticon-compatibility";
+import { Loader } from "@googlemaps/js-api-loader";
+import { Box } from "@chakra-ui/react";
+import React from "react";
 
 const Map = () => {
-  return (
-    <MapContainer
-      center={[12.971698, 77.549264]}
-      zoom={14}
-      scrollWheelZoom={false}
-      zoomControl={false}
-      style={{ height: "100%", width: "100%" }}
-    >
-      <TileLayer
-        url={`https://api.mapbox.com/styles/v1/mapbox/streets-v11/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1IjoicHJpZGVwcm9qZWN0IiwiYSI6ImNreWg5bmMzbDBma2wyb3BjN2wyYmY5YzEifQ.nFb9lxTv-vBl5s6bFp86dg`}
-        attribution='Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery &copy; <a href="https://www.mapbox.com/">Mapbox</a>'
-      />
-      <Marker position={[12.971698, 77.549264]} draggable={true} animate={true}>
-        <Popup>Hey ! you found me</Popup>
-      </Marker>
-    </MapContainer>
-  );
+  const loader = new Loader({
+    apiKey: process.env.NEXT_PUBLIC_GOOGLE_MAP_API_KEY,
+    version: "weekly",
+  });
+
+  React.useEffect(() => {
+    loader.load().then(() => {
+      new google.maps.Map(document.getElementById("map"), {
+        center: { lat: 12.971698, lng: 77.549264 },
+        zoom: 15,
+      });
+    });
+  }, [loader]);
+
+  return <Box id="map" h={"100vh"} w={"100vw"} />;
 };
 
 export default Map;

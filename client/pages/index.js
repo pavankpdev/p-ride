@@ -5,7 +5,7 @@ import dynamic from "next/dynamic";
 import DefaultLayout from "../layout/default";
 
 // COMPONENTS
-import BookRide from "../components/Dashboard/bookRide";
+import BookRide from "../components/Dashboard/bookRidePanel";
 
 // using nextjs dynamic import since window is undefined in next SSR
 const MapComp = dynamic(() => import("../components/map"), { ssr: false });
@@ -14,9 +14,8 @@ const Home = () => {
   return (
     <>
       <Box pos={"relative"}>
-        <Box id="map" height={"100vh"} w={"100vw"}>
-          <MapComp />
-        </Box>
+      <MapComp />
+      
         <Box
           pos={"absolute"}
           d={{ base: "none", lg: "block" }}

@@ -17,7 +17,7 @@ import Link from "next/link"
 
 import axios from "../../config/axios";
 
-const register = () => {
+const Register = () => {
   const [registerInput, setRegisterInput] = useState({
     email: "",
     password: "",
@@ -167,4 +167,4 @@ const register = () => {
   );
 };
 
-export default register;
+export default Register;

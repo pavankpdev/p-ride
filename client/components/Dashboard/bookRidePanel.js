@@ -8,7 +8,10 @@ import {
   Button,
 } from "@chakra-ui/react";
 import { useState } from "react";
-import axios from "axios";
+import React, { useContext } from "react";
+
+// CONTEXT
+import { LocationContext } from "../../context/location";
 
 // UTILS
 import { getCurrentLocation } from "../../utils/getCurrentLocation";
@@ -19,6 +22,8 @@ const BookRide = () => {
     pickup: "",
     destination: "",
   });
+
+  const { updatePickUpLocation } = useContext(LocationContext);
 
   const handleChange = (event) => {
     setAddress({ ...address, [event.target.name]: event.target.value });
@@ -42,7 +47,8 @@ const BookRide = () => {
   };
 
   const search = async () => {
-    console.log(address);
+    // console.log(address);
+    updatePickUpLocation(address.pickup);
   };
 
   return (

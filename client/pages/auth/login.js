@@ -6,12 +6,15 @@ import {
   FormLabel,
   Heading,
   Input,
-  Link,
   Stack,
   Image,
   Box,
+  useToast,
 } from "@chakra-ui/react";
+import { useRouter } from "next/router";
 import { useState } from "react";
+import axios from "../../config/axios";
+import Link from "next/link"
 
 const Login = () => {
   const [loginInput, setLoginInput] = useState({
@@ -19,15 +22,58 @@ const Login = () => {
     password: "",
   });
 
+  const router = useRouter();
+  const toast = useToast();
+
   const handleChange = (event) => {
     setLoginInput({ ...loginInput, [event.target.name]: event.target.value });
   };
 
-  const handleSubmit = () => {
-    if (!loginInput.email) {
-      alert("Email cannot be empty.");
-    } else if (!loginInput.password) {
-      alert("Password cannnot be empty.");
+  const handleSubmit = async () => {
+    try {
+      if (!loginInput.email) {
+        toast({
+          title: "Email cannot be empty.",
+          description: "Please make sure you enter your email!",
+          duration: 3000,
+          status: "error",
+          isClosable: true,
+          position: "top-right",
+        });
+        return;
+      } else if (!loginInput.password) {
+        toast({
+          title: "Password cannot be empty.",
+          description: "Please make sure you enter your Password!",
+          duration: 3000,
+          status: "error",
+          isClosable: true,
+          position: "top-right",
+        });
+        return;
+      }
+
+      const loginHandler = await axios({
+        method: "POST",
+        url: "/auth/login",
+        data: { payload: loginInput },
+      });
+
+      localStorage.setItem(
+        "pride",
+        JSON.stringify({ token: loginHandler.data.token })
+      );
+
+      router.push("/dashboard")
+    } catch (error) {
+      toast({
+        title: error?.response?.data?.error || "Internal Server Error",
+        description: "Please make sure you enter your Password!",
+        duration: 3000,
+        status: "error",
+        isClosable: true,
+        position: "top-right",
+      });
     }
   };
 
@@ -64,7 +110,10 @@ const Login = () => {
             >
               Sign in
             </Button>
-            <Link color={"blue.500"} textAlign={"center"}>
+            <Link 
+              color={"blue.500"} 
+              textAlign={"center"}
+              href={"/forgot"}>
               Forgot password?
             </Link>
           </Stack>

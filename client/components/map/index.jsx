@@ -26,16 +26,16 @@ const Map = () => {
 
       new google.maps.Marker({
         position: {
-          lat: pickUpLocation.geometry.lat || 12.9736067,
-          lng: pickUpLocation.geometry.lng || 77.5517457,
+          lat: pickUpLocation.geometry.lat || 0,
+          lng: pickUpLocation.geometry.lng || 0,
         },
         map: map,
       });
-
+      
       new google.maps.Marker({
         position: {
-          lat: dropLocation.geometry.lat || 12.9736067,
-          lng: dropLocation.geometry.lng || 77.5517457,
+          lat: dropLocation.geometry.lat || 0,
+          lng: dropLocation.geometry.lng || 0,
         },
         map: map,
       });

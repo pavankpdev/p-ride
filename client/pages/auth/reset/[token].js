@@ -7,8 +7,13 @@ import {
   Input,
   Stack,
   useColorModeValue,
+  useToast,
 } from "@chakra-ui/react";
 import { useState } from "react";
+
+import { useRouter } from "next/router";
+
+import axios from "axios";
 
 const ResetPassword = () => {
   const [resetInput, setResetInput] = useState({
@@ -20,18 +25,67 @@ const ResetPassword = () => {
     setResetInput({ ...resetInput, [event.target.name]: event.target.value });
   };
 
-  const handleSubmit = () => {
-    console.log(resetInput);
-    if (!resetInput.newPassword) {
-      alert("Password cannot be empty.");
-    } else if (!resetInput.confirmPassword) {
-      alert("Password cannot be empty.");
-    } else if (resetInput.newPassword !== resetInput.confirmPassword) {
-      alert("Password not equal");
-      return;
-    }
-  };
+  const toast = useToast();
 
+  const router = useRouter();
+
+  const handleSubmit = async () => {
+   try {
+    if (!resetInput.newPassword) {
+        toast({
+          title: "Password cannot be empty.",
+          description: "Please make sure you enter your NewPassword!",
+          duration: 3000,
+          status: "error",
+          isClosable: true,
+          position: "top",
+        });
+        return;
+      } else if (!resetInput.confirmPassword) {
+        toast({
+          title: "Password cannot be empty.",
+          description: "Please make sure you enter your ConfirmPassword!",
+          duration: 3000,
+          status: "error",
+          isClosable: true,
+          position: "top",
+        });
+        return;
+      } else if (resetInput.newPassword !== resetInput.confirmPassword) {
+        toast({
+          title: "Password is not equal.",
+          description: "Please make sure you enter Correct Password!",
+          duration: 3000,
+          status: "error",
+          isClosable: true,
+          position: "top",
+        });
+        return;
+      }
+  
+      const { token } = router.query;
+      const resetHandler = await axios({
+        method: "POST",
+        url: "auth/reset",
+        headers: { authorization: `Bearer ${token}` },
+        data: { payload: { newPassword: resetInput.newPassword } },
+      });
+      
+    
+
+   }catch (error){
+    console.log({error});
+      toast({
+        title: error?.response?.data?.error || "Internal Server Error",
+        description: "Please make sure you enter your Password!",
+        duration: 3000,
+        status: "error",
+        isClosable: true,
+        position: "top-right",
+      });
+       
+   }
+}
   return (
     <Flex
       minH={"100vh"}

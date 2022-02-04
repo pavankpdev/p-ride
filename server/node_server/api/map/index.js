@@ -9,11 +9,11 @@ import authenticateMiddleware from "../../middleware/authentication.js";
 const router = Router();
 
 /*
-@route: /map/search
+@route: /map/search/:query
 @desc: Get location details from a search string
 @Method: GET
 
  */
-router.get("/search", search);
+router.get("/search/:query", search);
 
 export default router;

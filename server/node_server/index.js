@@ -1,27 +1,21 @@
-// importing all the environment variables
 import dotenv from "dotenv";
 dotenv.config();
 
-// Libraries
 import express from "express";
 import cors from "cors";
 import helmet from "helmet";
 import fileUpload from "express-fileupload";
-
-// Database connection
 import ConnectDB from "./database/connection.js";
 
-// Cache
 import cache from "./database/cache.js";
 
 // Routes
 import Auth from "./api/auth/index.js";
 import Map from "./api/map/index.js";
 
-// Initializing express application
 const Pride = express();
 
-// application middleware
+
 Pride.use(helmet());
 Pride.use(express.urlencoded({ extended: false }));
 Pride.use(express.json());
@@ -36,17 +30,14 @@ Pride.use(
 Pride.use("/auth", Auth);
 Pride.use("/map", Map);
 
-// Server status route
 Pride.get("/server-status", (req, res) => {
   res.json({ message: "Server Running" });
 });
 
-// 404 route
 Pride.get("*", (req, res) => {
   res.json({ error: "Invalid Route" });
 });
 
-// Specifying the port to run the server
 const port = process.env.PORT || 4000;
 
 cache.connect().then(() => {

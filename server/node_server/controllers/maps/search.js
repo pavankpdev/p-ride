@@ -2,14 +2,13 @@
 import { Map } from "../../services/maps.js";
 
 export const search = async (req, res) => {
-  console.log(req.params);
-  if (!req.body.payload.searchString) {
+  if (!req.params.query) {
     return res
       .status(500)
       .json({ error: "Please provide an address to search." });
   }
   try {
-    const place = await Map.searchPlace(req.body.payload.searchString);
+    const place = await Map.searchPlace(req.params.query);
     if (!place.candidates.length) {
       return res.status(404).json({
         error: `No information found.`,
@@ -18,7 +17,7 @@ export const search = async (req, res) => {
     const coordinates = place.candidates[0].geometry.location;
 
     return res.status(200).json({
-      coordinates,
+      place: place.candidates[0],
     });
   } catch (error) {
     console.log({ error });

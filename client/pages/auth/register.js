@@ -6,15 +6,18 @@ import {
   FormLabel,
   Heading,
   Input,
-  Link,
   Stack,
   Image,
   Box,
+  useToast,
 } from "@chakra-ui/react";
 import { useState } from "react";
 import { useRouter } from "next/router";
+import Link from "next/link"
 
-const Login = () => {
+import axios from "../../config/axios";
+
+const Register = () => {
   const [registerInput, setRegisterInput] = useState({
     email: "",
     password: "",
@@ -22,6 +25,7 @@ const Login = () => {
   });
 
   const router = useRouter();
+  const toast = useToast();
 
   const handleChange = (event) => {
     setRegisterInput({
@@ -30,13 +34,63 @@ const Login = () => {
     });
   };
 
-  const handleSubmit = () => {
-    if (!registerInput.fullname) {
-      alert("Full name cannot be empty.");
-    } else if (!registerInput.email) {
-      alert("Email cannot be empty.");
-    } else if (!registerInput.password) {
-      alert("Password cannnot be empty.");
+  const handleSubmit = async () => {
+    try {
+      if (!registerInput.fullname) {
+        toast({
+          title: "Fullname cannot be empty.",
+          description: "Please make sure you enter your Fullname!",
+          duration: 3000,
+          status: "error",
+          isClosable: true,
+          position: "top-right",
+        });
+        return;
+      } else if (!registerInput.email) {
+        toast({
+          title: "Email cannot be empty.",
+          description: "Please make sure you enter your email!",
+          duration: 3000,
+          status: "error",
+          isClosable: true,
+          position: "top-right",
+        });
+        return;
+      } else if (!registerInput.password) {
+        toast({
+          title: "Password cannot be empty.",
+          description: "Please make sure you enter your Password!",
+          duration: 3000,
+          status: "error",
+          isClosable: true,
+          position: "top-right",
+        });
+        return;
+      }
+
+      const registerHandler = await axios({
+        method: "POST",
+        url: "/auth/register",
+        data: { payload: registerInput },
+      });
+      
+
+      localStorage.setItem(
+        "pride",
+        JSON.stringify({ token: registerHandler.data.token })
+      );
+
+      router.push("/dashboard")
+    } catch (error) {
+      
+      toast({
+        title: error?.response?.data?.error || "Internal Server Error",
+        description: "Please make sure you enter your Password!",
+        duration: 3000,
+        status: "error",
+        isClosable: true,
+        position: "top-right",
+      });
     }
   };
 
@@ -87,7 +141,8 @@ const Login = () => {
             <Link
               color={"blue.500"}
               textAlign={"center"}
-              onClick={() => router.push("/login")}
+              href={"/login"}
+              
             >
               Already Have an account? Login
             </Link>
@@ -112,4 +167,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default Register;

@@ -23,7 +23,30 @@ const BookRide = () => {
     destination: "",
   });
 
-  const { updatePickUpLocation } = useContext(LocationContext);
+  const { updatePickUpLocation, updateDropLocation } =
+    useContext(LocationContext);
+
+  React.useEffect(() => {
+    // Using a debounce effect.
+    const handler = setTimeout(() => {
+      updatePickUpLocation(address.pickup);
+    }, 1500);
+
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [address.pickup]);
+
+  React.useEffect(() => {
+    // Using a debounce effect.
+    const handler = setTimeout(() => {
+      updateDropLocation(address.destination);
+    }, 1500);
+
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [address.destination]);
 
   const handleChange = (event) => {
     setAddress({ ...address, [event.target.name]: event.target.value });

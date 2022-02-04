@@ -5,10 +5,7 @@ export const getPlaceDetails = async (searchString) => {
     console.log(searchString);
     const { data } = await axios({
       method: "GET",
-      url: "/map/search",
-      data: {
-        askf: "asfasf",
-      },
+      url: `/map/search/${searchString}`,
     });
 
     console.log({ data });

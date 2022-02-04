@@ -7,8 +7,11 @@ import {
   Stack,
   Text,
   useColorModeValue,
+  useToast,
 } from "@chakra-ui/react";
 import { useState } from "react";
+
+import axios from "../../config/axios";
 
 const ForgotPassword = () => {
   const [forgotPasswordInput, setForgotPasswordInput] = useState({ email: "" });
@@ -17,9 +20,36 @@ const ForgotPassword = () => {
     setForgotPasswordInput({ email: event.target.value });
   };
 
-  const handleSubmit = () => {
-    if (!forgotPasswordInput.email) {
-      alert("Email cannot be empty.");
+  const toast = useToast();
+
+  const handleSubmit = async () => {
+    try {
+      if (!forgotPasswordInput.email) {
+        toast({
+          title: "Email cannot be empty.",
+          description: "Please make sure you enter your email!",
+          duration: 3000,
+          status: "error",
+          isClosable: true,
+          position: "top",
+        });
+        return;
+      }
+
+      const forgotHandler = await axios({
+        method: "post",
+        url: "/auth/forgot",
+        data: { payload: forgotHandler },
+      });
+    } catch (error) {
+      toast({
+        title: error?.response?.data?.error || "Internal Server Error",
+        description: "Please make sure you enter your email!",
+        duration: 3000,
+        status: "error",
+        isClosable: true,
+        position: "top-right",
+      });
     }
   };
 

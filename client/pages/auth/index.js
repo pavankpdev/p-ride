@@ -6,7 +6,8 @@ export default function AuthHome() {
 
     React.useEffect(() => {
         router.push("/auth/login");
-    },[]);
+    },[])
+    
 
   return (
     <div>

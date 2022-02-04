@@ -61,12 +61,24 @@ export const LocationContextProvider = ({ children }) => {
   }, []);
 
   const updatePickUpLocation = async (searchString) => {
-    // setPickUpLocation({});
-    await getPlaceDetails(searchString);
+    const location = await getPlaceDetails(searchString);
+    console.log({ location });
+    if (location?.place?.geometry) {
+      setPickUpLocation({
+        geometry: location?.place?.geometry?.location || 0,
+        formattedAddress: location?.place?.formatted_address || "",
+      });
+    }
   };
 
-  const updateDropLocation = (searchString) => {
-    setDropLocation({});
+  const updateDropLocation = async (searchString) => {
+    const location = await getPlaceDetails(searchString);
+    if (location?.place?.geometry) {
+      setDropLocation({
+        geometry: location?.place?.geometry?.location || 0,
+        formattedAddress: location?.place?.formatted_address || "",
+      });
+    }
   };
 
   return (

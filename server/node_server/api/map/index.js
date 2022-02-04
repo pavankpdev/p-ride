@@ -12,9 +12,8 @@ const router = Router();
 @route: /map/search
 @desc: Get location details from a search string
 @Method: GET
-@access: Private
 
  */
-router.get("/search", authenticateMiddleware, search);
+router.get("/search", search);
 
 export default router;

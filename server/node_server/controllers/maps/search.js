@@ -2,6 +2,7 @@
 import { Map } from "../../services/maps.js";
 
 export const search = async (req, res) => {
+  console.log(req.params);
   if (!req.body.payload.searchString) {
     return res
       .status(500)

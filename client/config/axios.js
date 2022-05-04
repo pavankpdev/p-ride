@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const axiosInstance = axios.create({
-  baseURL: "http://api.peerride.tech",
+  baseURL: "http://localhost:4000",
 });
 
 axiosInstance.interceptors.request.use(
@@ -30,7 +30,7 @@ axiosInstance.interceptors.response.use(
   },
   (error) => {
     if (error.response?.status == 401) {
-      // window.location.href = "/auth"
+      window.location.href = "/auth";
       return;
     }
 

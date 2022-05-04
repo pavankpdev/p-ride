@@ -5,6 +5,7 @@
   "main": "index.js",
   "license": "MIT",
   "dependencies": {
+    "@googlemaps/js-api-loader": "^1.13.2",
     "aws-sdk": "^2.1046.0",
     "axios": "^0.24.0",
     "bcryptjs": "^2.4.3",

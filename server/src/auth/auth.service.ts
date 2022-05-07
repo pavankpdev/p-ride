@@ -1,16 +1,9 @@
 import { Injectable } from '@nestjs/common';
-
-// INTERFACE
-import {loginUser} from './interfaces'
+import {LoginUserDto} from './interfaces'
 
 @Injectable()
 export class AuthService {
-
-    login(user: loginUser): any {
-        return {message: 'success'}
-    }
-
-    register(): any {
-        return {message: 'success'}
+    login(loginUserDto: LoginUserDto): any {
+        return {loginUserDto}
     }
 }

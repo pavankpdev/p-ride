@@ -4,6 +4,7 @@ import { Model } from 'mongoose';
 
 import {User} from '../user/schema/user.schema'
 import {LoginUserDto} from './DTO/loginUser'
+import {RegisterUserDto} from './DTO/registerUser'
 import {UserService} from '../user/user.service'
 
 @Injectable()
@@ -19,5 +20,10 @@ export class AuthService {
         }
 
         return {user}
+    }
+
+    async register(registerUserDto: RegisterUserDto): Promise<string> {
+        await this.userService.createUser(registerUserDto);
+        return 'User Created'
     }
 }

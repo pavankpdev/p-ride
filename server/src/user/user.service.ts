@@ -9,7 +9,9 @@ import { RegisterUserDto } from '../auth/DTO/registerUser';
 export class UserService {
   constructor(@InjectModel(User.name) private userModel: Model<UserDocument>) {}
 
-  async findOne(searchField: Record<string, string>): Promise<User | null> {
+  async findOne(
+    searchField: Record<string, string>,
+  ): Promise<UserDocument | null> {
     return this.userModel.findOne(searchField).exec();
   }
 

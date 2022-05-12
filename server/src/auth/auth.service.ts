@@ -50,6 +50,6 @@ export class AuthService {
       user: createUser?._id.toString(),
     });
 
-    return { user, access_token };
+    return { user: createUser, access_token };
   }
 }

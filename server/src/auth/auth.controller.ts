@@ -10,12 +10,14 @@ export class AuthController {
 
   @Post('/login')
   @HttpCode(HttpStatus.OK)
-  login(@Body() loginUserDto: LoginUserDto): Promise<{ user: User }> {
-    return this.authService.login(loginUserDto);
+  async login(@Body() loginUserDto: LoginUserDto): Promise<{ user: User }> {
+    return await this.authService.login(loginUserDto);
   }
 
   @Post('/register')
-  register(@Body() registerUserDto: RegisterUserDto): Promise<{ user: User }> {
-    return this.authService.register(registerUserDto);
+  async register(
+    @Body() registerUserDto: RegisterUserDto,
+  ): Promise<{ user: User }> {
+    return await this.authService.register(registerUserDto);
   }
 }

@@ -30,6 +30,10 @@ export class AuthController {
   async register(
     @Body() registerUserDto: RegisterUserDto,
   ): Promise<{ user: User }> {
+    if (!ethers.utils.isAddress(registerUserDto.address)) {
+      throw new HttpException('Invalid Address', HttpStatus.NOT_ACCEPTABLE);
+    }
+
     return await this.authService.register(registerUserDto);
   }
 }

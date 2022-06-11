@@ -1,4 +1,12 @@
-import { Controller, Post, Body, HttpCode, HttpStatus } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  HttpCode,
+  HttpStatus,
+  HttpException,
+} from '@nestjs/common';
+import { ethers } from 'ethers';
 import { AuthService } from './auth.service';
 import { LoginUserDto } from './DTO/loginUser';
 import { RegisterUserDto } from './DTO/registerUser';
@@ -11,6 +19,10 @@ export class AuthController {
   @Post('/login')
   @HttpCode(HttpStatus.OK)
   async login(@Body() loginUserDto: LoginUserDto): Promise<{ user: User }> {
+    if (!ethers.utils.isAddress(loginUserDto.address)) {
+      throw new HttpException('Invalid Address', HttpStatus.NOT_ACCEPTABLE);
+    }
+
     return await this.authService.login(loginUserDto);
   }
 

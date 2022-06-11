@@ -34,13 +34,15 @@ export class AuthService {
   async register(
     registerUserDto: RegisterUserDto,
   ): Promise<{ user: User; access_token: string }> {
-    const user = await this.userService.findOne({
-      email: registerUserDto.email,
-      fullname: registerUserDto.fullname,
+    const doesUserAddressExist = await this.userService.findOne({
       address: registerUserDto.address,
     });
 
-    if (user) {
+    const doesUserEmailExist = await this.userService.findOne({
+      email: registerUserDto.email,
+    });
+
+    if (doesUserAddressExist || doesUserEmailExist) {
       throw new HttpException('User already exist', HttpStatus.NOT_ACCEPTABLE);
     }
 

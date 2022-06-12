@@ -32,7 +32,6 @@ contract Ride is Ownable, Vehicle {
         string destination;
         uint256 distance;
         uint256 price;
-        uint256 noOfPassengers;
     }
 
     struct RIDE {

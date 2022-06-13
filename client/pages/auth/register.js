@@ -1,6 +1,5 @@
 import {
   Button,
-  Checkbox,
   Flex,
   FormControl,
   FormLabel,
@@ -9,23 +8,25 @@ import {
   Stack,
   Image,
   Box,
-  useToast,
+  useToast, Container,
 } from "@chakra-ui/react";
 import { useState } from "react";
 import { useRouter } from "next/router";
 import Link from "next/link"
 
 import axios from "../../config/axios";
+import {useMetaMaskWallet} from "../../hooks/useWallet";
 
 const Register = () => {
   const [registerInput, setRegisterInput] = useState({
     email: "",
-    password: "",
     fullname: "",
   });
 
   const router = useRouter();
   const toast = useToast();
+
+  const { connectWallet, signInWithMetamask } = useMetaMaskWallet();
 
   const handleChange = (event) => {
     setRegisterInput({
@@ -56,36 +57,29 @@ const Register = () => {
           position: "top-right",
         });
         return;
-      } else if (!registerInput.password) {
-        toast({
-          title: "Password cannot be empty.",
-          description: "Please make sure you enter your Password!",
-          duration: 3000,
-          status: "error",
-          isClosable: true,
-          position: "top-right",
-        });
-        return;
       }
+
+      await connectWallet()
+      const sign = await signInWithMetamask()
 
       const registerHandler = await axios({
         method: "POST",
         url: "/auth/register",
-        data: { payload: registerInput },
+        data: {
+          ...registerInput,
+          address: sign?.account
+        }
       });
-      
 
       localStorage.setItem(
         "pride",
         JSON.stringify({ token: registerHandler.data.token })
       );
 
-      router.push("/dashboard")
+      router.push("/")
     } catch (error) {
-      
       toast({
-        title: error?.response?.data?.error || "Internal Server Error",
-        description: "Please make sure you enter your Password!",
+        title: error?.response?.data?.message || "Internal Server Error",
         duration: 3000,
         status: "error",
         isClosable: true,
@@ -95,75 +89,101 @@ const Register = () => {
   };
 
   return (
-    <Stack minH={"100vh"} direction={{ base: "column", lg: "row-reverse" }}>
-      <Flex p={8} flex={1} align={"center"} justify={"center"}>
-        <Stack spacing={4} w={"full"} maxW={"md"}>
-          <Heading fontSize={"2xl"}>Create New Account</Heading>
-          <FormControl id="fullname">
-            <FormLabel>Full Name</FormLabel>
-            <Input
-              required
-              type="text"
-              value={registerInput.fullname}
-              name="fullname"
-              placeholder="Bharath"
-              onChange={handleChange}
-            />
-          </FormControl>
-          <FormControl id="email">
-            <FormLabel>Email address</FormLabel>
-            <Input
-              type="email"
-              value={registerInput.email}
-              name="email"
-              placeholder="email@email.com"
-              onChange={handleChange}
-            />
-          </FormControl>
-          <FormControl id="password">
-            <FormLabel>Password</FormLabel>
-            <Input
-              type="password"
-              value={registerInput.password}
-              name="password"
-              placeholder="**********"
-              onChange={handleChange}
-            />
-          </FormControl>
-          <Stack spacing={6}>
-            <Button
-              colorScheme={"blue"}
-              variant={"solid"}
-              onClick={handleSubmit}
-            >
-              Create Account
-            </Button>
-            <Link
-              color={"blue.500"}
-              textAlign={"center"}
-              href={"/login"}
-              
-            >
-              Already Have an account? Login
-            </Link>
-          </Stack>
-        </Stack>
-      </Flex>
 
-      <Flex flex={1} display={{ base: "none", lg: "block" }}>
-        <Box w="100%" h="100vh">
-          <Image
-            alt={"Login Image"}
-            objectFit={"cover"}
-            w="100%"
-            h="100%"
-            src={
-              "https://images.unsplash.com/photo-1572013343866-dfdb9b416810?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=387&q=80"
-            }
-          />
-        </Box>
+      <Flex h={"100vh"} w={'100vw'} overflow={'hidden'}>
+        <Flex
+            h={'full'}
+            w={'full'}
+            bg={'white'}
+            alignItems={'center'}
+            justify={'center'}
+            overflow={'hidden'}
+            _after={{
+              w: '100%',
+              h: '100%',
+              content: "''",
+              pos: 'absolute',
+              zIndex: 10,
+              top: 0,
+              left: 0,
+              bg: 'rgba(0,0,0,0.5)'
+            }}
+        >
+
+          <video
+              loop
+              muted
+              autoPlay
+              preload="auto"
+              style={{
+                width: '100%',
+                height: '100%',
+                position: 'absolute',
+                zIndex: 5,
+                top: 0,
+                objectFit: 'cover'
+              }}
+          >
+            <source src={'https://vod-progressive.akamaized.net/exp=1655161542~acl=%2Fvimeo-prod-skyfire-std-us%2F01%2F3664%2F14%2F368320203%2F1524051052.mp4~hmac=076f3357a644e56e43c18ac16dcb141a1691f9ff7a373f3a71b57080418eed0a/vimeo-prod-skyfire-std-us/01/3664/14/368320203/1524051052.mp4'} type="video/mp4" />
+            Your browser does not support the video tag.
+          </video>
+
+          <Container d={'flex'} w={'100%'} h={'100vh'} flexDir={'column'} pos={'absolute'} zIndex={20} top={'20%'} >
+
+            <Flex bg={'white'} w={'100%'} h={'fit-content'} py={'3rem'} rounded={'lg'} flexDir={'column'} justify={'center'} alignItems={'center'} gap={'1rem'}>
+              <Box w={'150px'} h={'50px'} overflow={'hidden'}>
+                <Image src={'https://i.ibb.co/QHf9gxV/logo.png'} w={'100%'} h={'100%'} alt={'logo'} />
+              </Box>
+
+              <Stack spacing={4} w={"full"} maxW={"md"}>
+                <Heading fontSize={"2xl"} textAlign={'center'}>Create New Account</Heading>
+                <FormControl id="fullname">
+                  <FormLabel>Full Name</FormLabel>
+                  <Input
+                      required
+                      type="text"
+                      value={registerInput.fullname}
+                      name="fullname"
+                      placeholder="Bharath"
+                      onChange={handleChange}
+                  />
+                </FormControl>
+                <FormControl id="email">
+                  <FormLabel>Email address</FormLabel>
+                  <Input
+                      type="email"
+                      value={registerInput.email}
+                      name="email"
+                      placeholder="email@email.com"
+                      onChange={handleChange}
+                  />
+                </FormControl>
+
+                <Stack spacing={6}>
+                  <Button
+                      colorScheme={"brand"}
+                      variant={"solid"}
+                      onClick={handleSubmit}
+                  >
+                    Create Account
+                  </Button>
+                  <Link
+                      color={"blue.500"}
+                      textAlign={"center"}
+                      href={"/auth/login"}
+
+                  >
+                    Already Have an account? Login
+                  </Link>
+                </Stack>
+              </Stack>
+            </Flex>
+
+          </Container>
+
+        </Flex>
+
       </Flex>
-    </Stack>
   );
 };
 

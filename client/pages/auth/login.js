@@ -10,11 +10,16 @@ import {
   Image,
   Box,
   useToast,
+  Video, Container, Text
 } from "@chakra-ui/react";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import axios from "../../config/axios";
 import Link from "next/link"
+import {IoPersonAdd} from 'react-icons/io5'
+
+// HOOKS
+import {useMetaMaskWallet} from "../../hooks/useWallet";
 
 const Login = () => {
   const [loginInput, setLoginInput] = useState({
@@ -25,38 +30,18 @@ const Login = () => {
   const router = useRouter();
   const toast = useToast();
 
-  const handleChange = (event) => {
-    setLoginInput({ ...loginInput, [event.target.name]: event.target.value });
-  };
+  const { connectWallet, signInWithMetamask } = useMetaMaskWallet();
 
   const handleSubmit = async () => {
     try {
-      if (!loginInput.email) {
-        toast({
-          title: "Email cannot be empty.",
-          description: "Please make sure you enter your email!",
-          duration: 3000,
-          status: "error",
-          isClosable: true,
-          position: "top-right",
-        });
-        return;
-      } else if (!loginInput.password) {
-        toast({
-          title: "Password cannot be empty.",
-          description: "Please make sure you enter your Password!",
-          duration: 3000,
-          status: "error",
-          isClosable: true,
-          position: "top-right",
-        });
-        return;
-      }
+
+       await connectWallet()
+       const sign = await signInWithMetamask()
 
       const loginHandler = await axios({
         method: "POST",
         url: "/auth/login",
-        data: { payload: loginInput },
+        data: { address: sign.account },
       });
 
       localStorage.setItem(
@@ -64,7 +49,7 @@ const Login = () => {
         JSON.stringify({ token: loginHandler.data.token })
       );
 
-      router.push("/dashboard")
+      router.push("/")
     } catch (error) {
       toast({
         title: error?.response?.data?.error || "Internal Server Error",
@@ -77,63 +62,71 @@ const Login = () => {
     }
   };
 
+  const redirectToRegisterPage = () => {
+      router.push('/auth/register')
+  }
+
   return (
-    <Stack minH={"100vh"} direction={{ base: "column", lg: "row-reverse" }}>
-      <Flex p={8} flex={1} align={"center"} justify={"center"}>
-        <Stack spacing={4} w={"full"} maxW={"md"}>
-          <Heading fontSize={"2xl"}>Sign in to your account</Heading>
-          <FormControl id="email">
-            <FormLabel>Email address</FormLabel>
-            <Input
-              type="email"
-              value={loginInput.email}
-              name="email"
-              placeholder="email@email.com"
-              onChange={handleChange}
-            />
-          </FormControl>
-          <FormControl id="password">
-            <FormLabel>Password</FormLabel>
-            <Input
-              type="password"
-              value={loginInput.password}
-              name="password"
-              placeholder="**********"
-              onChange={handleChange}
-            />
-          </FormControl>
-          <Stack spacing={6}>
-            <Button
-              colorScheme={"blue"}
-              variant={"solid"}
-              onClick={handleSubmit}
-            >
-              Sign in
-            </Button>
-            <Link 
-              color={"blue.500"} 
-              textAlign={"center"}
-              href={"/forgot"}>
-              Forgot password?
-            </Link>
-          </Stack>
-        </Stack>
+    <Flex h={"100vh"} w={'100vw'} overflow={'hidden'}>
+      <Flex
+          h={'full'}
+          w={'full'}
+          bg={'white'}
+          alignItems={'center'}
+          justify={'center'}
+          overflow={'hidden'}
+          _after={{
+            w: '100%',
+            h: '100%',
+            content: "''",
+            pos: 'absolute',
+            zIndex: 10,
+            top: 0,
+            left: 0,
+            bg: 'rgba(0,0,0,0.5)'
+          }}
+      >
+
+        <video
+            loop
+            muted
+            autoPlay
+            preload="auto"
+            style={{
+              width: '100%',
+              height: '100%',
+              position: 'absolute',
+              zIndex: 5,
+              top: 0,
+              objectFit: 'cover'
+            }}
+        >
+          <source src={'https://vod-progressive.akamaized.net/exp=1655161542~acl=%2Fvimeo-prod-skyfire-std-us%2F01%2F3664%2F14%2F368320203%2F1524051052.mp4~hmac=076f3357a644e56e43c18ac16dcb141a1691f9ff7a373f3a71b57080418eed0a/vimeo-prod-skyfire-std-us/01/3664/14/368320203/1524051052.mp4'} type="video/mp4" />
+          Your browser does not support the video tag.
+        </video>
+
+        <Container d={'flex'} w={'100%'} h={'100vh'} flexDir={'column'} pos={'absolute'} zIndex={20} top={'20%'} >
+
+          <Flex bg={'white'} w={'100%'} h={'fit-content'} py={'1rem'} rounded={'lg'} flexDir={'column'} justify={'center'} alignItems={'center'} gap={'1rem'}>
+              <Box w={'150px'} h={'50px'} overflow={'hidden'}>
+                <Image src={'https://i.ibb.co/QHf9gxV/logo.png'} w={'100%'} h={'100%'} alt={'logo'} />
+              </Box>
+
+              <Text fontSize={'lg'} textAlign={'center'} fontWeight={600}>Hello user, welcome back to Peer ride :). </Text>
+              <Button colorScheme={'orange'} size={'lg'} onClick={handleSubmit}>
+                 <Flex bg={'white'}  p={'.3rem'} h={'80%'} w={'30%'} rounded={'lg'} mr={'1rem'}>
+                   <Image src={'https://i.ibb.co/f1rPnWc/metamask.png'} alt={'metamask logo'} objectFit={'contain'} w={'100%'} h={'100%'} />
+                 </Flex>
+                Login with metamask
+              </Button>
+            <Button colorScheme={'brand'} variant={'ghost'} size={'lg'} leftIcon={<IoPersonAdd />} onClick={redirectToRegisterPage} >Create new account</Button>
+          </Flex>
+
+        </Container>
+
       </Flex>
 
-      <Flex flex={1} display={{ base: "none", lg: "block" }}>
-        <Box w="100%" h="100vh">
-          <Image
-            alt={"Login Image"}
-            objectFit={"cover"}
-            w="100%"
-            h="100%"
-            src={
-              "https://images.unsplash.com/photo-1572013343866-dfdb9b416810?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=387&q=80"
-            }
-          />
-        </Box>
-      </Flex>
-    </Stack>
+    </Flex>
   );
 };
 

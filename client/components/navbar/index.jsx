@@ -15,7 +15,7 @@ import { BiHistory, BiLogOut } from "react-icons/bi";
 import { FaWallet } from "react-icons/fa";
 import { RiSettingsFill } from "react-icons/ri";
 
-export default function Simple() {
+export default function Navbar() {
   return (
     <>
       <Box bg={"white"} px={4}>

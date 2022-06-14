@@ -6,7 +6,7 @@ import React, { useContext } from "react";
 import { LocationContext } from "../../context/location";
 
 const Map = () => {
-  const { currentLocation, pickUpLocation, dropLocation } =
+  const { currentLocation, pickUpLocation, dropLocation, updateCurrentLocation } =
     useContext(LocationContext);
 
   const loader = new Loader({
@@ -23,6 +23,13 @@ const Map = () => {
         },
         zoom: 15,
       });
+
+      const geocoder = new google.maps.Geocoder();
+      geocoder
+          ?.geocode({ location: currentLocation.geometry})
+          .then((res) => {
+            updateCurrentLocation(res?.results[0]?.formatted_address)
+          })
 
       new google.maps.Marker({
         position: {

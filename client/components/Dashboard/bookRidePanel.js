@@ -31,7 +31,7 @@ const BookRide = () => {
   const background = useBreakpointValue({ base: 'none', lg: 'linear-gradient(135deg, #6B73FF 0%, #000DFF 100%)' })
   const heading = useBreakpointValue({ base: 'brand.500', lg: 'white' })
 
-  const { updatePickUpLocation, updateDropLocation } =
+  const { updatePickUpLocation, updateDropLocation, pickUpLocation, dropLocation } =
     useContext(LocationContext);
 
   const {
@@ -75,14 +75,13 @@ const BookRide = () => {
     setTimeout(() => setIsFocused("none"), 2000);
   };
 
-  const reqCurrentLocation = async () => {
-    try {
-      const location = await getCurrentLocation();
-      console.log({ location });
-    } catch (error) {
-      console.log({ error });
-    }
-  };
+  const getCurrentLocationForPickup = () => {
+    updatePickUpLocation(null, true)
+  }
+
+  const getCurrentLocationForDrop = () => {
+    updateDropLocation(null, true)
+  }
 
   const search = async () => {
     // console.log(address);
@@ -118,7 +117,7 @@ const BookRide = () => {
             type="search"
             name="pickup"
             placeholder="G T World Mall, Magadi road."
-            value={address.pickup}
+            value={pickUpLocation.formattedAddress}
             onChange={handleChange}
             onFocus={handleFocus}
             onBlur={handleBlur}
@@ -128,7 +127,7 @@ const BookRide = () => {
             size={"sm"}
             variant={"ghost"}
             colorScheme={"brand"}
-            onClick={reqCurrentLocation}
+            onClick={getCurrentLocationForPickup}
           >
             Or use current location.
           </Button>
@@ -140,7 +139,7 @@ const BookRide = () => {
             type="search"
             name="destination"
             placeholder="DSCE."
-            value={address.destination}
+            value={dropLocation.formattedAddress}
             onChange={handleChange}
             onFocus={handleFocus}
             onBlur={handleBlur}
@@ -150,7 +149,7 @@ const BookRide = () => {
             size={"sm"}
             variant={"ghost"}
             colorScheme={"brand"}
-            onClick={reqCurrentLocation}
+            onClick={getCurrentLocationForDrop}
           >
             Or use current location.
           </Button>

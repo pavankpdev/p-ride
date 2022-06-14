@@ -62,26 +62,39 @@ export const LocationContextProvider = ({ children }) => {
     });
   }, []);
 
-  const updatePickUpLocation = async (searchString) => {
-    const location = await getPlaceDetails(searchString);
-    console.log({ location });
-    if (location?.place?.geometry) {
-      setPickUpLocation({
-        geometry: location?.place?.geometry?.location || 0,
-        formattedAddress: location?.place?.formatted_address || "",
-      });
+  const updatePickUpLocation = async (searchString, isCurrent) => {
+    if(isCurrent) {
+      setPickUpLocation(currentLocation);
     }
+    // const location = await getPlaceDetails(searchString);
+    // console.log({ location });
+    // if (location?.place?.geometry) {
+    //   setPickUpLocation({
+    //     geometry: location?.place?.geometry?.location || 0,
+    //     formattedAddress: location?.place?.formatted_address || "",
+    //   });
+    // }
   };
 
-  const updateDropLocation = async (searchString) => {
-    const location = await getPlaceDetails(searchString);
-    if (location?.place?.geometry) {
-      setDropLocation({
-        geometry: location?.place?.geometry?.location || 0,
-        formattedAddress: location?.place?.formatted_address || "",
-      });
+  const updateDropLocation = async (searchString, isCurrent) => {
+    if(isCurrent) {
+      setDropLocation(currentLocation);
     }
+    // const location = await getPlaceDetails(searchString);
+    // if (location?.place?.geometry) {
+    //   setDropLocation({
+    //     geometry: location?.place?.geometry?.location || 0,
+    //     formattedAddress: location?.place?.formatted_address || "",
+    //   });
+    // }
   };
+
+  const updateCurrentLocation = (place) => {
+    setCurrentLocation({
+      ...currentLocation,
+      formattedAddress: place
+    })
+  }
 
   const updateDistance = (distance) => setDistance(distance)
 
@@ -94,7 +107,8 @@ export const LocationContextProvider = ({ children }) => {
         distance,
         updateDropLocation,
         updatePickUpLocation,
-        updateDistance
+        updateDistance,
+        updateCurrentLocation
       }}
     >
       {children}

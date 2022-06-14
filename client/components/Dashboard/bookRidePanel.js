@@ -6,7 +6,8 @@ import {
   Input,
   Flex,
   Button,
-  useDisclosure
+  useDisclosure,
+  useBreakpointValue
 } from "@chakra-ui/react";
 import { useState } from "react";
 import React, { useContext } from "react";
@@ -26,6 +27,9 @@ const BookRide = () => {
     pickup: "",
     destination: "",
   });
+
+  const background = useBreakpointValue({ base: 'none', lg: 'linear-gradient(135deg, #6B73FF 0%, #000DFF 100%)' })
+  const heading = useBreakpointValue({ base: 'brand.500', lg: 'white' })
 
   const { updatePickUpLocation, updateDropLocation } =
     useContext(LocationContext);
@@ -91,18 +95,18 @@ const BookRide = () => {
       <SelectCar isOpen={isSelectCarModalOpen} onClose={onSelectCarModalClose} />
       <Box
         w={"100%"}
-        background={"linear-gradient(135deg, #6B73FF 0%, #000DFF 100%)"}
-        px={"15px"}
+        background={background}
+        px={"1rem"}
         py={"2rem"}
         borderRadius={"10px 10px 0 0"}
       >
-        <Heading as={"h3"} size={"lg"} color={"white"}>
+        <Heading as={"h3"} size={"lg"} color={heading}>
           Where can we pick you up?
         </Heading>
       </Box>
       <Flex
         mt={"2rem"}
-        mx={"10px"}
+        mx={"1rem"}
         flexDir={"column"}
         align={"center"}
         gridGap={"1rem"}

@@ -7,7 +7,7 @@ import {
     ModalBody,
     ModalCloseButton,
     Button, Box, Image, Flex, Heading,
-    Badge, Stack, Text, Grid
+    Badge, Stack, Text, Grid, useBreakpointValue
 } from '@chakra-ui/react'
 import Slider from "react-slick";
 import {useContext, useState} from "react";
@@ -20,6 +20,9 @@ const SelectCar = ({isOpen, onClose}) => {
     const [carTypeIndex, setCarTypeIndex] = useState(0)
 
     const { distance, pickUpLocation, dropLocation } = useContext(LocationContext)
+
+    const modelSize = useBreakpointValue({ base: 'full', lg: 'xl' })
+
 
     const handleChange = (index) => {
         setCarTypeIndex(index)
@@ -55,7 +58,7 @@ const SelectCar = ({isOpen, onClose}) => {
 
 
     return <>
-        <Modal isOpen={isOpen} onClose={onClose} size={'xl'}>
+        <Modal isOpen={isOpen} onClose={onClose} size={modelSize}>
             <ModalOverlay />
             <ModalContent>
                 <ModalHeader>Select Vehicle Type</ModalHeader>
@@ -149,10 +152,10 @@ const SelectCar = ({isOpen, onClose}) => {
 
                 <ModalFooter>
                     <Flex flexDir={'column'} w={'100%'} gap={'10px'}>
-                        <Button colorScheme='brand' w={'full'} onClick={onClose}>
+                        <Button colorScheme='brand' w={'full'}>
                             Book ride
                         </Button>
-                        <Button variant='ghost'>Go Back</Button>
+                        <Button variant='ghost' onClick={onClose}>Go Back</Button>
                     </Flex>
 
                 </ModalFooter>

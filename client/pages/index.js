@@ -1,4 +1,4 @@
-import { Box, Flex, Grid } from "@chakra-ui/react";
+import { Box, Container } from "@chakra-ui/react";
 import dynamic from "next/dynamic";
 
 // LAYOUT
@@ -19,7 +19,7 @@ const Home = () => {
         <Box
           pos={"absolute"}
           d={{ base: "none", lg: "block" }}
-          w={"25%"}
+          w={"30%"}
           as={"aside"}
           top={"30px"}
           left={"30px"}
@@ -29,6 +29,22 @@ const Home = () => {
           rounded={"lg"}
         >
           <BookRide />
+        </Box>
+
+        <Box
+          pos={"absolute"}
+          d={{ lg: "none" }}
+          w={"100%"}
+          as={"aside"}
+          bottom={0}
+          zIndex={999}
+          bg={"white"}
+          pb={"2rem"}
+          rounded={"lg"}
+        >
+          <Container>
+              <BookRide />
+          </Container>
         </Box>
       </Box>
     </>

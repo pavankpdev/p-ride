@@ -9,8 +9,9 @@ import {
   useDisclosure,
   useBreakpointValue
 } from "@chakra-ui/react";
-import { useState } from "react";
+import {useMemo, useState} from "react";
 import React, { useContext } from "react";
+import { Loader } from "@googlemaps/js-api-loader";
 
 // CONTEXT
 import { LocationContext } from "../../context/location";
@@ -20,6 +21,7 @@ import SelectCar from "./selectCar";
 
 // UTILS
 import { getCurrentLocation } from "../../utils/getCurrentLocation";
+import {handlePlaceAutocomplete} from "../../utils/handlePlaceAutocomplete";
 
 const BookRide = () => {
   const [isFocused, setIsFocused] = useState("none");
@@ -31,7 +33,7 @@ const BookRide = () => {
   const background = useBreakpointValue({ base: 'none', lg: 'linear-gradient(135deg, #6B73FF 0%, #000DFF 100%)' })
   const heading = useBreakpointValue({ base: 'brand.500', lg: 'white' })
 
-  const { updatePickUpLocation, updateDropLocation, pickUpLocation, dropLocation } =
+  const { updatePickUpLocation, updateDropLocation, currentLocation, dropLocation } =
     useContext(LocationContext);
 
   const {
@@ -63,6 +65,40 @@ const BookRide = () => {
     };
   }, [address.destination]);
 
+  React.useEffect(() => {
+    if(typeof window.google === 'undefined') {
+      return
+    }
+    const inputElement = document.getElementById('pickup-input')
+
+    const autoComplete = new google.maps?.places?.Autocomplete(inputElement, {
+      componentRestrictions: { country: ["in"] },
+      fields: ["address_components", "geometry"],
+      types: ["address"],
+    })
+
+    inputElement.focus();
+
+    autoComplete.addListener("place_changed", () => handlePlaceAutocomplete(updatePickUpLocation, 'pickup', autoComplete, setAddress, address));
+  }, [address.pickup])
+
+  React.useEffect(() => {
+    if(typeof window.google === 'undefined') {
+      return
+    }
+    const inputElement = document.getElementById('drop-input')
+
+    const autoComplete = new google.maps?.places?.Autocomplete(inputElement, {
+      componentRestrictions: { country: ["in"] },
+      fields: ["address_components", "geometry"],
+      types: ["address"],
+    })
+
+    inputElement.focus();
+
+    autoComplete.addListener("place_changed", () => handlePlaceAutocomplete(updateDropLocation, 'destination', autoComplete, setAddress, address));
+  }, [address.destination])
+
   const handleChange = (event) => {
     setAddress({ ...address, [event.target.name]: event.target.value });
   };
@@ -77,10 +113,18 @@ const BookRide = () => {
 
   const getCurrentLocationForPickup = () => {
     updatePickUpLocation(null, true)
+    setAddress({
+      ...address,
+      pickup: currentLocation.formattedAddress
+    })
   }
 
   const getCurrentLocationForDrop = () => {
     updateDropLocation(null, true)
+    setAddress({
+      ...address,
+      destination: currentLocation.formattedAddress
+    })
   }
 
   const search = async () => {
@@ -117,7 +161,7 @@ const BookRide = () => {
             type="search"
             name="pickup"
             placeholder="G T World Mall, Magadi road."
-            value={pickUpLocation.formattedAddress}
+            value={address.pickup}
             onChange={handleChange}
             onFocus={handleFocus}
             onBlur={handleBlur}
@@ -139,7 +183,7 @@ const BookRide = () => {
             type="search"
             name="destination"
             placeholder="DSCE."
-            value={dropLocation.formattedAddress}
+            value={address.destination}
             onChange={handleChange}
             onFocus={handleFocus}
             onBlur={handleBlur}

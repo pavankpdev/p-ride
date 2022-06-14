@@ -124,7 +124,7 @@ const Register = () => {
                 objectFit: 'cover'
               }}
           >
-            <source src={'https://vod-progressive.akamaized.net/exp=1655161542~acl=%2Fvimeo-prod-skyfire-std-us%2F01%2F3664%2F14%2F368320203%2F1524051052.mp4~hmac=076f3357a644e56e43c18ac16dcb141a1691f9ff7a373f3a71b57080418eed0a/vimeo-prod-skyfire-std-us/01/3664/14/368320203/1524051052.mp4'} type="video/mp4" />
+            <source src={'https://nonceblox.s3.ap-south-1.amazonaws.com//nft/video.mp4'} type="video/mp4" />
             Your browser does not support the video tag.
           </video>
 

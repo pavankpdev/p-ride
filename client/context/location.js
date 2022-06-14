@@ -62,31 +62,24 @@ export const LocationContextProvider = ({ children }) => {
     });
   }, []);
 
-  const updatePickUpLocation = async (searchString, isCurrent) => {
+  const updatePickUpLocation = async (location, isCurrent) => {
     if(isCurrent) {
       setPickUpLocation(currentLocation);
     }
-    // const location = await getPlaceDetails(searchString);
-    // console.log({ location });
-    // if (location?.place?.geometry) {
-    //   setPickUpLocation({
-    //     geometry: location?.place?.geometry?.location || 0,
-    //     formattedAddress: location?.place?.formatted_address || "",
-    //   });
-    // }
+    setPickUpLocation({
+      geometry: location?.geometry,
+      formattedAddress: location?.formatted_address || "",
+    });
   };
 
-  const updateDropLocation = async (searchString, isCurrent) => {
+  const updateDropLocation = async (location, isCurrent) => {
     if(isCurrent) {
       setDropLocation(currentLocation);
     }
-    // const location = await getPlaceDetails(searchString);
-    // if (location?.place?.geometry) {
-    //   setDropLocation({
-    //     geometry: location?.place?.geometry?.location || 0,
-    //     formattedAddress: location?.place?.formatted_address || "",
-    //   });
-    // }
+      setDropLocation({
+        geometry: location?.geometry,
+        formattedAddress: location?.formatted_address || "",
+      });
   };
 
   const updateCurrentLocation = (place) => {

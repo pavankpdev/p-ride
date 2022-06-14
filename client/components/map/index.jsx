@@ -12,10 +12,20 @@ const Map = () => {
   const loader = new Loader({
     apiKey: process.env.NEXT_PUBLIC_GOOGLE_MAP_API_KEY,
     version: "weekly",
+    libraries: ["places"]
   });
 
   React.useEffect(() => {
     loader.load().then(() => {
+      const directionsService = new google.maps.DirectionsService();
+      const directionsRenderer = new google.maps.DirectionsRenderer();
+
+      directionsRenderer.setOptions({
+        polylineOptions: {
+          strokeColor: '#000ce6'
+        }
+      });
+
       const map = new google.maps.Map(document.getElementById("map"), {
         center: {
           lat: currentLocation.geometry.lat || 12.9736067,
@@ -24,6 +34,8 @@ const Map = () => {
         zoom: 15,
       });
 
+      directionsRenderer.setMap(map);
+
       const geocoder = new google.maps.Geocoder();
       geocoder
           ?.geocode({ location: currentLocation.geometry})
@@ -31,21 +43,21 @@ const Map = () => {
             updateCurrentLocation(res?.results[0]?.formatted_address)
           })
 
-      new google.maps.Marker({
-        position: {
-          lat: pickUpLocation.geometry.lat || 0,
-          lng: pickUpLocation.geometry.lng || 0,
-        },
-        map: map,
-      });
-      
-      new google.maps.Marker({
-        position: {
-          lat: dropLocation.geometry.lat || 0,
-          lng: dropLocation.geometry.lng || 0,
-        },
-        map: map,
-      });
+      directionsService
+          .route({
+            origin: {
+              lat: pickUpLocation?.geometry?.lat || 0,
+              lng: pickUpLocation?.geometry?.lng || 0,
+            },
+            destination: {
+              lat: dropLocation?.geometry?.lat || 0,
+              lng: dropLocation?.geometry?.lng || 0,
+            },
+            travelMode: google.maps.TravelMode.DRIVING,
+          })
+          .then((resp) => directionsRenderer.setDirections(resp))
+          .catch((err) => console.log(err))
+
     });
   }, [loader, currentLocation, pickUpLocation, dropLocation]);
 

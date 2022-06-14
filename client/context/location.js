@@ -28,7 +28,10 @@ export const LocationContext = React.createContext({
   },
   updatePickUpLocation: (searchString) => {},
   updateDropLocation: (searchString) => {},
-  distance: 0
+  distance: 0,
+  duration: 0,
+  updateDistance: (distance) => {},
+  updateDuration: (duration) => {}
 });
 
 export const LocationContextProvider = ({ children }) => {
@@ -54,6 +57,7 @@ export const LocationContextProvider = ({ children }) => {
     },
   });
   const [distance, setDistance] = useState(0)
+  const [duration, setDuration] = useState(0)
 
   React.useEffect(() => {
     getCurrentLocation().then((coord) => {
@@ -66,6 +70,7 @@ export const LocationContextProvider = ({ children }) => {
     if(isCurrent) {
       setPickUpLocation(currentLocation);
     }
+    if(!location?.geometry || !location?.formatted_address) return
     setPickUpLocation({
       geometry: location?.geometry,
       formattedAddress: location?.formatted_address || "",
@@ -76,6 +81,7 @@ export const LocationContextProvider = ({ children }) => {
     if(isCurrent) {
       setDropLocation(currentLocation);
     }
+    if(!location?.geometry || !location?.formatted_address) return
       setDropLocation({
         geometry: location?.geometry,
         formattedAddress: location?.formatted_address || "",
@@ -90,6 +96,7 @@ export const LocationContextProvider = ({ children }) => {
   }
 
   const updateDistance = (distance) => setDistance(distance)
+  const updateDuration = (duration) => setDuration(duration)
 
   return (
     <LocationContext.Provider
@@ -98,10 +105,12 @@ export const LocationContextProvider = ({ children }) => {
         dropLocation,
         currentLocation,
         distance,
+        duration,
         updateDropLocation,
         updatePickUpLocation,
         updateDistance,
-        updateCurrentLocation
+        updateCurrentLocation,
+        updateDuration
       }}
     >
       {children}

@@ -33,8 +33,15 @@ const BookRide = () => {
   const background = useBreakpointValue({ base: 'none', lg: 'linear-gradient(135deg, #6B73FF 0%, #000DFF 100%)' })
   const heading = useBreakpointValue({ base: 'brand.500', lg: 'white' })
 
-  const { updatePickUpLocation, updateDropLocation, currentLocation, dropLocation } =
-    useContext(LocationContext);
+  const {
+    updatePickUpLocation,
+    updateDropLocation,
+    currentLocation,
+    dropLocation,
+    pickUpLocation,
+    updateDistance,
+    updateDuration
+  } = useContext(LocationContext);
 
   const {
     isOpen: isSelectCarModalOpen,
@@ -80,6 +87,7 @@ const BookRide = () => {
     inputElement.focus();
 
     autoComplete.addListener("place_changed", () => handlePlaceAutocomplete(updatePickUpLocation, 'pickup', autoComplete, setAddress, address));
+
   }, [address.pickup])
 
   React.useEffect(() => {
@@ -97,6 +105,7 @@ const BookRide = () => {
     inputElement.focus();
 
     autoComplete.addListener("place_changed", () => handlePlaceAutocomplete(updateDropLocation, 'destination', autoComplete, setAddress, address));
+
   }, [address.destination])
 
   const handleChange = (event) => {
@@ -129,8 +138,31 @@ const BookRide = () => {
 
   const search = async () => {
     // console.log(address);
-    updatePickUpLocation(address.pickup);
+
+    const service = new google.maps.DistanceMatrixService();
+
+    const request = {
+      origins: [pickUpLocation.geometry],
+      destinations: [dropLocation.geometry],
+      travelMode: google.maps.TravelMode.DRIVING,
+      unitSystem: google.maps.UnitSystem.METRIC,
+      avoidHighways: false,
+      avoidTolls: false,
+    };
+
+    const res = await service.getDistanceMatrix(request);
+
+    if(res && res.rows.length) {
+        if(res.rows[0].elements.length) {
+          console.log(res.rows[0].elements[0])
+          updateDistance(res.rows[0].elements[0]?.distance?.value / 1000)
+          updateDuration(res.rows[0]?.elements[0]?.duration?.value / 60)
+        }
+    }
+
     onSelectCarModalOpen()
+
+
   };
 
   return (

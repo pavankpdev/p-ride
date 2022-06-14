@@ -19,7 +19,7 @@ import {LocationContext} from "../../context/location";
 const SelectCar = ({isOpen, onClose}) => {
     const [carTypeIndex, setCarTypeIndex] = useState(0)
 
-    const { distance, pickUpLocation, dropLocation } = useContext(LocationContext)
+    const { distance, pickUpLocation, dropLocation, duration } = useContext(LocationContext)
 
     const modelSize = useBreakpointValue({ base: 'full', lg: 'xl' })
 
@@ -111,7 +111,7 @@ const SelectCar = ({isOpen, onClose}) => {
                             </Flex>
                             <Flex flexDir={'column'} gap={'.2rem'} alignItems={'flex-end'} w={'40%'}>
                                 <Heading as={'h3'} size={'md'} fontWeight={800} color={'brand.400'}>
-                                    {vehicleData[carTypeIndex]?.basePrice * distance} $PRI
+                                    {Math.round(vehicleData[carTypeIndex]?.basePrice * distance)} $PRI
                                 </Heading>
                             </Flex>
                         </Flex>
@@ -128,6 +128,7 @@ const SelectCar = ({isOpen, onClose}) => {
 
                     <Flex flexDir={'column'} my={'1rem'} gap={'.5rem'}>
                         <Heading as={'h4'} size={'md'} fontWeight={600} p={0}>Distance</Heading>
+                        <Text>Duration: {duration.toFixed(2)}</Text>
                         <Grid gridTemplateColumns={'45% 10% 45%'} >
                             <Flex w={'full'} alignItems={'flex-start'} gap={'5px'} bg={'gray.100'} p={'5px'} rounded={'md'} >
                                 <Text w={'full'} fontSize={'sm'} >
@@ -135,7 +136,7 @@ const SelectCar = ({isOpen, onClose}) => {
                                 </Text>
                             </Flex>
                             <Flex flexDir={'column'} w={'full'} alignItems={'center'} textAlign={'center'}>
-                                <Text fontSize={'sm'} >{distance} kms</Text>
+                                <Text fontSize={'sm'} >{distance.toFixed(2)} kms</Text>
                                 <Text color={'brand.500'}>
                                     <BsArrowRightCircle />
                                 </Text>

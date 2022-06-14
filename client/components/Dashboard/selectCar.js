@@ -27,7 +27,7 @@ const SelectCar = ({isOpen, onClose}) => {
 
     const settings = {
         dots: false,
-        infinite: false,
+        infinite: true,
         speed: 500,
         slidesToShow: 1,
         slidesToScroll: 1,
@@ -61,7 +61,7 @@ const SelectCar = ({isOpen, onClose}) => {
                 <ModalHeader>Select Vehicle Type</ModalHeader>
                 <ModalCloseButton />
                 <ModalBody>
-                    <Box w={'100%'} h={'50%'} border={'2px solid black'}>
+                    <Box w={'100%'} h={'50%'} p={'1rem'}>
                         <Slider {...settings}>
                             <Box w={'100%'} h={'100%'} bg={'white'}>
                                 <Image src={'https://i.ibb.co/LrPVWKn/SUV.jpg'} alt={'suv image'} w={'100%'} h={'100%'} />
@@ -126,7 +126,7 @@ const SelectCar = ({isOpen, onClose}) => {
                     <Flex flexDir={'column'} my={'1rem'} gap={'.5rem'}>
                         <Heading as={'h4'} size={'md'} fontWeight={600} p={0}>Distance</Heading>
                         <Grid gridTemplateColumns={'45% 10% 45%'} >
-                            <Flex w={'full'} alignItems={'flex-start'} gap={'5px'} bg={'gray.100'} p={'5px'}>
+                            <Flex w={'full'} alignItems={'flex-start'} gap={'5px'} bg={'gray.100'} p={'5px'} rounded={'md'} >
                                 <Text w={'full'} fontSize={'sm'} >
                                     {pickUpLocation.formattedAddress}
                                 </Text>
@@ -137,7 +137,7 @@ const SelectCar = ({isOpen, onClose}) => {
                                     <BsArrowRightCircle />
                                 </Text>
                             </Flex>
-                            <Flex w={'full'} alignItems={'flex-start'} gap={'5px'} bg={'gray.100'} p={'5px'}>
+                            <Flex w={'full'} alignItems={'flex-start'} gap={'5px'} bg={'gray.100'} p={'5px'} rounded={'md'} >
                                 <Text w={'full'} fontSize={'sm'}  >
                                     {dropLocation.formattedAddress}
                                 </Text>

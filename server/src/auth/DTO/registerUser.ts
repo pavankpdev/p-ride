@@ -10,3 +10,17 @@ export class RegisterUserDto {
   @IsEmail()
   email: string;
 }
+
+export class RegisterDriverDto {
+  @IsNotEmpty()
+  password: string;
+
+  @IsNotEmpty()
+  fullname: string;
+
+  @IsEmail()
+  email: string;
+
+  @IsNotEmpty()
+  address: string;
+}

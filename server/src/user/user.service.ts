@@ -3,11 +3,15 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model, Document } from 'mongoose';
 import { User, UserDocument } from './schema/user.schema';
 
-import { RegisterUserDto } from '../auth/DTO/registerUser';
+import { RegisterDriverDto, RegisterUserDto } from '../auth/DTO/registerUser';
+import { Driver, DriverDocument } from './schema/driver.schema';
 
 @Injectable()
 export class UserService {
-  constructor(@InjectModel(User.name) private userModel: Model<UserDocument>) {}
+  constructor(
+    @InjectModel(User.name) private userModel: Model<UserDocument>,
+    @InjectModel(Driver.name) private driverModel: Model<DriverDocument>,
+  ) {}
 
   async findOne(
     searchField: Record<string, string>,
@@ -19,5 +23,17 @@ export class UserService {
     user: RegisterUserDto,
   ): Promise<User & Document & { _id: any }> {
     return this.userModel.create(user);
+  }
+
+  async findOneDriver(
+    searchField: Record<string, string>,
+  ): Promise<DriverDocument | null> {
+    return this.driverModel.findOne(searchField).exec();
+  }
+
+  async createDriver(
+    driver: RegisterDriverDto,
+  ): Promise<Driver & Document & { _id: any }> {
+    return this.driverModel.create(driver);
   }
 }

@@ -7,6 +7,11 @@ import { LocationContextProvider } from "../context/location";
 // THEME
 import PRideTheme from "../theme";
 
+// STYLES
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
+import "./index.css"
+
 function MyApp({ Component, pageProps }) {
   const Layout = Component.layout || (({ children }) => <>{children}</>);
 

@@ -6,12 +6,16 @@ import {
   Input,
   Flex,
   Button,
+  useDisclosure
 } from "@chakra-ui/react";
 import { useState } from "react";
 import React, { useContext } from "react";
 
 // CONTEXT
 import { LocationContext } from "../../context/location";
+
+// COMPONENTS
+import SelectCar from "./selectCar";
 
 // UTILS
 import { getCurrentLocation } from "../../utils/getCurrentLocation";
@@ -25,6 +29,13 @@ const BookRide = () => {
 
   const { updatePickUpLocation, updateDropLocation } =
     useContext(LocationContext);
+
+  const {
+    isOpen: isSelectCarModalOpen,
+    onOpen: onSelectCarModalOpen,
+    onClose: onSelectCarModalClose
+  } = useDisclosure()
+
 
   React.useEffect(() => {
     // Using a debounce effect.
@@ -72,10 +83,12 @@ const BookRide = () => {
   const search = async () => {
     // console.log(address);
     updatePickUpLocation(address.pickup);
+    onSelectCarModalOpen()
   };
 
   return (
     <>
+      <SelectCar isOpen={isSelectCarModalOpen} onClose={onSelectCarModalClose} />
       <Box
         w={"100%"}
         background={"linear-gradient(135deg, #6B73FF 0%, #000DFF 100%)"}

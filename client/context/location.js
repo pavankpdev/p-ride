@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState} from "react";
 
 // UTILS
 import { getCurrentLocation } from "../utils/getCurrentLocation";
@@ -28,6 +28,7 @@ export const LocationContext = React.createContext({
   },
   updatePickUpLocation: (searchString) => {},
   updateDropLocation: (searchString) => {},
+  distance: 0
 });
 
 export const LocationContextProvider = ({ children }) => {
@@ -52,6 +53,7 @@ export const LocationContextProvider = ({ children }) => {
       lng: 0,
     },
   });
+  const [distance, setDistance] = useState(0)
 
   React.useEffect(() => {
     getCurrentLocation().then((coord) => {
@@ -81,14 +83,18 @@ export const LocationContextProvider = ({ children }) => {
     }
   };
 
+  const updateDistance = (distance) => setDistance(distance)
+
   return (
     <LocationContext.Provider
       value={{
         pickUpLocation,
         dropLocation,
         currentLocation,
+        distance,
         updateDropLocation,
         updatePickUpLocation,
+        updateDistance
       }}
     >
       {children}

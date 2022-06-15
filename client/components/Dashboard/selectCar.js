@@ -7,7 +7,7 @@ import {
     ModalBody,
     ModalCloseButton,
     Button, Box, Image, Flex, Heading,
-    Badge, Stack, Text, Grid, useBreakpointValue
+    Badge, Stack, Text, Grid, useBreakpointValue, useDisclosure
 } from '@chakra-ui/react'
 import Slider from "react-slick";
 import {useContext, useState} from "react";
@@ -18,6 +18,7 @@ import {LocationContext} from "../../context/location";
 
 // HOOK
 import useSocket from "../../hooks/useSocket";
+import SearchRide from "../searchRide";
 
 const SelectCar = ({isOpen, onClose}) => {
     const [carTypeIndex, setCarTypeIndex] = useState(0)
@@ -26,7 +27,13 @@ const SelectCar = ({isOpen, onClose}) => {
 
     const modelSize = useBreakpointValue({ base: 'full', lg: 'xl' })
 
-    const {socket, socketId} = useSocket();
+    const {socket} = useSocket();
+
+    const {
+        isOpen: isSearchCarModalOpen,
+        onOpen: onSearchCarModalOpen,
+        onClose: onSearchCarModalClose
+    } = useDisclosure()
 
     const handleChange = (index) => {
         setCarTypeIndex(index)
@@ -62,6 +69,7 @@ const SelectCar = ({isOpen, onClose}) => {
 
 
     const bookRide = () => {
+        onSearchCarModalOpen()
         const otp = Math.floor(1000 + Math.random() * 9000);
         const payload = {
             rideId: 1,
@@ -79,7 +87,7 @@ const SelectCar = ({isOpen, onClose}) => {
             otp,
             fullname: "Pavan",
             phno: "908080808080",
-            socketId,
+            userId: '123',
         }
 
         socket.emit('NEW_RIDE_REQUEST', payload)
@@ -87,6 +95,8 @@ const SelectCar = ({isOpen, onClose}) => {
 
 
     return <>
+        <SearchRide isOpen={isSearchCarModalOpen} onClose={onSearchCarModalClose} />
+
         <Modal isOpen={isOpen} onClose={onClose} size={modelSize}>
             <ModalOverlay />
             <ModalContent>

@@ -5,6 +5,7 @@ import { getCurrentLocation } from "utils/getCurrentLocation";
 
 // HOOKS
 import useSocket from "hooks/useSocket";
+import {useRouter} from "next/router";
 
 type Geometry = {
     lat: number,
@@ -23,10 +24,11 @@ export interface IRideRequest {
     carType: 'SUV' | 'Sedan' | 'Mini';
     price: number;
     distance: number;
-    socketId: string;
+    userId: string;
     otp: number;
     fullname: string;
     phno: string
+    isAccepted?: boolean
 }
 
 export const LocationContext = React.createContext({
@@ -59,7 +61,7 @@ export const LocationContext = React.createContext({
     updateDuration: (duration: number) => {},
     updateCurrentLocation: (place: string) => {},
     passRide: (socketId: string) => {},
-    acceptRide: (socketId: string): boolean => false,
+    acceptRide: (socketId: string, otp: string | number): boolean => false,
     getRideDetails: (socketId: string):IRideRequest | null=> null ,
     rideQueue: [] as IRideRequest[]
 });
@@ -91,19 +93,23 @@ export const LocationContextProvider: React.FC<{children: ReactNode}> = ({ child
     const [rideQueue, setRideQueue] = useState<IRideRequest[]>([])
     const [acceptedRideId, setAcceptedRideId] = useState<any>('')
 
-    const {socket} = useSocket();
+    const {socket, socketId} = useSocket();
+    const router = useRouter();
 
     React.useEffect(() => {
         if(typeof localStorage !== 'undefined') {
             const data = localStorage.getItem('ride-queue')
             if(data) {
-                setRideQueue(JSON.parse(data).queue)
+                const queue: IRideRequest[] = JSON.parse(data).queue;
+                const state = queue.filter((ride) => !ride.isAccepted)
+                setRideQueue(state)
             }
         }
     }, [])
 
     React.useEffect(() => {
         getCurrentLocation().then((coord) => {
+            console.log({coord})
             setCurrentLocation({
                 ...currentLocation,
                 ...coord
@@ -113,7 +119,7 @@ export const LocationContextProvider: React.FC<{children: ReactNode}> = ({ child
 
     React.useEffect(() => {
         socket.on('NEW_RIDE_QUEUE', (data: IRideRequest) => {
-            if(!rideQueue.some(({socketId}) => socketId == data.socketId)){
+            if(!rideQueue.some(({userId}) => userId == data.userId)){
                 if(acceptedRideId) return
                 const state = [...rideQueue, data]
                 setRideQueue(state)
@@ -124,7 +130,7 @@ export const LocationContextProvider: React.FC<{children: ReactNode}> = ({ child
         })
         return () => {
             socket.off('NEW_RIDE_QUEUE', (data: IRideRequest) => {
-                if(!rideQueue.some(({socketId}) => socketId == data.socketId)){
+                if(!rideQueue.some(({userId}) => userId == data.userId)){
                     if(acceptedRideId) return
                     const state = [...rideQueue, data]
                     setRideQueue(state)
@@ -168,20 +174,53 @@ export const LocationContextProvider: React.FC<{children: ReactNode}> = ({ child
     const updateDistance = (distance: number) => setDistance(distance)
     const updateDuration = (duration: number) => setDuration(duration)
 
-    const passRide = (socketId: string) => {
-        const state = rideQueue.filter((ride) => ride.socketId !== socketId)
+    const passRide = (userId: string) => {
+        const state = rideQueue.filter((ride) => ride.userId !== userId)
         setRideQueue(state)
+        if(typeof localStorage !== 'undefined') {
+            localStorage.setItem('ride-queue', JSON.stringify({queue: state}))
+        }
     }
 
-    const acceptRide = (socketId: string): boolean => {
-        const ride = rideQueue.filter((ride) => ride.socketId === socketId)
+    const acceptRide = (userId: string, otp: string | number): boolean => {
+        const ride = rideQueue.filter((ride) => ride.userId === userId)
         if(!ride.length) return false
-        setAcceptedRideId(ride[0].socketId)
+        setAcceptedRideId(ride[0].userId)
+
+        const acceptRequestPayload = {
+            driver: {
+                fullname: "string",
+                location: {
+                    formatted_address: currentLocation.formattedAddress,
+                    geometry: currentLocation.geometry
+                },
+                driverId: 1233,
+                phno: '99999999999'
+            },
+            customerSocketId: userId,
+            otp
+        }
+
+        socket.emit('DRIVER_ACCEPT_RIDE', acceptRequestPayload)
+
+        const state = rideQueue.map((ride) => {
+            if(ride.userId == userId) {
+                return {...ride, isAccepted: true}
+            }
+
+            return userId
+        })
+
+        setRideQueue(state as IRideRequest[])
+        if(typeof localStorage !== 'undefined') {
+            localStorage.setItem('ride-queue', JSON.stringify({queue: state}))
+        }
+
         return true
     }
 
-    const getRideDetails = (socketId: string): IRideRequest => {
-        const ride = rideQueue.filter((ride) => ride.socketId === socketId)
+    const getRideDetails = (userId: string): IRideRequest => {
+        const ride = rideQueue.filter((ride) => ride.userId === userId)
         return ride[0]
     }
 

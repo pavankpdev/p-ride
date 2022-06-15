@@ -16,8 +16,20 @@ export interface IRideRequest {
     carType: 'SUV' | 'Sedan' | 'Mini';
     price: number;
     distance: number;
-    socketId: string;
+    userId: string;
     otp: number;
     fullname: string;
     phno: string
+}
+
+type Driver = {
+    fullname: string;
+    location: ILocation
+    driverId: string;
+    phno: string
+}
+
+export interface IAcceptRideData {
+    customerSocketId: string;
+    driver: Driver
 }

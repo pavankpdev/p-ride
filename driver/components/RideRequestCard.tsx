@@ -11,14 +11,14 @@ const RideRequestCard: React.FC<IRideRequest> = (props) => {
     const router = useRouter()
 
     const handlePassRide = () => {
-        passRide(props.socketId)
+        passRide(props.userId)
     }
 
     const handleAcceptRide = () => {
-        const status = acceptRide(props.socketId)
+        const status = acceptRide(props.userId, props.otp)
         if(!status) return alert('Invalid ride!')
 
-        router.push(`/details/${props.socketId}`)
+        router.push(`/details/${props.userId}`)
     }
 
     return <>

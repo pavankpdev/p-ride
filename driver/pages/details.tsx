@@ -53,7 +53,7 @@ const Details: NextPage = () => {
                             Start Ride
                         </Button>
                     </Flex>
-                    <MapComp />
+                    {/*<MapComp />*/}
 
                 </Grid>
             </Container>

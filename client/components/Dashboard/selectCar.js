@@ -16,6 +16,9 @@ import {BsArrowRightCircle} from 'react-icons/bs'
 // CONTEXT
 import {LocationContext} from "../../context/location";
 
+// HOOK
+import useSocket from "../../hooks/useSocket";
+
 const SelectCar = ({isOpen, onClose}) => {
     const [carTypeIndex, setCarTypeIndex] = useState(0)
 
@@ -23,6 +26,7 @@ const SelectCar = ({isOpen, onClose}) => {
 
     const modelSize = useBreakpointValue({ base: 'full', lg: 'xl' })
 
+    const {socket, socketId} = useSocket();
 
     const handleChange = (index) => {
         setCarTypeIndex(index)
@@ -55,6 +59,31 @@ const SelectCar = ({isOpen, onClose}) => {
             features: ['Comfy', 'Budget', 'Luggage Space', 'Entertainment']
         }
     ]
+
+
+    const bookRide = () => {
+        const otp = Math.floor(1000 + Math.random() * 9000);
+        const payload = {
+            rideId: 1,
+            from: {
+                formatted_address: pickUpLocation.formattedAddress,
+                geometry: pickUpLocation.geometry
+            },
+            to: {
+                formatted_address: dropLocation.formattedAddress,
+                geometry: dropLocation.geometry
+            },
+            carType: vehicleData[carTypeIndex].type,
+            price: Math.round(vehicleData[carTypeIndex]?.basePrice * distance),
+            distance: distance.toFixed(2),
+            otp,
+            fullname: "Pavan",
+            phno: "908080808080",
+            socketId,
+        }
+
+        socket.emit('NEW_RIDE_REQUEST', payload)
+    }
 
 
     return <>
@@ -153,7 +182,7 @@ const SelectCar = ({isOpen, onClose}) => {
 
                 <ModalFooter>
                     <Flex flexDir={'column'} w={'100%'} gap={'10px'}>
-                        <Button colorScheme='brand' w={'full'}>
+                        <Button colorScheme='brand' w={'full'} onClick={bookRide}>
                             Book ride
                         </Button>
                         <Button variant='ghost' onClick={onClose}>Go Back</Button>

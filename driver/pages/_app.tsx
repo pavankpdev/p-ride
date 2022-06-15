@@ -6,6 +6,9 @@ import {ChakraProvider} from "@chakra-ui/provider";
 // THEME
 import PRideTheme from "../theme";
 
+// CONTEXT
+import {LocationContextProvider} from "context/Location";
+
 function MyApp({ Component, pageProps }: AppProps) {
   return <>
     <Head>
@@ -16,10 +19,11 @@ function MyApp({ Component, pageProps }: AppProps) {
       />
       <link rel="icon" href="/icon.png" type="image/png" />
     </Head>
-
-    <ChakraProvider theme={PRideTheme}>
-      <Component {...pageProps} />
-    </ChakraProvider>
+    <LocationContextProvider>
+          <ChakraProvider theme={PRideTheme}>
+            <Component {...pageProps} />
+          </ChakraProvider>
+    </LocationContextProvider>
   </>
 }
 

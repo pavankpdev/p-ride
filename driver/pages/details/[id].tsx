@@ -13,6 +13,7 @@ const RideDetails: NextPage = () => {
 
     const [otp, setOtp] = useState(0)
     const [ride, setRide] = useState<IRideRequest | null>(null)
+    const [isRideStarted, setIsRideStarted] = useState(false);
 
     const {getRideDetails} = useContext(LocationContext)
     const router = useRouter();
@@ -29,7 +30,14 @@ const RideDetails: NextPage = () => {
         setRide(details)
     }, [router])
 
+    const startRide = () => {
+        if(otp == ride?.otp){
+            setIsRideStarted(true)
+            return
+        }
 
+        return alert('Invalid OTP')
+    }
 
     return (
         <>
@@ -56,16 +64,32 @@ const RideDetails: NextPage = () => {
                             </Text>
                         </Flex>
 
-                        <FormControl>
-                            <FormLabel htmlFor='otp'>OTP</FormLabel>
-                            <Input id='otp' type='text' placeholder={'0000'} value={otp} onChange={handleOtpChange} />
-                        </FormControl>
+                        <Flex flexDir={'column'} gap={'10px'} bg={'gray.100'} p={'1rem'} rounded={'lg'}>
+                            <Heading as={'h3'} size={'md'}>Drop location</Heading>
+                            <Text>
+                                {ride?.to?.formatted_address}
+                            </Text>
+                        </Flex>
 
-                        <Button colorScheme={'brand'} disabled={!otp}>
-                            Start Ride
-                        </Button>
+                        {
+                            !isRideStarted &&  <FormControl>
+                                <FormLabel htmlFor='otp'>OTP</FormLabel>
+                                <Input id='otp' type='text' placeholder={'0000'} value={otp} onChange={handleOtpChange} />
+                            </FormControl>
+                        }
+
+                        {
+                            !isRideStarted
+                            ? <Button colorScheme={'brand'} disabled={!otp} onClick={startRide}>
+                                    Start Ride
+                              </Button>
+                            : <Button colorScheme={'brand'} disabled={!otp} onClick={startRide}>
+                                    Complete Ride
+                              </Button>
+
+                        }
                     </Flex>
-                    <MapComp />
+                    <MapComp isRideStarted={isRideStarted} />
 
                 </Grid>
             </Container>

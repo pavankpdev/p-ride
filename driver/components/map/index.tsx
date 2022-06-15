@@ -4,7 +4,7 @@ import React, {useContext, useMemo} from "react";
 import {useRouter} from "next/router";
 import {LocationContext} from "context/Location";
 
-const Map: React.FC = () => {
+const Map: React.FC<{isRideStarted: boolean}> = ({isRideStarted}) => {
 
     const loader = useMemo(() => new Loader({
         apiKey: process.env.NEXT_PUBLIC_GOOGLE_MAP_API_KEY as string,
@@ -42,17 +42,23 @@ const Map: React.FC = () => {
                     const ride = getRideDetails(router.query?.id as string);
 
                     if(!ride) return
+                    let origin;
+                    let destination;
+
+                    if(isRideStarted){
+                        origin = ride?.from?.geometry;
+                        destination = ride?.to?.geometry;
+                    }else {
+                        origin = currentLocation?.geometry
+                        destination = ride?.from?.geometry
+                    }
+
+                    console.log(origin, destination)
 
                     directionsService
                         .route({
-                            origin: {
-                                lat: currentLocation?.geometry?.lat || 0,
-                                lng: currentLocation?.geometry?.lng || 0,
-                            },
-                            destination: {
-                                lat: ride?.from?.geometry?.lat || 0,
-                                lng: ride?.from?.geometry?.lng || 0,
-                            },
+                            origin,
+                            destination,
                             travelMode: google.maps.TravelMode.DRIVING,
                         })
                         .then((resp) => directionsRenderer.setDirections(resp))
@@ -68,7 +74,7 @@ const Map: React.FC = () => {
         };
 
 
-    }, [loader, router]);
+    }, [loader, router, isRideStarted]);
 
     return <Box id="map" h={"100%"} w={"100%"} />;
 };

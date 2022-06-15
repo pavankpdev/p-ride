@@ -198,15 +198,7 @@ const BookRide = () => {
             onFocus={handleFocus}
             onBlur={handleBlur}
           />
-          <Button
-            d={isFocused === "pickup" ? "block" : "none"}
-            size={"sm"}
-            variant={"ghost"}
-            colorScheme={"brand"}
-            onClick={getCurrentLocationForPickup}
-          >
-            Or use current location.
-          </Button>
+
         </FormControl>
         <FormControl>
           <FormLabel htmlFor="pickup-input">Destination location</FormLabel>
@@ -220,15 +212,7 @@ const BookRide = () => {
             onFocus={handleFocus}
             onBlur={handleBlur}
           />
-          <Button
-            d={isFocused === "destination" ? "block" : "none"}
-            size={"sm"}
-            variant={"ghost"}
-            colorScheme={"brand"}
-            onClick={getCurrentLocationForDrop}
-          >
-            Or use current location.
-          </Button>
+
         </FormControl>
         <Button
           w={"full"}

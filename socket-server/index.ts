@@ -2,7 +2,7 @@ import app from "express";
 import { createServer } from "http";
 
 // TYPES
-import { IRideRequest } from "./type";
+import {IAcceptRideData, IRideRequest} from "./type";
 
 const server = createServer(app);
 
@@ -25,8 +25,9 @@ io.on("connection", (socket: any) => {
      * @from: When driver accepts a ride request
      * @to: Emit the acceptance status to user
      * */
-    socket.on("DRIVER_ACCEPT_RIDE", (customerSocketId: string) => {
-        socket.to(customerSocketId).emit("ACCEPT_RIDE", { rideAccepted: true });
+    socket.on("DRIVER_ACCEPT_RIDE", (acceptRideData: IAcceptRideData) => {
+        console.log(acceptRideData)
+        socket.broadcast.emit("ACCEPT_RIDE", acceptRideData);
     });
 
     /*
@@ -42,7 +43,7 @@ io.on("connection", (socket: any) => {
      * @to: start notifying other drivers to accept the ride request
      * */
     socket.on("DRIVER_CANCEL_RIDE", (rideRequestData: IRideRequest) => {
-        socket.to(rideRequestData.socketId).emit("RIDE_CANCELLED", {rideCancelled: true})
+        socket.emit("RIDE_CANCELLED", {rideCancelled: true})
         socket.emit("NEW_RIDE_QUEUE", rideRequestData);
     });
 
@@ -50,8 +51,8 @@ io.on("connection", (socket: any) => {
      * @from: When user cancels the ride
      * @to: notify the driver
      * */
-    socket.on("USER_CANCEL_RIDE", (driverSocketId: string) => {
-        socket.to(driverSocketId).emit("RIDE_CANCELLED", {rideCancelled: true});
+    socket.on("USER_CANCEL_RIDE", () => {
+        socket.broadcast.emit("RIDE_CANCELLED", {rideCancelled: true});
     });
 
     /*

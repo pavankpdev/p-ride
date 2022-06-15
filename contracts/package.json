@@ -30,6 +30,7 @@
     "test": "npx hardhat test",
     "compile": "npx hardhat compile",
     "deploy:ropsten": "npx hardhat --network ropsten deploy",
+    "deploy:mumbai": "npx hardhat --network mumbai deploy",
     "prettier": "prettier --check \"**/*.{ts,js,sol}\"",
     "prettier:fix": "prettier --write \"**/*.{ts,js,sol}\""  }
 }

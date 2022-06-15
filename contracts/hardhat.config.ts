@@ -11,8 +11,13 @@ const config: HardhatUserConfig = {
     ropsten: {
       url: "https://speedy-nodes-nyc.moralis.io/e1ab103eda1ef6147621f342/eth/ropsten",
       accounts: [
-        "0fd3cfa739ef020390437bb90a9ba02accac47053a6a8b8e0acd6caf80dc7718",
+        "624a1fee511e3da76182f629674552d0556cd3fe5dcaa7fe4aab4b9e8e7d20b9",
       ],
+    },
+    mumbai: {
+      url: `https://speedy-nodes-nyc.moralis.io/6a68cf0be9afb9582dc98bd1/polygon/mumbai`,
+      chainId: 80001,
+      accounts: ["624a1fee511e3da76182f629674552d0556cd3fe5dcaa7fe4aab4b9e8e7d20b9",],
     },
   },
   namedAccounts: {

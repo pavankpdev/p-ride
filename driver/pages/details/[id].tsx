@@ -1,10 +1,25 @@
 import {NextPage} from "next";
 import NavBar from "components/navbar";
-import {Avatar, Button, Container, Flex, FormControl, FormLabel, Grid, Heading, Input, Link, Text} from "@chakra-ui/react";
+import {
+    Avatar,
+    Button,
+    Container,
+    Flex,
+    FormControl,
+    FormLabel,
+    Grid,
+    Heading,
+    Input,
+    Link,
+    Text,
+} from "@chakra-ui/react";
 import dynamic from "next/dynamic";
 import {useContext, useEffect, useState} from "react";
 import {IRideRequest, LocationContext} from "context/Location";
 import {useRouter} from "next/router";
+
+// HOOKS
+import useSocket from "hooks/useSocket";
 
 // using nextjs dynamic import since window is undefined in next SSR
 const MapComp = dynamic(() => import("components/map"), { ssr: false });
@@ -15,8 +30,9 @@ const RideDetails: NextPage = () => {
     const [ride, setRide] = useState<IRideRequest | null>(null)
     const [isRideStarted, setIsRideStarted] = useState(false);
 
-    const {getRideDetails} = useContext(LocationContext)
+    const {getRideDetails, passRide} = useContext(LocationContext)
     const router = useRouter();
+    const {socket} = useSocket();
 
     const handleOtpChange = (e: any) => {
         if(e.target.value.length > 4){
@@ -29,6 +45,22 @@ const RideDetails: NextPage = () => {
         const details = getRideDetails(router.query?.id as string)
         setRide(details)
     }, [router])
+
+    useEffect(() => {
+        socket.on('RIDE_CANCELLED', () => {
+            alert('This ride has been cancelled by the user.')
+            passRide(router.query?.id as string)
+            router.push('/')
+        })
+
+        return () => {
+            socket.off('RIDE_CANCELLED', () => {
+                alert('This ride has been cancelled by the user.')
+                passRide(router.query?.id as string)
+                router.push('/')
+            })
+        }
+    }, [socket])
 
     const startRide = () => {
         if(otp == ride?.otp){

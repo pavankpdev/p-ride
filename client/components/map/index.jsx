@@ -5,7 +5,7 @@ import React, { useContext } from "react";
 // CONTEXT
 import { LocationContext } from "../../context/location";
 
-const Map = () => {
+const Map = ({h,w}) => {
   const { currentLocation, pickUpLocation, dropLocation } =
     useContext(LocationContext);
 
@@ -37,13 +37,6 @@ const Map = () => {
 
               directionsRenderer.setMap(map);
 
-              // const geocoder = new google.maps.Geocoder();
-              // geocoder
-              //     ?.geocode({ location: currentLocation.geometry})
-              //     .then((res) => {
-              //       updateCurrentLocation(res?.results[0]?.formatted_address)
-              //     })
-
               if(pickUpLocation?.geometry?.lat && dropLocation?.geometry?.lng){
                   directionsService
                       .route({
@@ -70,7 +63,7 @@ const Map = () => {
 
   }, [loader, currentLocation, pickUpLocation, dropLocation]);
 
-  return <Box id="map" h={"100vh"} w={"100vw"} />;
+  return <Box id="map" h={ h || "100vh"} w={ w ||"100vw"} />;
 };
 
 export default Map;

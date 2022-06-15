@@ -3,6 +3,7 @@ import Head from "next/head";
 
 // CONTEXT
 import { LocationContextProvider } from "../context/location";
+import {RideContextProvider} from "../context/ride";
 
 // THEME
 import PRideTheme from "../theme";
@@ -26,11 +27,13 @@ function MyApp({ Component, pageProps }) {
         <link rel="icon" href="/icon.png" type="image/png" />
       </Head>
       <LocationContextProvider>
-        <ChakraProvider theme={PRideTheme}>
-          <Layout>
-            <Component {...pageProps} />
-          </Layout>
-        </ChakraProvider>
+          <RideContextProvider>
+            <ChakraProvider theme={PRideTheme}>
+              <Layout>
+                <Component {...pageProps} />
+              </Layout>
+            </ChakraProvider>
+          </RideContextProvider>
       </LocationContextProvider>
     </>
   );

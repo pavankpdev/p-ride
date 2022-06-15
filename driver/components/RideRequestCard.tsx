@@ -2,14 +2,23 @@ import React, {useContext} from "react";
 import {Avatar, Box, Button, Flex, Heading, Text} from "@chakra-ui/react";
 import {BsArrowDownCircle} from "react-icons/bs";
 import {IRideRequest, LocationContext} from "context/Location";
-
+import {useRouter} from "next/router";
 
 const RideRequestCard: React.FC<IRideRequest> = (props) => {
 
-    const {passRide} = useContext(LocationContext)
+    const {passRide, acceptRide} = useContext(LocationContext)
+
+    const router = useRouter()
 
     const handlePassRide = () => {
         passRide(props.socketId)
+    }
+
+    const handleAcceptRide = () => {
+        const status = acceptRide(props.socketId)
+        if(!status) return alert('Invalid ride!')
+
+        router.push(`/details/${props.socketId}`)
     }
 
     return <>
@@ -44,7 +53,7 @@ const RideRequestCard: React.FC<IRideRequest> = (props) => {
                     <Heading as={'h5'} size={'sm'}>Kms</Heading>
                 </Flex>
             </Flex>
-            <Button mt={'10px'} w={'full'} size={'sm'} colorScheme={'brand'}>Accept Ride</Button>
+            <Button mt={'10px'} w={'full'} size={'sm'} colorScheme={'brand'} onClick={handleAcceptRide}>Accept Ride</Button>
             <Button mt={'2px'} w={'full'} size={'sm'} variant={'ghost'} colorScheme={'brand'} onClick={handlePassRide}>Pass</Button>
         </Box>
     </>

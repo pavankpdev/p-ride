@@ -59,6 +59,8 @@ export const LocationContext = React.createContext({
     updateDuration: (duration: number) => {},
     updateCurrentLocation: (place: string) => {},
     passRide: (socketId: string) => {},
+    acceptRide: (socketId: string): boolean => false,
+    getRideDetails: (socketId: string):IRideRequest | null=> null ,
     rideQueue: [] as IRideRequest[]
 });
 
@@ -87,8 +89,18 @@ export const LocationContextProvider: React.FC<{children: ReactNode}> = ({ child
     const [distance, setDistance] = useState(0)
     const [duration, setDuration] = useState(0)
     const [rideQueue, setRideQueue] = useState<IRideRequest[]>([])
+    const [acceptedRideId, setAcceptedRideId] = useState<any>('')
 
     const {socket} = useSocket();
+
+    React.useEffect(() => {
+        if(typeof localStorage !== 'undefined') {
+            const data = localStorage.getItem('ride-queue')
+            if(data) {
+                setRideQueue(JSON.parse(data).queue)
+            }
+        }
+    }, [])
 
     React.useEffect(() => {
         getCurrentLocation().then((coord) => {
@@ -102,13 +114,23 @@ export const LocationContextProvider: React.FC<{children: ReactNode}> = ({ child
     React.useEffect(() => {
         socket.on('NEW_RIDE_QUEUE', (data: IRideRequest) => {
             if(!rideQueue.some(({socketId}) => socketId == data.socketId)){
-                setRideQueue([...rideQueue, data])
+                if(acceptedRideId) return
+                const state = [...rideQueue, data]
+                setRideQueue(state)
+                if(typeof localStorage !== 'undefined') {
+                    localStorage.setItem('ride-queue', JSON.stringify({queue: state}))
+                }
             }
         })
         return () => {
             socket.off('NEW_RIDE_QUEUE', (data: IRideRequest) => {
                 if(!rideQueue.some(({socketId}) => socketId == data.socketId)){
-                    setRideQueue([...rideQueue, data])
+                    if(acceptedRideId) return
+                    const state = [...rideQueue, data]
+                    setRideQueue(state)
+                    if(typeof localStorage !== 'undefined') {
+                        localStorage.setItem('ride-queue', JSON.stringify({queue: state}))
+                    }
                 }
             })
         }
@@ -151,6 +173,18 @@ export const LocationContextProvider: React.FC<{children: ReactNode}> = ({ child
         setRideQueue(state)
     }
 
+    const acceptRide = (socketId: string): boolean => {
+        const ride = rideQueue.filter((ride) => ride.socketId === socketId)
+        if(!ride.length) return false
+        setAcceptedRideId(ride[0].socketId)
+        return true
+    }
+
+    const getRideDetails = (socketId: string): IRideRequest => {
+        const ride = rideQueue.filter((ride) => ride.socketId === socketId)
+        return ride[0]
+    }
+
     return (
         <LocationContext.Provider
             value={{
@@ -165,7 +199,9 @@ export const LocationContextProvider: React.FC<{children: ReactNode}> = ({ child
                 updateDistance,
                 updateCurrentLocation,
                 updateDuration,
-                passRide
+                passRide,
+                acceptRide,
+                getRideDetails
             }}
         >
             {children}

@@ -12,7 +12,7 @@ axiosInstance.interceptors.request.use(
 
         if (localStorage.getItem("pride")) {
             const { token } = JSON.parse(localStorage.getItem("pride-driver") as string);
-            (config.headers as {Authorization: string}).Authorization = token;
+            (config.headers as {Authorization: string}).Authorization = `Bearer ${token}`;
             return config;
         }
 

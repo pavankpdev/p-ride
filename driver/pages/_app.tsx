@@ -8,6 +8,7 @@ import PRideTheme from "../theme";
 
 // CONTEXT
 import {LocationContextProvider} from "context/Location";
+import {DriverContextProvider} from "context/driver";
 
 function MyApp({ Component, pageProps }: AppProps) {
   return <>
@@ -19,11 +20,13 @@ function MyApp({ Component, pageProps }: AppProps) {
       />
       <link rel="icon" href="/icon.png" type="image/png" />
     </Head>
-    <LocationContextProvider>
-          <ChakraProvider theme={PRideTheme}>
-            <Component {...pageProps} />
-          </ChakraProvider>
-    </LocationContextProvider>
+    <DriverContextProvider>
+      <LocationContextProvider>
+            <ChakraProvider theme={PRideTheme}>
+              <Component {...pageProps} />
+            </ChakraProvider>
+      </LocationContextProvider>
+    </DriverContextProvider>
   </>
 }
 

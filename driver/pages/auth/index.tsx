@@ -4,17 +4,15 @@ import {
     FormControl,
     FormLabel,
     Input,
-    Checkbox,
     Stack,
-    Link,
     Button,
     Heading,
-    Text,
     useColorModeValue,
 } from '@chakra-ui/react';
-import {useState} from "react";
+import {useContext, useState} from "react";
 import axiosInstance from "configs/axios";
 import {useRouter} from "next/router";
+import {DriverContext} from "context/driver";
 
 export default function Auth() {
 
@@ -22,6 +20,7 @@ export default function Auth() {
     const [password, setPassword] = useState('')
 
     const router = useRouter();
+    const {updateDriver} = useContext(DriverContext)
 
     const handleEmailChange = (e: any) => setEmail(e.target.value)
     const handlePasswordChange = (e: any) => setPassword(e.target.value)
@@ -44,9 +43,11 @@ export default function Auth() {
                 data: driverLoginDto
             })
 
+            updateDriver(data.driver)
+
             localStorage.setItem(
                 "pride-driver",
-                JSON.stringify({ token: data.token })
+                JSON.stringify({ token: data.access_token })
             );
 
             router.push("/")

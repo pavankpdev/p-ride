@@ -17,7 +17,7 @@ export const UserContextProvider = ({ children }) => {
     const router = useRouter();
     const {account, connectWallet} = useMetaMaskWallet()
 
-    const getUser = useCallback(async (address) => {
+    const getUser = useCallback(async (address = account) => {
         const { data } =  await axiosInstance({
             method: 'GET',
             url: `/user/${address}`
@@ -39,7 +39,7 @@ export const UserContextProvider = ({ children }) => {
         if(account) {
             getUser(account)
         }
-    }, [getUser])
+    }, [getUser, account])
 
     const updateUser = (user) => {
         setUser(user)

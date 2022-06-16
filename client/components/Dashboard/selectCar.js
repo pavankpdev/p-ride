@@ -91,6 +91,7 @@ const SelectCar = ({isOpen, onClose}) => {
             fullname: user?.fullname,
             phno: user?.phno,
             userId: user?._id,
+            address: user?.address
         }
 
         socket.emit('NEW_RIDE_REQUEST', payload)

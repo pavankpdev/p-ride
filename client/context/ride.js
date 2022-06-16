@@ -2,10 +2,11 @@ import React, {useContext, useEffect, useState} from "react";
 import useSocket from "../hooks/useSocket";
 import {useRouter} from "next/router";
 import {UserContext} from "./user";
+import axiosInstance from "../config/axios";
 
 export const RideContext = React.createContext({
     rideDetails: {},
-    cancelRide: () => {}
+    cancelRidecancelRide: () => {}
 });
 
 export const RideContextProvider = ({ children }) => {
@@ -18,28 +19,25 @@ export const RideContextProvider = ({ children }) => {
 
     useEffect(() => {
         socket.on('ACCEPT_RIDE', (data) => {
-            if(!user?._id){
-                getUser()
-                    .then((user) => {
-                        if(data?.customerSocketId === user?._id) {
-                            setRideDetails(data)
-                            router.push(`/ride`)
-                        }
-                    })
-            }
+            setRideDetails(data)
+            router.push(`/ride`)
         })
 
         return () => {
             socket.off('ACCEPT_RIDE', (data) => {
-                if(data?.customerSocketId === user?._id) {
-                    setRideDetails(data)
-                    router.push(`/ride`)
-                }
+                setRideDetails(data)
+                router.push(`/ride`)
             })
         }
     }, [socket])
 
-    const cancelRide = () => {
+    const cancelRide = async () => {
+       const {data} = await axiosInstance({
+            method: 'POST',
+            url: `/ride/cancel-ride/${rideDetails?.rideId}`
+        })
+
+        console.log({cancelStatusFromAPI: data})
         socket.emit('USER_CANCEL_RIDE')
         return true
     }

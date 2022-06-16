@@ -15,7 +15,7 @@ const RideRequestCard: React.FC<IRideRequest> = (props) => {
     }
 
     const handleAcceptRide = () => {
-        const status = acceptRide(props.userId, props.otp)
+        const status = acceptRide(props)
         if(!status) return alert('Invalid ride!')
 
         router.push(`/details/${props.userId}`)

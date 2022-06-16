@@ -20,6 +20,7 @@ export interface IRideRequest {
     otp: number;
     fullname: string;
     phno: string
+    address: string
 }
 
 type Driver = {
@@ -31,5 +32,6 @@ type Driver = {
 
 export interface IAcceptRideData {
     customerSocketId: string;
-    driver: Driver
+    driver: Driver;
+    rideId: number
 }

@@ -38,8 +38,14 @@ export class RideController {
 
     await Web3.Ride.confirmRide(users, status, rideDetails, timestamp);
 
-    await this.rideService.create(`${rideId + 1}`, confirmRideDto.customer);
-    await this.rideService.create(`${rideId + 1}`, confirmRideDto.driver);
+    await this.rideService.create(
+      `${rideId + 1}`,
+      confirmRideDto.customer.toLocaleLowerCase(),
+    );
+    await this.rideService.create(
+      `${rideId + 1}`,
+      confirmRideDto.driver.toLocaleLowerCase(),
+    );
 
     return { id: rideId + 1 };
   }

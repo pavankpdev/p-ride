@@ -72,6 +72,7 @@ const RideDetails: NextPage = () => {
     }
 
     const completeRide = () => {
+        // TODO: Complete ride API call
         socket.emit('COMPLETE_RIDE')
         passRide(router.query?.id as string)
         router.push('/complete')

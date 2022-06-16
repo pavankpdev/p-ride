@@ -20,7 +20,6 @@ const Complete = () => {
 
     const goBack = () => {
         router.push('/')
-        router.reload()
     }
 
     return <>

@@ -21,7 +21,7 @@ const Complete: NextPage = () => {
 
     const goBack = () => {
         router.push('/')
-        router.reload()
+
     }
 
     return <>

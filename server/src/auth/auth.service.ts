@@ -19,7 +19,7 @@ export class AuthService {
     loginUserDto: LoginUserDto,
   ): Promise<{ user: User; access_token: string }> {
     const user = await this.userService.findOne({
-      address: loginUserDto.address,
+      address: loginUserDto.address.toLocaleLowerCase(),
     });
 
     if (!user) {
@@ -48,7 +48,10 @@ export class AuthService {
       throw new HttpException('User already exist', HttpStatus.NOT_ACCEPTABLE);
     }
 
-    const createUser = await this.userService.createUser(registerUserDto);
+    const createUser = await this.userService.createUser({
+      ...registerUserDto,
+      address: registerUserDto.address.toLocaleLowerCase(),
+    });
 
     const access_token = await this.jwtService.signAsync({
       user: createUser?._id.toString(),

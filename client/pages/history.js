@@ -23,7 +23,6 @@ const History = () => {
             url: `/ride/batch-id/${account}`
         })
 
-        console.log({data})
         let list = []
 
         for (let i = 0; i < data?.ids.length; i++) {
@@ -62,7 +61,6 @@ const History = () => {
         }
 
         setRides(list)
-        console.log(list)
         setIsLoading.off();
 
     }, [])

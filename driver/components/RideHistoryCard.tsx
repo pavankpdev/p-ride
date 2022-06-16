@@ -79,9 +79,8 @@ const RideHistoryCard: React.FC<IRideHistoryCard> = (props) => {
                 <Text color={'gray.400'} w={'60%'} noOfLines={2} fontSize={'sm'} fontWeight={600}>{props.timestamp}</Text>
 
                 <Flex w={'40%'} color={ props.isComplete ? 'green.500' : (props.isCancelled ? 'red.500' : 'teal.500')} alignItems={'center'} gap={'5px'} justify={'center'}>
-                    { props.isComplete && <BsPatchCheckFill/>}
-                    { props.isCancelled && <MdCancel/>}
-                    { props.isConfirmed && <MdPending/>}
+                    {props.isComplete ? <BsPatchCheckFill/> : (props.isCancelled ? <MdCancel/> :<MdPending/>)}
+
                     <Text fontWeight={600}>
                         {props.isComplete ? 'Completed' : (props.isCancelled ? 'Cancelled' : 'On Going')}
                     </Text>

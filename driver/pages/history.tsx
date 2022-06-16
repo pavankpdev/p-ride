@@ -7,6 +7,7 @@ import {useMetaMaskWallet} from "hooks/useMetamaskWallet";
 import RideHistoryCard from "../components/RideHistoryCard";
 import Navbar from "components/navbar";
 import {NextPage} from "next";
+import axiosInstance from "configs/axios";
 
 const History: NextPage = () => {
     const [rides, setRides] = useState<any>([])
@@ -17,37 +18,54 @@ const History: NextPage = () => {
 
     const getRide = useCallback( async (id: string | number, account: string) => {
         setIsLoading.on();
-        const Ride = Contracts.instances.Ride;
 
-        const RideCaller = Ride?.methods?.getRide(id);
-
-        const RideGas = await RideCaller?.estimateGas({
-            from: account
+        const {data} = await axiosInstance({
+            method: "GET",
+            url: `/ride/batch-id/${account}`
         })
 
-        const receipt: any = await RideCaller.call({
-            from: account,
-            gas: RideGas
-        })
-        let ride = {
-            pickup: receipt.ride.pickup,
-            destination: receipt.ride.destination,
-            distance: receipt.ride.distance,
-            price: receipt.ride.price,
-        };
-        let status = {
-            isCancelled: receipt.status.isCancelled,
-            isComplete: receipt.status.isComplete,
-            isConfirmed: receipt.status.isConfirmed,
-            wasCancelledBy: receipt.status.wasCancelledBy,
+        let list: any[] = []
+
+        for (let i = 0; i < data?.ids.length; i++) {
+            const rideId = data?.ids[i]
+            const Ride = Contracts.instances.Ride;
+
+            const RideCaller = Ride?.methods?.getRide(rideId);
+
+            const RideGas = await RideCaller?.estimateGas({
+                from: account
+            })
+
+            const receipt: any = await RideCaller.call({
+                from: account,
+                gas: RideGas
+            })
+            let ride = {
+                pickup: receipt.ride.pickup,
+                destination: receipt.ride.destination,
+                distance: receipt.ride.distance,
+                price: receipt.ride.price,
+            };
+            let status = {
+                isCancelled: receipt.status.isCancelled,
+                isComplete: receipt.status.isComplete,
+                isConfirmed: receipt.status.isConfirmed,
+                wasCancelledBy: receipt.status.wasCancelledBy,
+            }
+
+            list.push({
+                ride,
+                status,
+                timestamp: receipt.timestamp
+            })
+
         }
 
 
-        setRides([{
-            ride,
-            status,
-            timestamp: receipt.timestamp
-        }])
+
+
+        setRides(list)
+
         setIsLoading.off();
 
     }, [])

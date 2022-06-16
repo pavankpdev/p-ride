@@ -5,7 +5,7 @@ import { User, UserDocument } from './schema/user.schema';
 
 import { RegisterDriverDto, RegisterUserDto } from '../auth/DTO/registerUser';
 import { Driver, DriverDocument } from './schema/driver.schema';
-import {JwtService} from "@nestjs/jwt";
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class UserService {

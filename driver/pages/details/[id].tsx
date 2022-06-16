@@ -11,7 +11,7 @@ import {
     Heading,
     Input,
     Link,
-    Text,
+    Text, useBoolean,
 } from "@chakra-ui/react";
 import dynamic from "next/dynamic";
 import {useContext, useEffect, useState} from "react";
@@ -30,6 +30,8 @@ const RideDetails: NextPage = () => {
     const [otp, setOtp] = useState(0)
     const [ride, setRide] = useState<IRideRequest | null>(null)
     const [isRideStarted, setIsRideStarted] = useState(false);
+
+    const [isLoading, setIsLoading] = useBoolean()
 
     const {getRideDetails, passRide, rideId} = useContext(LocationContext)
     const router = useRouter();
@@ -73,7 +75,7 @@ const RideDetails: NextPage = () => {
     }
 
     const completeRide = async () => {
-
+        setIsLoading.on()
         const {data} = await axiosInstance({
             method: 'POST',
             url: `/ride/complete-ride/${rideId}`
@@ -84,6 +86,7 @@ const RideDetails: NextPage = () => {
         socket.emit('COMPLETE_RIDE')
         passRide(router.query?.id as string)
         router.push('/complete')
+        setIsLoading.off()
     }
 
     return (
@@ -130,7 +133,7 @@ const RideDetails: NextPage = () => {
                             ? <Button colorScheme={'brand'} disabled={!otp} onClick={startRide}>
                                     Start Ride
                               </Button>
-                            : <Button colorScheme={'brand'} disabled={!otp} onClick={completeRide}>
+                            : <Button colorScheme={'brand'} disabled={!otp} onClick={completeRide} isLoading={isLoading}>
                                     Complete Ride
                               </Button>
 

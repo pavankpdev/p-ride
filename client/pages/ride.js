@@ -18,8 +18,11 @@ import DefaultLayout from "../layout/default";
 
 // CONTEXT
 import {RideContext} from "../context/ride";
-import {useContext} from "react";
+import {useContext, useEffect} from "react";
 import {LocationContext} from "../context/location";
+
+// HOOKS
+import useSocket from "../hooks/useSocket";
 
 // using nextjs dynamic import since window is undefined in next SSR
 const MapComp = dynamic(() => import("../components/map"), { ssr: false });
@@ -30,7 +33,20 @@ const Ride = () => {
     const { pickUpLocation, dropLocation } = useContext(LocationContext)
 
     const toast = useToast();
-    const router = useRouter()
+    const router = useRouter();
+    const {socket} = useSocket();
+
+    useEffect(() => {
+        socket.on('RIDE_END', () => {
+            router.push('/complete')
+        })
+
+        return () => {
+            socket.off('RIDE_END', () => {
+                router.push('/complete')
+            })
+        }
+    }, [socket])
 
     const handleCancelRide = () => {
         cancelRide();

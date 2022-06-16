@@ -22,7 +22,7 @@ export function useMetaMaskWallet() {
             const account = await window.ethereum.request({
                 method: "eth_requestAccounts",
             });
-            setAccount(account);
+            setAccount(account as string);
             try {
                 let timestamp = Date.now();
                 const message = timestamp.toString();
@@ -45,7 +45,7 @@ export function useMetaMaskWallet() {
             const account = await window.ethereum.request({
                 method: "eth_requestAccounts",
             });
-            setAccount(account);
+            setAccount(account as string);
             try {
                 // await window.ethereum.enable();
                 const chainId = await web3.eth.getChainId();
@@ -66,7 +66,7 @@ export function useMetaMaskWallet() {
                 const accounts = await web3.eth.getAccounts();
                 setAccount(accounts[0]);
                 if (cb) cb(accounts[0]);
-                return true;
+                return accounts[0] as string
             } catch (err) {
                 // User denied access
                 console.error(err);

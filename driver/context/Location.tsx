@@ -6,6 +6,7 @@ import { getCurrentLocation } from "utils/getCurrentLocation";
 // HOOKS
 import useSocket from "hooks/useSocket";
 import {DriverContext} from "context/driver";
+import axiosInstance from "configs/axios";
 
 type Geometry = {
     lat: number,
@@ -29,6 +30,7 @@ export interface IRideRequest {
     fullname: string;
     phno: string
     isAccepted?: boolean
+    address: string
 }
 
 export const LocationContext = React.createContext({
@@ -61,7 +63,7 @@ export const LocationContext = React.createContext({
     updateDuration: (duration: number) => {},
     updateCurrentLocation: (place: string) => {},
     passRide: (socketId: string) => {},
-    acceptRide: (socketId: string, otp: string | number): boolean => false,
+    acceptRide: (params: IRideRequest): boolean => false,
     getRideDetails: (socketId: string):IRideRequest | null=> null ,
     rideQueue: [] as IRideRequest[]
 });
@@ -92,6 +94,7 @@ export const LocationContextProvider: React.FC<{children: ReactNode}> = ({ child
     const [duration, setDuration] = useState(0)
     const [rideQueue, setRideQueue] = useState<IRideRequest[]>([])
     const [acceptedRideId, setAcceptedRideId] = useState<any>('')
+    const [rideId, setRideId] = useState(0)
 
     const {socket} = useSocket();
     const {driver} = useContext(DriverContext)
@@ -182,33 +185,54 @@ export const LocationContextProvider: React.FC<{children: ReactNode}> = ({ child
         }
     }
 
-    const acceptRide = (userId: string, otp: string | number): boolean => {
-        const ride = rideQueue.filter((ride) => ride.userId === userId)
+    const acceptRide = (params: IRideRequest): boolean => {
+        const ride = rideQueue.filter((ride) => ride.userId === params.userId)
         if(!ride.length) return false
         setAcceptedRideId(ride[0].userId)
 
-        const acceptRequestPayload = {
-            driver: {
-                fullname: driver?.fullname,
-                location: {
-                    formatted_address: currentLocation.formattedAddress,
-                    geometry: currentLocation.geometry
-                },
-                driverId: driver?._id,
-                phno: driver?.phno
-            },
-            customerSocketId: userId,
-            otp
+        const payload = {
+            driver: driver?.address,
+            customer: params.address,
+            from: params.from.formatted_address,
+            to: params.to.formatted_address,
+            carType: 'SUV',
+            price: parseInt(`${params.price}`),
+            distance: parseInt(`${params.distance}`)
         }
 
-        socket.emit('DRIVER_ACCEPT_RIDE', acceptRequestPayload)
+        axiosInstance({
+            method: 'POST',
+            url: '/ride/confirm-ride',
+            data: payload
+        })
+            .then(({data}) => {
+
+                setRideId(data?.id)
+
+                const acceptRequestPayload = {
+                    driver: {
+                        fullname: driver?.fullname,
+                        location: {
+                            formatted_address: currentLocation.formattedAddress,
+                            geometry: currentLocation.geometry
+                        },
+                        driverId: driver?._id,
+                        phno: driver?.phno
+                    },
+                    customerSocketId: params.userId,
+                    otp: params.otp,
+                    rideId: data?.id
+                }
+
+                socket.emit('DRIVER_ACCEPT_RIDE', acceptRequestPayload)
+            })
 
         const state = rideQueue.map((ride) => {
-            if(ride.userId == userId) {
+            if(ride.userId == params.userId) {
                 return {...ride, isAccepted: true}
             }
 
-            return userId
+            return params.userId
         })
 
         setRideQueue(state as IRideRequest[])

@@ -5,12 +5,14 @@ import { User, UserDocument } from './schema/user.schema';
 
 import { RegisterDriverDto, RegisterUserDto } from '../auth/DTO/registerUser';
 import { Driver, DriverDocument } from './schema/driver.schema';
+import {JwtService} from "@nestjs/jwt";
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectModel(User.name) private userModel: Model<UserDocument>,
     @InjectModel(Driver.name) private driverModel: Model<DriverDocument>,
+    private jwtService: JwtService,
   ) {}
 
   async findOne(
@@ -35,5 +37,11 @@ export class UserService {
     driver: RegisterDriverDto,
   ): Promise<Driver & Document & { _id: any }> {
     return this.driverModel.create(driver);
+  }
+
+  async decodeToken(accessToken: string) {
+    const token = accessToken.replace('Bearer ', '');
+    const verify = await this.jwtService.verifyAsync(token);
+    return verify?.driver;
   }
 }

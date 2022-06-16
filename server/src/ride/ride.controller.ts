@@ -1,4 +1,4 @@
-import { Body, Controller, Param, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { ConfirmRideDto } from './DTO/confirmRide.dto';
 import { getWeb3 } from '../contracts/getWeb3';
 import { BigNumber } from 'ethers';
@@ -7,6 +7,14 @@ import { RideService } from './ride.service';
 @Controller('ride')
 export class RideController {
   constructor(private readonly rideService: RideService) {}
+
+  @Get('/batch-id/:address')
+  async getRideIds(
+    @Param('address') address: string,
+  ): Promise<{ ids: number[] }> {
+    const ids = await this.rideService.getRideIds(address.toLocaleLowerCase());
+    return { ids: ids.map((ride) => parseInt(`${ride.rideId}`)) };
+  }
 
   @Post('/confirm-ride')
   async confirmRide(

@@ -28,4 +28,13 @@ export class UserController {
     return { user };
   }
 
+  @Get('/driver/:address')
+  async getDriverByAddress(
+    @Param('address') address: string,
+  ): Promise<{ driver: DriverDocument | null }> {
+    const driver = await this.userService.findOneDriver({
+      address,
+    });
+    return { driver };
+  }
 }

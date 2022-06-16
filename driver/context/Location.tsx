@@ -218,11 +218,13 @@ export const LocationContextProvider: React.FC<{children: ReactNode}> = ({ child
                             geometry: currentLocation.geometry
                         },
                         driverId: driver?._id,
-                        phno: driver?.phno
+                        phno: driver?.phno,
+                        address: driver?.address
                     },
                     customerSocketId: params.userId,
                     otp: params.otp,
-                    rideId: data?.id
+                    rideId: data?.id,
+                    price: params?.price
                 }
 
                 socket.emit('DRIVER_ACCEPT_RIDE', acceptRequestPayload)

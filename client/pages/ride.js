@@ -23,6 +23,9 @@ import {LocationContext} from "../context/location";
 
 // HOOKS
 import useSocket from "../hooks/useSocket";
+import Contracts from "../contracts";
+import {useMetaMaskWallet} from "../hooks/useWallet";
+import {ethers} from "ethers";
 
 // using nextjs dynamic import since window is undefined in next SSR
 const MapComp = dynamic(() => import("../components/map"), { ssr: false });
@@ -31,13 +34,33 @@ const Ride = () => {
 
     const {rideDetails, cancelRide} = useContext(RideContext)
     const { pickUpLocation, dropLocation } = useContext(LocationContext)
+    const {connectWallet} = useMetaMaskWallet()
 
     const toast = useToast();
     const router = useRouter();
     const {socket} = useSocket();
 
     useEffect(() => {
-        socket.on('RIDE_END', () => {
+        socket.on('RIDE_END', async () => {
+            // TODO: Handle Token transfer
+            const account = await connectWallet();
+            const PriToken = Contracts.instances.PriToken;
+
+            // convert to Wei
+            const price = ethers.utils.parseEther(`${rideDetails?.price}`)
+            console.log(price)
+
+            const TokenCaller = PriToken?.methods?.transfer(rideDetails?.driver?.address, price);
+
+            const TokenGas = await TokenCaller?.estimateGas({
+                from: account
+            })
+
+            const txn = await TokenCaller.send({
+                from: account,
+                gas: TokenGas
+            })
+
             router.push('/complete')
         })
 

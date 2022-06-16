@@ -27,7 +27,8 @@ type Driver = {
     fullname: string;
     location: ILocation
     driverId: string;
-    phno: string
+    phno: string;
+    address: string
 }
 
 export interface IAcceptRideData {

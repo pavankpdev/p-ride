@@ -19,6 +19,7 @@ import {LocationContext} from "../../context/location";
 // HOOK
 import useSocket from "../../hooks/useSocket";
 import SearchRide from "../searchRide";
+import {UserContext} from "../../context/user";
 
 const SelectCar = ({isOpen, onClose}) => {
     const [carTypeIndex, setCarTypeIndex] = useState(0)
@@ -26,6 +27,8 @@ const SelectCar = ({isOpen, onClose}) => {
     const { distance, pickUpLocation, dropLocation, duration } = useContext(LocationContext)
 
     const modelSize = useBreakpointValue({ base: 'full', lg: 'xl' })
+
+    const {user} = useContext(UserContext)
 
     const {socket} = useSocket();
 
@@ -87,7 +90,7 @@ const SelectCar = ({isOpen, onClose}) => {
             otp,
             fullname: "Pavan",
             phno: "908080808080",
-            userId: '123',
+            userId: user?._id,
         }
 
         socket.emit('NEW_RIDE_REQUEST', payload)

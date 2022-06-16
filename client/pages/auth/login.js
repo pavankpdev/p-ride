@@ -1,34 +1,26 @@
 import {
   Button,
-  Checkbox,
   Flex,
-  FormControl,
-  FormLabel,
-  Heading,
-  Input,
-  Stack,
   Image,
   Box,
-  useToast,
-  Video, Container, Text
+  useToast, Container, Text
 } from "@chakra-ui/react";
 import { useRouter } from "next/router";
-import { useState } from "react";
 import axios from "../../config/axios";
-import Link from "next/link"
 import {IoPersonAdd} from 'react-icons/io5'
 
 // HOOKS
 import {useMetaMaskWallet} from "../../hooks/useWallet";
 
-const Login = () => {
-  const [loginInput, setLoginInput] = useState({
-    email: "",
-    password: "",
-  });
+// CONTEXT
+import {UserContext} from "../../context/user";
+import {useContext} from "react";
 
+const Login = () => {
   const router = useRouter();
   const toast = useToast();
+
+  const {updateUser} = useContext(UserContext)
 
   const { connectWallet, signInWithMetamask } = useMetaMaskWallet();
 
@@ -43,6 +35,8 @@ const Login = () => {
         url: "/auth/login",
         data: { address: sign.account },
       });
+
+        updateUser(loginHandler.data.user)
 
       localStorage.setItem(
         "pride",

@@ -9,13 +9,16 @@ import {
   MenuList,
   MenuItem,
   MenuDivider,
-  Image,
+  Image, Text,
 } from "@chakra-ui/react";
 import { BiHistory, BiLogOut } from "react-icons/bi";
-import { FaWallet } from "react-icons/fa";
-import { RiSettingsFill } from "react-icons/ri";
+import {useContext} from "react";
+import {UserContext} from "../../context/user";
 
 export default function Navbar() {
+
+  const {user, logout} = useContext(UserContext)
+
   return (
     <>
       <Box bg={"white"} px={4}>
@@ -40,19 +43,18 @@ export default function Navbar() {
                 cursor={"pointer"}
                 minW={0}
               >
-                <Avatar
-                  size={"sm"}
-                  src={
-                    "https://images.unsplash.com/photo-1493666438817-866a91353ca9?ixlib=rb-0.3.5&q=80&fm=jpg&crop=faces&fit=crop&h=200&w=200&s=b616b2c5b373a80ffc9636ba24f7a4a9"
-                  }
-                />
+                <Flex alignItems={'center'} gap={'5px'}>
+                  <Avatar
+                      size={"sm"}
+                      name={user?.fullname || 'unnamed'}
+                  />
+                  <Text d={{base: 'none', lg: 'block'}} color={'black'}>{user?.fullname}</Text>
+                </Flex>
               </MenuButton>
               <MenuList zIndex={999}>
                 <MenuItem icon={<BiHistory />}>Ride History</MenuItem>
-                <MenuItem icon={<FaWallet />}>Wallet</MenuItem>
-                <MenuItem icon={<RiSettingsFill />}>Settings</MenuItem>
                 <MenuDivider />
-                <MenuItem icon={<BiLogOut />}>Log Out</MenuItem>
+                <MenuItem icon={<BiLogOut />} onClick={logout}>Log Out</MenuItem>
               </MenuList>
             </Menu>
           </Flex>

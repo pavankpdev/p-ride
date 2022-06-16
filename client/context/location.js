@@ -2,7 +2,6 @@ import React, {useState} from "react";
 
 // UTILS
 import { getCurrentLocation } from "../utils/getCurrentLocation";
-import { getPlaceDetails } from "../utils/getPlaceDetails";
 
 export const LocationContext = React.createContext({
   currentLocation: {

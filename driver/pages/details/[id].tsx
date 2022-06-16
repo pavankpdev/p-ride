@@ -71,6 +71,12 @@ const RideDetails: NextPage = () => {
         return alert('Invalid OTP')
     }
 
+    const completeRide = () => {
+        socket.emit('COMPLETE_RIDE')
+        passRide(router.query?.id as string)
+        router.push('/complete')
+    }
+
     return (
         <>
             <NavBar />
@@ -115,7 +121,7 @@ const RideDetails: NextPage = () => {
                             ? <Button colorScheme={'brand'} disabled={!otp} onClick={startRide}>
                                     Start Ride
                               </Button>
-                            : <Button colorScheme={'brand'} disabled={!otp} onClick={startRide}>
+                            : <Button colorScheme={'brand'} disabled={!otp} onClick={completeRide}>
                                     Complete Ride
                               </Button>
 

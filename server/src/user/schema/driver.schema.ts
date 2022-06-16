@@ -16,6 +16,9 @@ export class Driver {
 
   @Prop({ required: true, unique: true })
   address: string;
+
+  @Prop({ required: true, unique: true })
+  phno: string;
 }
 
 export const DriverSchema = SchemaFactory.createForClass(Driver);

@@ -1,4 +1,4 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Param, Post } from '@nestjs/common';
 import { ConfirmRideDto } from './DTO/confirmRide.dto';
 import { getWeb3 } from '../contracts/getWeb3';
 import { BigNumber } from 'ethers';
@@ -11,7 +11,7 @@ export class RideController {
   @Post('/confirm-ride')
   async confirmRide(
     @Body() confirmRideDto: ConfirmRideDto,
-  ): Promise<{ message: string }> {
+  ): Promise<{ id: number }> {
     const Web3 = await getWeb3();
 
     const users = [confirmRideDto.customer, confirmRideDto.driver];
@@ -41,6 +41,41 @@ export class RideController {
     await this.rideService.create(`${rideId + 1}`, confirmRideDto.customer);
     await this.rideService.create(`${rideId + 1}`, confirmRideDto.driver);
 
-    return { message: '' };
+    return { id: rideId + 1 };
+  }
+
+  @Post('/cancel-ride/:id')
+  async cancelRide(@Param('id') id: number): Promise<{ status: boolean }> {
+    const Web3 = await getWeb3();
+
+    const timestamp = Date.now();
+    await Web3.Ride.estimateGas.cancelRide(
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      id,
+      '1',
+      `${timestamp}`,
+    );
+
+    await Web3.Ride.cancelRide(id, '1', `${timestamp}`);
+
+    return { status: true };
+  }
+
+  @Post('/complete-ride/:id')
+  async completeRide(@Param('id') id: number): Promise<{ status: boolean }> {
+    const Web3 = await getWeb3();
+
+    const timestamp = Date.now();
+    await Web3.Ride.estimateGas.completeRide(
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      id,
+      `${timestamp}`,
+    );
+
+    await Web3.Ride.completeRide(id, `${timestamp}`);
+
+    return { status: true };
   }
 }

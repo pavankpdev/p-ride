@@ -20,6 +20,7 @@ import {useRouter} from "next/router";
 
 // HOOKS
 import useSocket from "hooks/useSocket";
+import axiosInstance from "configs/axios";
 
 // using nextjs dynamic import since window is undefined in next SSR
 const MapComp = dynamic(() => import("components/map"), { ssr: false });
@@ -30,7 +31,7 @@ const RideDetails: NextPage = () => {
     const [ride, setRide] = useState<IRideRequest | null>(null)
     const [isRideStarted, setIsRideStarted] = useState(false);
 
-    const {getRideDetails, passRide} = useContext(LocationContext)
+    const {getRideDetails, passRide, rideId} = useContext(LocationContext)
     const router = useRouter();
     const {socket} = useSocket();
 
@@ -71,8 +72,15 @@ const RideDetails: NextPage = () => {
         return alert('Invalid OTP')
     }
 
-    const completeRide = () => {
-        // TODO: Complete ride API call
+    const completeRide = async () => {
+
+        const {data} = await axiosInstance({
+            method: 'POST',
+            url: `/ride/complete-ride/${rideId}`
+        })
+
+        console.log({cancelStatusFromAPI: data})
+
         socket.emit('COMPLETE_RIDE')
         passRide(router.query?.id as string)
         router.push('/complete')

@@ -65,7 +65,8 @@ export const LocationContext = React.createContext({
     passRide: (socketId: string) => {},
     acceptRide: (params: IRideRequest): boolean => false,
     getRideDetails: (socketId: string):IRideRequest | null=> null ,
-    rideQueue: [] as IRideRequest[]
+    rideQueue: [] as IRideRequest[],
+    rideId: 0
 });
 
 export const LocationContextProvider: React.FC<{children: ReactNode}> = ({ children }) => {
@@ -257,6 +258,7 @@ export const LocationContextProvider: React.FC<{children: ReactNode}> = ({ child
                 distance,
                 duration,
                 rideQueue,
+                rideId,
                 updateDropLocation,
                 updatePickUpLocation,
                 updateDistance,

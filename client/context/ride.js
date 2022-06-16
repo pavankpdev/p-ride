@@ -32,12 +32,11 @@ export const RideContextProvider = ({ children }) => {
     }, [socket])
 
     const cancelRide = async () => {
-       const {data} = await axiosInstance({
+       await axiosInstance({
             method: 'POST',
             url: `/ride/cancel-ride/${rideDetails?.rideId}`
         })
 
-        console.log({cancelStatusFromAPI: data})
         socket.emit('USER_CANCEL_RIDE')
         return true
     }

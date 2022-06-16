@@ -24,6 +24,7 @@ export default function Register() {
     const [fullname, setFullname] = useState('')
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
+    const [phno, setPhno] = useState('')
 
     const router = useRouter();
     const {signInWithMetamask} = useMetaMaskWallet()
@@ -31,6 +32,10 @@ export default function Register() {
     const handleEmailChange = (e: any) => setEmail(e.target.value)
     const handleFullNameChange = (e: any) => setFullname(e.target.value)
     const handlePasswordChange = (e: any) => setPassword(e.target.value)
+    const handlePhnoChange = (e: any) => {
+        if(e.target.value.length > 10) return
+        setPhno(e.target.value)
+    }
 
     const submit = async () => {
         try {
@@ -45,7 +50,8 @@ export default function Register() {
                 fullname,
                 email,
                 password,
-                address: metamaskData?.account
+                address: metamaskData?.account,
+                phno
             }
 
             const {data} = await axiosInstance({
@@ -56,7 +62,7 @@ export default function Register() {
 
             localStorage.setItem(
                 "pride-driver",
-                JSON.stringify({ token: data.token })
+                JSON.stringify({ token: data.access_token })
             );
 
             router.push("/")
@@ -89,6 +95,10 @@ export default function Register() {
                         <FormControl id="email">
                             <FormLabel>Email address</FormLabel>
                             <Input type="email" value={email} onChange={handleEmailChange}  />
+                        </FormControl>
+                        <FormControl id="phno">
+                            <FormLabel>Phno</FormLabel>
+                            <Input type="number" value={phno} onChange={handlePhnoChange}  />
                         </FormControl>
                         <FormControl id="password">
                             <FormLabel>Password</FormLabel>

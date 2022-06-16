@@ -88,8 +88,8 @@ const SelectCar = ({isOpen, onClose}) => {
             price: Math.round(vehicleData[carTypeIndex]?.basePrice * distance),
             distance: distance.toFixed(2),
             otp,
-            fullname: "Pavan",
-            phno: "908080808080",
+            fullname: user?.fullname,
+            phno: user?.phno,
             userId: user?._id,
         }
 

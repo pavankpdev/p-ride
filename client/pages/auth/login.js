@@ -40,7 +40,7 @@ const Login = () => {
 
       localStorage.setItem(
         "pride",
-        JSON.stringify({ token: loginHandler.data.token })
+        JSON.stringify({ token: loginHandler.data.access_token })
       );
 
       router.push("/")

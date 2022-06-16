@@ -9,6 +9,9 @@ export class RegisterUserDto {
 
   @IsEmail()
   email: string;
+
+  @IsNotEmpty()
+  phno: string;
 }
 
 export class RegisterDriverDto {
@@ -23,4 +26,7 @@ export class RegisterDriverDto {
 
   @IsNotEmpty()
   address: string;
+
+  @IsNotEmpty()
+  phno: string;
 }

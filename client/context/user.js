@@ -7,7 +7,8 @@ import {useMetaMaskWallet} from "../hooks/useWallet";
 export const UserContext = React.createContext({
     user: {},
     updateUser: (user) => {},
-    logout: () => {}
+    logout: () => {},
+    getUser: async () => {}
 });
 
 export const UserContextProvider = ({ children }) => {
@@ -23,6 +24,7 @@ export const UserContextProvider = ({ children }) => {
         });
 
         setUser(data.user)
+        return data.user
     }, [account, router])
 
     useEffect(() => {
@@ -56,7 +58,8 @@ export const UserContextProvider = ({ children }) => {
             value={{
                 user,
                 updateUser,
-                logout
+                logout,
+                getUser
             }}
         >
             {children}

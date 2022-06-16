@@ -10,21 +10,24 @@ import {
   Box,
   useToast, Container,
 } from "@chakra-ui/react";
-import { useState } from "react";
+import {useContext, useState} from "react";
 import { useRouter } from "next/router";
 import Link from "next/link"
 
 import axios from "../../config/axios";
 import {useMetaMaskWallet} from "../../hooks/useWallet";
+import {UserContext} from "../../context/user";
 
 const Register = () => {
   const [registerInput, setRegisterInput] = useState({
     email: "",
     fullname: "",
   });
+  const [phno, setPhno] = useState('')
 
   const router = useRouter();
   const toast = useToast();
+  const {updateUser} = useContext(UserContext)
 
   const { connectWallet, signInWithMetamask } = useMetaMaskWallet();
 
@@ -34,6 +37,8 @@ const Register = () => {
       [event.target.name]: event.target.value,
     });
   };
+
+  const handlePhnoChange = e => setPhno(e.target.value)
 
   const handleSubmit = async () => {
     try {
@@ -67,13 +72,16 @@ const Register = () => {
         url: "/auth/register",
         data: {
           ...registerInput,
-          address: sign?.account
+          address: sign?.account,
+          phno
         }
       });
 
+      updateUser(registerHandler.data.user)
+
       localStorage.setItem(
         "pride",
-        JSON.stringify({ token: registerHandler.data.token })
+        JSON.stringify({ token: registerHandler.data.access_token })
       );
 
       router.push("/")
@@ -156,6 +164,16 @@ const Register = () => {
                       name="email"
                       placeholder="email@email.com"
                       onChange={handleChange}
+                  />
+                </FormControl>
+                <FormControl id="phno">
+                  <FormLabel>Phone number</FormLabel>
+                  <Input
+                      type="number"
+                      value={phno}
+                      name="phno"
+                      placeholder="9999999999"
+                      onChange={handlePhnoChange}
                   />
                 </FormControl>
 

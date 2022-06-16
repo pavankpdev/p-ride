@@ -1,6 +1,7 @@
-import React, {useEffect, useState} from "react";
+import React, {useContext, useEffect, useState} from "react";
 import useSocket from "../hooks/useSocket";
 import {useRouter} from "next/router";
+import {UserContext} from "./user";
 
 export const RideContext = React.createContext({
     rideDetails: {},
@@ -13,17 +14,24 @@ export const RideContextProvider = ({ children }) => {
     const {socket} = useSocket()
     const router = useRouter();
 
+    const {user, getUser} = useContext(UserContext)
+
     useEffect(() => {
         socket.on('ACCEPT_RIDE', (data) => {
-            if(data?.customerSocketId == 123) {
-                setRideDetails(data)
-                router.push(`/ride`)
+            if(!user?._id){
+                getUser()
+                    .then((user) => {
+                        if(data?.customerSocketId === user?._id) {
+                            setRideDetails(data)
+                            router.push(`/ride`)
+                        }
+                    })
             }
         })
 
         return () => {
             socket.off('ACCEPT_RIDE', (data) => {
-                if(data?.customerSocketId == 123) {
+                if(data?.customerSocketId === user?._id) {
                     setRideDetails(data)
                     router.push(`/ride`)
                 }

@@ -7,7 +7,8 @@ import {
   Flex,
   Button,
   useDisclosure,
-  useBreakpointValue
+  useBreakpointValue,
+  useToast
 } from "@chakra-ui/react";
 import {useMemo, useState} from "react";
 import React, { useContext } from "react";
@@ -20,7 +21,6 @@ import { LocationContext } from "../../context/location";
 import SelectCar from "./selectCar";
 
 // UTILS
-import { getCurrentLocation } from "../../utils/getCurrentLocation";
 import {handlePlaceAutocomplete} from "../../utils/handlePlaceAutocomplete";
 
 const BookRide = () => {
@@ -49,6 +49,7 @@ const BookRide = () => {
     onClose: onSelectCarModalClose
   } = useDisclosure()
 
+  const toast = useToast()
 
   React.useEffect(() => {
     // Using a debounce effect.
@@ -120,22 +121,6 @@ const BookRide = () => {
     setTimeout(() => setIsFocused("none"), 2000);
   };
 
-  const getCurrentLocationForPickup = () => {
-    updatePickUpLocation(null, true)
-    setAddress({
-      ...address,
-      pickup: currentLocation.formattedAddress
-    })
-  }
-
-  const getCurrentLocationForDrop = () => {
-    updateDropLocation(null, true)
-    setAddress({
-      ...address,
-      destination: currentLocation.formattedAddress
-    })
-  }
-
   const search = async () => {
     // console.log(address);
 
@@ -155,12 +140,24 @@ const BookRide = () => {
     if(res && res.rows.length) {
         if(res.rows[0].elements.length) {
           console.log(res.rows[0].elements[0])
-          updateDistance(res.rows[0].elements[0]?.distance?.value / 1000)
+          const distance = res.rows[0].elements[0]?.distance?.value / 1000;
+          if(distance > 50){
+            toast({
+              title: `Trip is out of serviceable area.`,
+              description: `Your trip is ${distance}kms long, which falls out of our serviceable area. Please choose trip below 50kms`,
+              status: 'error',
+              position: 'top',
+              isClosable: true
+            })
+            return
+          }
+          updateDistance(distance)
           updateDuration(res.rows[0]?.elements[0]?.duration?.value / 60)
+          onSelectCarModalOpen()
+
         }
     }
 
-    onSelectCarModalOpen()
 
 
   };

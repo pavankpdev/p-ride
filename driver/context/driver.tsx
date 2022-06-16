@@ -4,7 +4,9 @@ import {useRouter} from "next/router";
 
 type Driver = {
     fullname: string,
-    address: string
+    address: string,
+    _id: string,
+    phno: string | number
 }
 
 interface IDriverContext {
@@ -16,7 +18,9 @@ interface IDriverContext {
 export const DriverContext = React.createContext<IDriverContext>({
     driver: {
         fullname: '',
-        address: ''
+        address: '',
+        _id: '',
+        phno: ''
     },
     updateDriver: (driver: any) => {},
     logout: () => {}
@@ -25,7 +29,9 @@ export const DriverContext = React.createContext<IDriverContext>({
 export const DriverContextProvider: React.FC<{children: ReactNode}> = ({ children }) => {
     const [driver, setDriver] = useState<Driver>({
         fullname: '',
-        address: ''
+        address: '',
+        _id: '',
+        phno: ''
     })
 
     const router = useRouter();

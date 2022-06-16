@@ -1,11 +1,11 @@
-import React, {ReactNode, useState} from "react";
+import React, {ReactNode, useContext, useState} from "react";
 
 // UTILS
 import { getCurrentLocation } from "utils/getCurrentLocation";
 
 // HOOKS
 import useSocket from "hooks/useSocket";
-import {useRouter} from "next/router";
+import {DriverContext} from "context/driver";
 
 type Geometry = {
     lat: number,
@@ -93,8 +93,8 @@ export const LocationContextProvider: React.FC<{children: ReactNode}> = ({ child
     const [rideQueue, setRideQueue] = useState<IRideRequest[]>([])
     const [acceptedRideId, setAcceptedRideId] = useState<any>('')
 
-    const {socket, socketId} = useSocket();
-    const router = useRouter();
+    const {socket} = useSocket();
+    const {driver} = useContext(DriverContext)
 
     React.useEffect(() => {
         if(typeof localStorage !== 'undefined') {
@@ -189,13 +189,13 @@ export const LocationContextProvider: React.FC<{children: ReactNode}> = ({ child
 
         const acceptRequestPayload = {
             driver: {
-                fullname: "string",
+                fullname: driver?.fullname,
                 location: {
                     formatted_address: currentLocation.formattedAddress,
                     geometry: currentLocation.geometry
                 },
-                driverId: 1233,
-                phno: '99999999999'
+                driverId: driver?._id,
+                phno: driver?.phno
             },
             customerSocketId: userId,
             otp

@@ -10,7 +10,7 @@
     "@types/node": "^17.0.6",
     "chai": "^4.3.4",
     "chai-ethers": "^0.0.1",
-    "dotenv": "^10.0.0",
+    "dotenv": "^16.0.1",
     "ethers": "^5.5.2",
     "hardhat": "^2.8.0",
     "hardhat-deploy": "^0.9.23",
@@ -30,6 +30,9 @@
     "test": "npx hardhat test",
     "compile": "npx hardhat compile",
     "deploy:ropsten": "npx hardhat --network ropsten deploy",
+    "deploy:mumbai": "npx hardhat --network mumbai deploy",
+    "verify:mumbai": "npx hardhat --network mumbai etherscan-verify",
     "prettier": "prettier --check \"**/*.{ts,js,sol}\"",
-    "prettier:fix": "prettier --write \"**/*.{ts,js,sol}\""  }
+    "prettier:fix": "prettier --write \"**/*.{ts,js,sol}\""
+  }
 }

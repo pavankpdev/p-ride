@@ -65,21 +65,13 @@ export type RIDEDETAILSStruct = {
   destination: string;
   distance: BigNumberish;
   price: BigNumberish;
-  noOfPassengers: BigNumberish;
 };
 
-export type RIDEDETAILSStructOutput = [
-  string,
-  string,
-  BigNumber,
-  BigNumber,
-  BigNumber
-] & {
+export type RIDEDETAILSStructOutput = [string, string, BigNumber, BigNumber] & {
   pickup: string;
   destination: string;
   distance: BigNumber;
   price: BigNumber;
-  noOfPassengers: BigNumber;
 };
 
 export type RIDEStruct = {
@@ -112,7 +104,7 @@ export interface RideInterface extends utils.Interface {
     "addVehicle(address,(string,string,string,uint8,address))": FunctionFragment;
     "cancelRide(uint256,uint8,string)": FunctionFragment;
     "completeRide(uint256,string)": FunctionFragment;
-    "confirmRide((address,address),(bool,bool,bool,uint8),(string,string,uint256,uint256,uint256),string)": FunctionFragment;
+    "confirmRide((address,address),(bool,bool,bool,uint8),(string,string,uint256,uint256),string)": FunctionFragment;
     "getAllRides(uint256[])": FunctionFragment;
     "getRide(uint256)": FunctionFragment;
     "getRideCount()": FunctionFragment;

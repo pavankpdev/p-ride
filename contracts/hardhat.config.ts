@@ -1,7 +1,10 @@
+require('dotenv').config()
+
 import { HardhatUserConfig } from "hardhat/types";
 import "hardhat-deploy";
 import "hardhat-deploy-ethers";
 import "@typechain/hardhat";
+
 
 const config: HardhatUserConfig = {
   solidity: {
@@ -10,9 +13,12 @@ const config: HardhatUserConfig = {
   networks: {
     ropsten: {
       url: "https://speedy-nodes-nyc.moralis.io/e1ab103eda1ef6147621f342/eth/ropsten",
-      accounts: [
-        "0fd3cfa739ef020390437bb90a9ba02accac47053a6a8b8e0acd6caf80dc7718",
-      ],
+      accounts: [process.env.DEPLOYER_PRIVATE_KEY as string],
+    },
+    mumbai: {
+      url: `https://rpc-mumbai.maticvigil.com/v1/f79235594e1c3bda499c75b6f0338cc703995047`,
+      chainId: 80001,
+      accounts: [process.env.DEPLOYER_PRIVATE_KEY as string],
     },
   },
   namedAccounts: {
@@ -24,6 +30,9 @@ const config: HardhatUserConfig = {
   typechain: {
     outDir: "src/types",
     target: "ethers-v5",
+  },
+  etherscan: {
+    apiKey: process.env.EXPLORER_API_KEY || "",
   },
 };
 export default config;

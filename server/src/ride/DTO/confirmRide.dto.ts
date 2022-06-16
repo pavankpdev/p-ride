@@ -18,4 +18,10 @@ export class ConfirmRideDto {
 
   @IsNotEmpty()
   distance: number;
+
+  @IsNotEmpty()
+  driver: string;
+
+  @IsNotEmpty()
+  customer: string;
 }

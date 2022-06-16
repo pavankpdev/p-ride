@@ -26,7 +26,6 @@ io.on("connection", (socket: any) => {
      * @to: Emit the acceptance status to user
      * */
     socket.on("DRIVER_ACCEPT_RIDE", (acceptRideData: IAcceptRideData) => {
-        console.log(acceptRideData)
         socket.broadcast.emit("ACCEPT_RIDE", acceptRideData);
     });
 
@@ -59,8 +58,8 @@ io.on("connection", (socket: any) => {
      * @from: When ride is complete
      * @to: notify the user
      * */
-    socket.on("COMPLETE_RIDE", (driverSocketId: string) => {
-        socket.emit("RIDE_END", driverSocketId);
+    socket.on("COMPLETE_RIDE", () => {
+        socket.broadcast.emit("RIDE_END", '');
     });
 
 });

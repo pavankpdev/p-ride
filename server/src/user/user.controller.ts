@@ -1,4 +1,4 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, Headers, Param } from '@nestjs/common';
 import { UserDocument } from './schema/user.schema';
 import { UserService } from './user.service';
 
@@ -6,10 +6,12 @@ import { UserService } from './user.service';
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  @Get('')
-  async getUser(): Promise<{ user: UserDocument | null }> {
+  @Get(':address')
+  async getUser(
+    @Param('address') address: string,
+  ): Promise<{ user: UserDocument | null }> {
     const user = await this.userService.findOne({
-      _id: '627d4519a46e6687313908bc',
+      address,
     });
     return { user };
   }

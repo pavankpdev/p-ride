@@ -29,7 +29,7 @@ export function useMetaMaskWallet() {
 
                 setAccount(accounts[0])
                 if (cb) cb(accounts[0])
-                return true
+                return accounts[0]
             } catch (err) {
                 // User denied access
                 console.error(err)

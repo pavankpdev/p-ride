@@ -38,6 +38,8 @@ const RideHistoryCard = (props) => {
                         p={'10px'}
                         color={'brand.500'}
                         rounded={'md'}
+                        h={'100%'}
+                        justify={'center'}
                     >
                         <Heading>
                             {props.distance}
@@ -53,6 +55,8 @@ const RideHistoryCard = (props) => {
                         p={'10px'}
                         color={'brand.500'}
                         rounded={'md'}
+                        h={'100%'}
+                        justify={'center'}
                     >
                         <Heading>
                             {props.price}
@@ -67,9 +71,7 @@ const RideHistoryCard = (props) => {
                 <Text color={'gray.400'} w={'60%'} noOfLines={2} fontSize={'sm'} fontWeight={600}>{props.timestamp}</Text>
 
                 <Flex w={'40%'} color={ props.isComplete ? 'green.500' : (props.isCancelled ? 'red.500' : 'teal.500')} alignItems={'center'} gap={'5px'} justify={'center'}>
-                    { props.isComplete && <BsPatchCheckFill/>}
-                    { props.isCancelled && <MdCancel/>}
-                    { props.isConfirmed && <MdPending/>}
+                    {props.isComplete ? <BsPatchCheckFill/> : (props.isCancelled ? <MdCancel/> :<MdPending/>)}
                     <Text fontWeight={600}>
                         {props.isComplete ? 'Completed' : (props.isCancelled ? 'Cancelled' : 'On Going')}
                     </Text>

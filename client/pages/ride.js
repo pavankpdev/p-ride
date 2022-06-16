@@ -42,7 +42,6 @@ const Ride = () => {
 
     useEffect(() => {
         socket.on('RIDE_END', async () => {
-            // TODO: Handle Token transfer
             const account = await connectWallet();
             const PriToken = Contracts.instances.PriToken;
 

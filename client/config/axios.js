@@ -10,6 +10,8 @@ axiosInstance.interceptors.request.use(
       return config;
     }
 
+    if(typeof localStorage === 'undefined') return Promise.reject('Module loading!');
+
     if (localStorage.getItem("pride")) {
       const { token } = JSON.parse(localStorage.getItem("pride"));
       config.headers.Authorization = token;
@@ -28,8 +30,12 @@ axiosInstance.interceptors.response.use(
   (response) => {
     return response;
   },
+
   (error) => {
-    if (error.response?.status == 401 && !window.location.pathname.includes('/auth')) {
+
+      if(typeof window === 'undefined') return Promise.reject('Module loading!');
+
+      if (error.response?.status == 401 && !window.location.pathname.includes('/auth')) {
       window.location.href = "/auth";
       return;
     }

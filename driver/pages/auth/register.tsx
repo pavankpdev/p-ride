@@ -11,6 +11,7 @@ import {
     Heading,
     Text,
     useColorModeValue,
+    Select,
 } from '@chakra-ui/react';
 import {useState} from "react";
 import {useRouter} from "next/router";
@@ -25,6 +26,7 @@ export default function Register() {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const [phno, setPhno] = useState('')
+    const [carType, setCartType] = useState('')
 
     const router = useRouter();
     const {signInWithMetamask} = useMetaMaskWallet()
@@ -32,10 +34,12 @@ export default function Register() {
     const handleEmailChange = (e: any) => setEmail(e.target.value)
     const handleFullNameChange = (e: any) => setFullname(e.target.value)
     const handlePasswordChange = (e: any) => setPassword(e.target.value)
+    const handleCarTypeChange = (e: any) => setCartType(e.target.value)
     const handlePhnoChange = (e: any) => {
         if(e.target.value.length > 10) return
         setPhno(e.target.value)
     }
+
 
     const submit = async () => {
         try {
@@ -51,7 +55,8 @@ export default function Register() {
                 email,
                 password,
                 address: metamaskData?.account,
-                phno
+                phno,
+                carType
             }
 
             const {data} = await axiosInstance({
@@ -66,7 +71,6 @@ export default function Register() {
             );
 
             router.push("/")
-
 
         } catch (err: any) {
             console.log(err)
@@ -99,6 +103,14 @@ export default function Register() {
                         <FormControl id="phno">
                             <FormLabel>Phno</FormLabel>
                             <Input type="number" value={phno} onChange={handlePhnoChange}  />
+                        </FormControl>
+                        <FormControl id="phno">
+                            <FormLabel>Select CarType</FormLabel>
+                            <Select placeholder='Select option' onChange={handleCarTypeChange} value={carType}>
+                                {
+                                    ['mini', 'sedan', 'suv'].map((car, index) => <option value={car} key={index}>{car}</option>)
+                                }
+                            </Select>
                         </FormControl>
                         <FormControl id="password">
                             <FormLabel>Password</FormLabel>

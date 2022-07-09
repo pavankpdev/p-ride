@@ -8,7 +8,6 @@ export const processRideObj = (ride: RIDEStructOutput) => {
         destination: ride.ride.destination,
         distance: BigNumber.from(ride.ride.distance).toNumber(),
         price: BigNumber.from(ride.ride.price).toNumber(),
-        noOfPassengers: BigNumber.from(ride.ride.noOfPassengers).toNumber(),
     }
 
     const {driver, customer}: USERSStruct = ride.users;

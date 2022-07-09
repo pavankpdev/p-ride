@@ -1,4 +1,5 @@
 require('dotenv').config()
+require('solidity-coverage')
 
 import { HardhatUserConfig } from "hardhat/types";
 import "hardhat-deploy";

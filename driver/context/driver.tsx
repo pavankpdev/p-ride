@@ -6,7 +6,8 @@ type Driver = {
     fullname: string,
     address: string,
     _id: string,
-    phno: string | number
+    phno: string | number,
+    carType: string
 }
 
 interface IDriverContext {
@@ -20,7 +21,8 @@ export const DriverContext = React.createContext<IDriverContext>({
         fullname: '',
         address: '',
         _id: '',
-        phno: ''
+        phno: '',
+        carType: ''
     },
     updateDriver: (driver: any) => {},
     logout: () => {}
@@ -31,7 +33,8 @@ export const DriverContextProvider: React.FC<{children: ReactNode}> = ({ childre
         fullname: '',
         address: '',
         _id: '',
-        phno: ''
+        phno: '',
+        carType: ''
     })
 
     const router = useRouter();
@@ -56,10 +59,6 @@ export const DriverContextProvider: React.FC<{children: ReactNode}> = ({ childre
 
         setDriver(data.driver)
     }, [router])
-
-    useEffect(() => {
-        getDriver()
-    }, [])
 
 
     useEffect(() => {

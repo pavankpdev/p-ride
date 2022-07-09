@@ -23,7 +23,7 @@ export class UserController {
     @Param('address') address: string,
   ): Promise<{ user: UserDocument | null }> {
     const user = await this.userService.findOne({
-      address,
+      address: address.toLocaleLowerCase(),
     });
     return { user };
   }

@@ -27,6 +27,8 @@ import Contracts from "../contracts";
 import {useMetaMaskWallet} from "../hooks/useWallet";
 import {ethers} from "ethers";
 
+import {isConnectedToAllowedChain} from "../config/allowedChain";
+
 // using nextjs dynamic import since window is undefined in next SSR
 const MapComp = dynamic(() => import("../components/map"), { ssr: false });
 
@@ -34,7 +36,7 @@ const Ride = () => {
 
     const {rideDetails, cancelRide} = useContext(RideContext)
     const { pickUpLocation, dropLocation } = useContext(LocationContext)
-    const {connectWallet} = useMetaMaskWallet()
+    const {connectWallet, switchNetworkHandler} = useMetaMaskWallet()
 
     const toast = useToast();
     const router = useRouter();
@@ -47,8 +49,16 @@ const Ride = () => {
 
             // convert to Wei
             const price = ethers.utils.parseEther(`${rideDetails?.price}`)
-            console.log(price)
 
+            if(typeof account !== 'undefined') {
+                const currentChainId = await window.ethereum.request({
+                    method: 'eth_chainId',
+                });
+
+                if(!isConnectedToAllowedChain(currentChainId)) {
+                   await switchNetworkHandler();
+                }
+            }
             const TokenCaller = PriToken?.methods?.transfer(rideDetails?.driver?.address, price);
 
             const TokenGas = await TokenCaller?.estimateGas({

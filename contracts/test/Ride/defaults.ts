@@ -20,7 +20,6 @@ export const getDefaultRideData = async () => {
         destination: "Bangalore",
         distance: 38,
         price: 300,
-        noOfPassengers: 3,
     }
 
     const timestamp: string = new Date().toISOString();

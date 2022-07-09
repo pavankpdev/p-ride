@@ -29,4 +29,7 @@ export class RegisterDriverDto {
 
   @IsNotEmpty()
   phno: string;
+
+  @IsNotEmpty()
+  carType: string;
 }

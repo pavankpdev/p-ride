@@ -69,5 +69,29 @@ export function useMetaMaskWallet() {
         }
     }, [])
 
-    return { account, setAccount, connectWallet, isConnected, disconnectWallet, signInWithMetamask }
+    const switchNetworkHandler = async () => {
+        try {
+            if(typeof window === 'undefined') return
+            await window.ethereum.request({
+                method: 'wallet_addEthereumChain',
+                params: [
+                    {
+                        chainId: `0x${Number(80001).toString(16)}`,
+                        chainName: 'Polygon Testnet',
+                        nativeCurrency: {
+                            name: 'Matic',
+                            symbol: 'Matic',
+                            decimals: 18,
+                        },
+                        rpcUrls: ['https://rpc-mumbai.maticvigil.com/v1/f79235594e1c3bda499c75b6f0338cc703995047'],
+                        blockExplorerUrls: ['https://mumbai.polygonscan.com/'],
+                    },
+                ],
+            });
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    return { account, setAccount, connectWallet, isConnected, disconnectWallet, signInWithMetamask, switchNetworkHandler }
 }

@@ -10,14 +10,47 @@ import {
   MenuItem,
   MenuDivider,
   Image, Text,
+  usePrefersReducedMotion,
+  keyframes
 } from "@chakra-ui/react";
 import { BiHistory, BiLogOut } from "react-icons/bi";
-import {useContext} from "react";
+import {useContext, useEffect, useState} from "react";
 import {UserContext} from "../../context/user";
+import {isConnectedToAllowedChain} from "../../config/allowedChain";
+import {useMetaMaskWallet} from "../../hooks/useWallet";
+
+const shake = keyframes`
+  0% { transform: translateX(0) }
+  25% { transform: translateX(5px) }
+  50% { transform: translateX(-5px) }
+  75% { transform: translateX(5px) }
+  100% { transform: translateX(0) }
+`
 
 export default function Navbar() {
+  const [switchNetwork, setSwitchNetwork] = useState(false);
 
   const {user, logout} = useContext(UserContext)
+
+  const wallet = useMetaMaskWallet()
+
+  useEffect(() => {
+    if(typeof window === 'undefined') return
+
+    window.ethereum.on('chainChanged', chain => {
+        if(isConnectedToAllowedChain(chain)) {
+            setSwitchNetwork(false)
+        } else {
+            setSwitchNetwork(true)
+        }
+    });
+  }, [])
+
+  const prefersReducedMotion = usePrefersReducedMotion()
+
+  const animation = prefersReducedMotion
+      ? undefined
+      : `${shake} 0.5s infinite`
 
   return (
     <>
@@ -34,7 +67,13 @@ export default function Navbar() {
               />
             </Box>
           </HStack>
-          <Flex alignItems={"center"}>
+          <Flex alignItems={"center"} gap={'1rem'}>
+            <Button
+                colorScheme={'purple'}
+                animation={animation}
+                display={!switchNetwork ? "none" : "block"}
+                onClick={wallet.switchNetworkHandler}
+            >Switch to Polygon</Button>
             <Menu>
               <MenuButton
                 as={Button}

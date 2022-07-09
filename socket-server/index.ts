@@ -18,6 +18,7 @@ io.on("connection", (socket: any) => {
      * @to: Broadcast the request to drivers
      * */
     socket.on("NEW_RIDE_REQUEST", (rideRequestData: IRideRequest) => {
+        console.log(rideRequestData)
         socket.broadcast.emit("NEW_RIDE_QUEUE", rideRequestData);
     });
 

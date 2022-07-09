@@ -123,6 +123,8 @@ export const LocationContextProvider: React.FC<{children: ReactNode}> = ({ child
 
     React.useEffect(() => {
         socket.on('NEW_RIDE_QUEUE', (data: IRideRequest) => {
+            console.log(data)
+            if(data?.carType?.toLocaleLowerCase() !== driver?.carType?.toLocaleLowerCase()) return;
             if(!rideQueue.some(({userId}) => userId == data.userId)){
                 if(acceptedRideId) return
                 const state = [...rideQueue, data]
@@ -134,6 +136,8 @@ export const LocationContextProvider: React.FC<{children: ReactNode}> = ({ child
         })
         return () => {
             socket.off('NEW_RIDE_QUEUE', (data: IRideRequest) => {
+
+                if(data.carType.toLocaleLowerCase() !== driver.carType.toLocaleLowerCase()) return;
                 if(!rideQueue.some(({userId}) => userId == data.userId)){
                     if(acceptedRideId) return
                     const state = [...rideQueue, data]
@@ -144,7 +148,7 @@ export const LocationContextProvider: React.FC<{children: ReactNode}> = ({ child
                 }
             })
         }
-    }, [socket])
+    }, [socket, driver])
 
     const updatePickUpLocation = async (location: ILocation, isCurrent: boolean) => {
         if(isCurrent) {
